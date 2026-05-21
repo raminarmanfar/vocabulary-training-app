@@ -1,4 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { IonApp, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
 import { App as CapApp } from '@capacitor/app';
@@ -12,6 +13,7 @@ import { App as CapApp } from '@capacitor/app';
 export class App implements OnInit {
   private platform = inject(Platform);
   private router = inject(Router);
+  private location = inject(Location);
 
   ngOnInit() {
     this.platform.backButton.subscribeWithPriority(10, () => {
@@ -19,7 +21,7 @@ export class App implements OnInit {
       if (currentUrl === '/dashboard' || currentUrl === '/') {
         CapApp.exitApp();
       } else {
-        this.router.navigate(['/dashboard']);
+        this.location.back();
       }
     });
   }
