@@ -1,0 +1,250 @@
+{
+  "app": {
+    "title": "Vocab Trainer"
+  },
+  "dashboard": {
+    "welcome": "Welcome!",
+    "subtitle": "Your German vocabulary training app",
+    "tiles": {
+      "vocabularies": { "label": "Vocabularies", "description": "Browse & manage your German word list" },
+      "train":        { "label": "Train",         "description": "Practice flashcards to memorize words" },
+      "quiz":         { "label": "Quiz",          "description": "Test your knowledge with multiple choice" },
+      "about":        { "label": "About",         "description": "About this app" },
+      "settings":     { "label": "Settings",      "description": "App preferences & data management" }
+    }
+  },
+  "home": {
+    "title": "Vocabularies",
+    "search": { "placeholder": "Search German or English..." },
+    "filter": {
+      "typePlaceholder": "Word type",
+      "levelPlaceholder": "Level",
+      "allTypes": "All types",
+      "allLevels": "All levels",
+      "all": "All",
+      "learned": "Learned",
+      "unlearned": "Unlearned"
+    },
+    "empty": "No vocabularies found.",
+    "footer": { "count": "{{count}} of {{total}} vocabularies" }
+  },
+  "wordType": {
+    "noun":        "Noun",
+    "verb":        "Verb",
+    "adjective":   "Adjective",
+    "adverb":      "Adverb",
+    "preposition": "Preposition",
+    "conjunction": "Conjunction",
+    "pronoun":     "Pronoun",
+    "other":       "Other"
+  },
+  "detail": {
+    "exampleSentences": "Example Sentences",
+    "learned": "Learned ✓",
+    "delete": {
+      "header":  "Delete Vocabulary",
+      "message": "Are you sure you want to delete this vocabulary?",
+      "cancel":  "Cancel",
+      "confirm": "Delete"
+    }
+  },
+  "edit": {
+    "titleNew":  "Add Vocabulary",
+    "titleEdit": "Edit Vocabulary",
+    "section": {
+      "basic":      "Basic Information",
+      "examples":   "Example Sentences (max 5)",
+      "noun":       "Noun Details",
+      "verb":       "Verb Details",
+      "adjective":  "Adjective Details"
+    },
+    "field": {
+      "german":       "German Word *",
+      "germanPh":     "e.g. der Hund",
+      "english":      "English Translation *",
+      "englishPh":    "e.g. dog",
+      "wordType":     "Word Type *",
+      "level":        "CEFR Level *",
+      "description":  "Description",
+      "descriptionPh":"Optional description...",
+      "learned":      "Already Learned",
+      "image":         "Image",
+      "imagePick":     "Tap to choose an image",
+      "article":      "Article",
+      "plural":       "Plural",
+      "separable":    "Separable",
+      "regular":      "Regular",
+      "hilfsverb":    "Hilfsverb",
+      "komparativ":   "Komparativ",
+      "superlativ":   "Superlativ"
+    },
+    "duplicate": {
+      "title":   "Vocabulary Already Exists",
+      "message": "A vocabulary with this word and the same type already exists. Do you want to replace it or ignore?",
+      "replace": "Replace",
+      "ignore":  "Ignore"
+    },
+    "example": {
+      "germanLabel":  "German",
+      "germanPh":     "German sentence",
+      "englishLabel": "English",
+      "englishPh":    "English translation",
+      "remove":       "Remove",
+      "add":          "Add Example"
+    }
+  },
+  "grammar": {
+    "nominativ":   "Nominativ",
+    "akkusativ":   "Akkusativ",
+    "genitiv":     "Genitiv",
+    "dativ":       "Dativ",
+    "bestimmt":    "Declension with definite article",
+    "unbestimmt":  "Declension with indefinite article",
+    "maskulin":    "Masculine (der)",
+    "feminin":     "Feminine (die)",
+    "neutral":     "Neuter (das)",
+    "plural":      "Plural (die)"
+  },
+  "noun": {
+    "title":     "Noun Details",
+    "article":   "Article",
+    "plural":    "Plural"
+  },
+  "verb": {
+    "title":       "Verb Details",
+    "separable":   "Separable",
+    "inseparable": "Inseparable",
+    "regular":     "Regular",
+    "irregular":   "Irregular",
+    "present":     "Präsens (Present)",
+    "simplePast":  "Präteritum (Simple Past)",
+    "pastPerfect": "Perfekt (Past Perfect)",
+    "future":      "Futur I (Future)",
+    "imperative":  "Imperativ (Imperative)"
+  },
+  "adjective": {
+    "title":      "Adjective Details",
+    "komparativ": "Komparativ",
+    "superlativ":  "Superlativ"
+  },
+  "settings": {
+    "title":    "Settings",
+    "language": {
+      "label":  "App Language",
+      "en":     "English",
+      "de":     "Deutsch"
+    },
+    "theme": {
+      "label": "Dark Mode",
+      "on":    "On",
+      "off":   "Off"
+    },
+    "data": {
+      "label":  "Data",
+      "export": "Export Data",
+      "import": "Import Data",
+      "exportSuccess": "Exported {{count}} vocabularies",
+      "importSuccess": "Imported {{count}} vocabularies",
+      "importError": "Invalid file format",
+      "importModeTitle": "Import mode",
+      "importModeMsg": "{{count}} vocabularies found. How would you like to import them?",
+      "importMerge": "Merge",
+      "importReplace": "Replace all",
+      "clear":  "Clear all data",
+      "erase": "Erase",
+      "eraseVocabs": "Erase all vocabularies",
+      "eraseVocabsTitle": "Erase all vocabularies?",
+      "eraseVocabsMsg": "This will permanently delete all vocabularies. This cannot be undone.",
+      "eraseVocabsDone": "All vocabularies deleted",
+      "eraseQuizzes": "Erase all quizzes",
+      "eraseQuizzesTitle": "Erase all quizzes?",
+      "eraseQuizzesMsg": "This will permanently delete all quiz history. This cannot be undone.",
+      "eraseQuizzesDone": "All quizzes deleted"
+    },
+    "comingSoon": "More settings coming soon."
+  },
+  "about": {
+    "title":    "About",
+    "subtitle": "Learn German vocabulary — offline, always.",
+    "features": {
+      "title": "Features",
+      "grammar":  "Full grammatical details for nouns, verbs & adjectives",
+      "offline":  "Works fully offline — data stored locally",
+      "cefr":     "CEFR levels A1–C2",
+      "tts":      "Text-to-speech pronunciation"
+    },
+    "tech": {
+      "title": "Built With",
+      "stack": "Ionic · Angular · Dexie (IndexedDB)"
+    }
+  },
+  "train": {
+    "title": "Train",
+    "comingSoon": "Flashcard training coming soon."
+  },
+  "quiz": {
+    "title": "Quiz",
+    "start": {
+      "heading": "Vocabulary Quiz",
+      "subtitle": "Test your German knowledge with multiple choice questions.",
+      "settings": "Quiz Settings",
+      "quizType": "Quiz Type",
+      "direction": "Direction",
+      "deToEn": "German → English",
+      "enToDe": "English → German",
+      "questionCount": "Questions",
+      "begin": "Start Quiz"
+    },
+    "type": {
+      "multipleChoice": "Multiple Choice",
+      "fillBlank": "Fill in the Blank",
+      "matching": "Match Words"
+    },
+    "question": {
+      "counter": "Question {{current}} of {{total}}",
+      "translateToEn": "Translate to English",
+      "translateToDe": "Translate to German",
+      "correct": "Correct!",
+      "wrong": "Wrong! Correct answer:",
+      "next": "Next",
+      "finish": "See Results"
+    },
+    "fill": {
+      "instruction": "Fill in the missing German word",
+      "placeholder": "Type the missing word...",
+      "check": "Check"
+    },
+    "match": {
+      "instruction": "Match each German word to its English translation",
+      "allMatched": "All matched! Well done!"
+    },
+    "result": {
+      "heading": "Quiz Complete!",
+      "backToList": "Back to Quiz List",
+      "playAgain": "Play Again",
+      "goHome": "Go to Dashboard"
+    },
+    "grade": {
+      "excellent": "Excellent! Keep it up!",
+      "good": "Good job!",
+      "fair": "Not bad, keep practising!",
+      "keepPracticing": "Keep practising, you'll get there!"
+    },
+    "list": {
+      "heading": "My Quizzes",
+      "new": "New Quiz",
+      "random": "Random Quiz",
+      "empty": "No quizzes yet. Start your first quiz!",
+      "in-progress": "In Progress",
+      "completed": "Completed"
+    },
+    "delete": {
+      "title": "Delete Quiz",
+      "message": "Are you sure you want to delete this quiz?"
+    }
+  },
+  "common": {
+    "cancel": "Cancel",
+    "delete": "Delete"
+  }
+}

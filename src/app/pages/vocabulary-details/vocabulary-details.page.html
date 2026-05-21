@@ -1,0 +1,101 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/vocabularies"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ vocab()?.german }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="edit()">
+        <ion-icon name="create" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button (click)="confirmDelete()" color="danger">
+        <ion-icon name="trash" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (vocab(); as v) {
+    <!-- Header Card -->
+    <ion-card class="vocab-card">
+      <ion-card-header>
+        <div class="vocab-title-row">
+          <div>
+            <ion-card-title class="german-word">{{ v.german }}</ion-card-title>
+            <p class="english-word">{{ v.english }}</p>
+          </div>
+          <div class="vocab-actions">
+            @if (ttsSupported()) {
+              <ion-button fill="clear" (click)="speak()">
+                <ion-icon name="volume-high" slot="icon-only" color="primary"></ion-icon>
+              </ion-button>
+            }
+            <ion-button fill="clear" (click)="toggleLearned()">
+              <ion-icon
+                [name]="v.learned ? 'checkmark-circle' : 'ellipse-outline'"
+                [color]="v.learned ? 'success' : 'medium'"
+                slot="icon-only">
+              </ion-icon>
+            </ion-button>
+          </div>
+        </div>
+
+        <div class="chips-row">
+          <ion-chip [color]="wordTypeColor(v.wordType)">{{ ('wordType.' + v.wordType) | translate }}</ion-chip>
+          <ion-chip color="secondary">{{ v.level }}</ion-chip>
+          @if (v.learned) {
+            <ion-chip color="success">{{ 'detail.learned' | translate }}</ion-chip>
+          }
+        </div>
+      </ion-card-header>
+
+      @if (v.description) {
+        <ion-card-content>
+          <p class="description">{{ v.description }}</p>
+        </ion-card-content>
+      }
+    </ion-card>
+
+    <!-- Image -->
+    @if (v.imagePath) {
+      <ion-card>
+        <ion-img [src]="v.imagePath" alt="{{ v.german }}"></ion-img>
+      </ion-card>
+    }
+
+    <!-- Examples -->
+    @if (v.examples && v.examples.length > 0) {
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ 'detail.exampleSentences' | translate }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-accordion-group>
+            @for (ex of v.examples; track $index) {
+              <ion-accordion [value]="'ex' + $index">
+                <ion-item slot="header">
+                  <ion-label>{{ ex.german }}</ion-label>
+                </ion-item>
+                <div slot="content" class="example-translation">
+                  <p>{{ ex.english }}</p>
+                </div>
+              </ion-accordion>
+            }
+          </ion-accordion-group>
+        </ion-card-content>
+      </ion-card>
+    }
+
+    <!-- Word-type specific details -->
+    @if (v.wordType === 'noun' && v.nounDetails) {
+      <app-noun-detail [details]="v.nounDetails"></app-noun-detail>
+    }
+    @if (v.wordType === 'verb' && v.verbDetails) {
+      <app-verb-detail [details]="v.verbDetails"></app-verb-detail>
+    }
+    @if (v.wordType === 'adjective' && v.adjectiveDetails) {
+      <app-adjective-detail [details]="v.adjectiveDetails"></app-adjective-detail>
+    }
+  }
+</ion-content>

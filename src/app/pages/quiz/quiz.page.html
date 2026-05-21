@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar color="warning">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard" color="dark"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'quiz.title' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="list-screen">
+    <div class="list-header">
+      <h2>{{ 'quiz.list.heading' | translate }}</h2>
+    </div>
+
+    @if (quizSets().length === 0) {
+      <div class="list-empty">
+        <ion-icon name="help-circle-outline"></ion-icon>
+        <p>{{ 'quiz.list.empty' | translate }}</p>
+      </div>
+    }
+
+    @for (qs of quizSets(); track qs._id) {
+      <ion-card class="quiz-set-card" button (click)="openQuiz(qs)">
+        <ion-card-content>
+          <div class="qs-row">
+            <div class="qs-icon-wrap">
+              <ion-icon [name]="quizTypeIcon(qs.quizType)" class="qs-icon"></ion-icon>
+            </div>
+            <div class="qs-info">
+              <span class="qs-type">{{ quizTypeLabel(qs.quizType) | translate }}</span>
+              <span class="qs-date">{{ formatDate(qs.createdAt) }}</span>
+            </div>
+            <div class="qs-meta">
+              <div class="qs-progress-bar">
+                <div class="qs-bar-correct" [style.width.%]="(qs.score / qs.totalQuestions) * 100"></div>
+                <div class="qs-bar-wrong" [style.width.%]="((qs.questionsAnswered - qs.score) / qs.totalQuestions) * 100"></div>
+                <div class="qs-bar-remaining" [style.flex]="qs.totalQuestions - qs.questionsAnswered"></div>
+              </div>
+              <div class="qs-bar-legend">
+                <span class="legend-correct">{{ qs.score }}✓</span>
+                <span class="legend-wrong">{{ qs.questionsAnswered - qs.score }}✗</span>
+                <span class="legend-total">{{ qs.questionsAnswered }}/{{ qs.totalQuestions }}</span>
+              </div>
+              <span class="qs-status">{{ ('quiz.list.' + qs.status) | translate }}</span>
+            </div>
+            <ion-button fill="clear" color="medium" class="qs-delete" (click)="deleteQuizSet(qs, $event)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    }
+  </div>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button color="warning" (click)="newQuiz()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

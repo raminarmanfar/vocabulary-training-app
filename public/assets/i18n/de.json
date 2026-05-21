@@ -1,0 +1,250 @@
+{
+  "app": {
+    "title": "Vokabeltrainer"
+  },
+  "dashboard": {
+    "welcome": "Willkommen!",
+    "subtitle": "Deine Deutsche Vokabeltrainer-App",
+    "tiles": {
+      "vocabularies": { "label": "Vokabeln",      "description": "Wortliste durchsuchen & verwalten" },
+      "train":        { "label": "Trainieren",    "description": "Karteikarten üben, um Wörter zu lernen" },
+      "quiz":         { "label": "Quiz",          "description": "Wissen mit Multiple-Choice testen" },
+      "about":        { "label": "Über uns",      "description": "Über diese App" },
+      "settings":     { "label": "Einstellungen", "description": "App-Einstellungen & Datenverwaltung" }
+    }
+  },
+  "home": {
+    "title": "Vokabeln",
+    "search": { "placeholder": "Auf Deutsch oder Englisch suchen..." },
+    "filter": {
+      "typePlaceholder": "Worttyp",
+      "levelPlaceholder": "Niveau",
+      "allTypes": "Alle Typen",
+      "allLevels": "Alle Niveaus",
+      "all": "Alle",
+      "learned": "Gelernt",
+      "unlearned": "Ungelernt"
+    },
+    "empty": "Keine Vokabeln gefunden.",
+    "footer": { "count": "{{count}} von {{total}} Vokabeln" }
+  },
+  "wordType": {
+    "noun":        "Nomen",
+    "verb":        "Verb",
+    "adjective":   "Adjektiv",
+    "adverb":      "Adverb",
+    "preposition": "Präposition",
+    "conjunction": "Konjunktion",
+    "pronoun":     "Pronomen",
+    "other":       "Andere"
+  },
+  "detail": {
+    "exampleSentences": "Beispielsätze",
+    "learned": "Gelernt ✓",
+    "delete": {
+      "header":  "Vokabel löschen",
+      "message": "Bist du sicher, dass du diese Vokabel löschen möchtest?",
+      "cancel":  "Abbrechen",
+      "confirm": "Löschen"
+    }
+  },
+  "edit": {
+    "titleNew":  "Vokabel hinzufügen",
+    "titleEdit": "Vokabel bearbeiten",
+    "section": {
+      "basic":      "Grundinformationen",
+      "examples":   "Beispielsätze (max. 5)",
+      "noun":       "Nomendetails",
+      "verb":       "Verbdetails",
+      "adjective":  "Adjektivdetails"
+    },
+    "field": {
+      "german":       "Deutsches Wort *",
+      "germanPh":     "z.B. der Hund",
+      "english":      "Englische Übersetzung *",
+      "englishPh":    "z.B. dog",
+      "wordType":     "Worttyp *",
+      "level":        "CEFR-Niveau *",
+      "description":  "Beschreibung",
+      "descriptionPh":"Optionale Beschreibung...",
+      "learned":      "Bereits gelernt",
+      "image":         "Bild",
+      "imagePick":     "Bild auswählen",
+      "article":      "Artikel",
+      "plural":       "Plural",
+      "separable":    "Trennbar",
+      "regular":      "Regelmäßig",
+      "hilfsverb":    "Hilfsverb",
+      "komparativ":   "Komparativ",
+      "superlativ":   "Superlativ"
+    },
+    "duplicate": {
+      "title":   "Vokabel existiert bereits",
+      "message": "Eine Vokabel mit diesem Wort und demselben Worttyp existiert bereits. Ersetzen oder ignorieren?",
+      "replace": "Ersetzen",
+      "ignore":  "Ignorieren"
+    },
+    "example": {
+      "germanLabel":  "Deutsch",
+      "germanPh":     "Deutscher Satz",
+      "englishLabel": "Englisch",
+      "englishPh":    "Englische Übersetzung",
+      "remove":       "Entfernen",
+      "add":          "Beispiel hinzufügen"
+    }
+  },
+  "grammar": {
+    "nominativ":   "Nominativ",
+    "akkusativ":   "Akkusativ",
+    "genitiv":     "Genitiv",
+    "dativ":       "Dativ",
+    "bestimmt":    "Deklination mit bestimmtem Artikel",
+    "unbestimmt":  "Deklination mit unbestimmtem Artikel",
+    "maskulin":    "Maskulin (der)",
+    "feminin":     "Feminin (die)",
+    "neutral":     "Neutral (das)",
+    "plural":      "Plural (die)"
+  },
+  "noun": {
+    "title":     "Nomendetails",
+    "article":   "Artikel",
+    "plural":    "Plural"
+  },
+  "verb": {
+    "title":       "Verbdetails",
+    "separable":   "Trennbar",
+    "inseparable": "Untrennbar",
+    "regular":     "Regelmäßig",
+    "irregular":   "Unregelmäßig",
+    "present":     "Präsens",
+    "simplePast":  "Präteritum",
+    "pastPerfect": "Perfekt",
+    "future":      "Futur I",
+    "imperative":  "Imperativ"
+  },
+  "adjective": {
+    "title":      "Adjektivdetails",
+    "komparativ": "Komparativ",
+    "superlativ":  "Superlativ"
+  },
+  "settings": {
+    "title":    "Einstellungen",
+    "language": {
+      "label":  "App-Sprache",
+      "en":     "English",
+      "de":     "Deutsch"
+    },
+    "theme": {
+      "label": "Dunkelmodus",
+      "on":    "An",
+      "off":   "Aus"
+    },
+    "data": {
+      "label":  "Daten",
+      "export": "Daten exportieren",
+      "import": "Daten importieren",
+      "exportSuccess": "{{count}} Vokabeln exportiert",
+      "importSuccess": "{{count}} Vokabeln importiert",
+      "importError": "Ungültiges Dateiformat",
+      "importModeTitle": "Importmodus",
+      "importModeMsg": "{{count}} Vokabeln gefunden. Wie möchtest du importieren?",
+      "importMerge": "Zusammenführen",
+      "importReplace": "Alles ersetzen",
+      "clear":  "Alle Daten löschen",
+      "erase": "Löschen",
+      "eraseVocabs": "Alle Vokabeln löschen",
+      "eraseVocabsTitle": "Alle Vokabeln löschen?",
+      "eraseVocabsMsg": "Alle Vokabeln werden dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden.",
+      "eraseVocabsDone": "Alle Vokabeln gelöscht",
+      "eraseQuizzes": "Alle Quizze löschen",
+      "eraseQuizzesTitle": "Alle Quizze löschen?",
+      "eraseQuizzesMsg": "Der gesamte Quiz-Verlauf wird dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden.",
+      "eraseQuizzesDone": "Alle Quizze gelöscht"
+    },
+    "comingSoon": "Weitere Einstellungen folgen bald."
+  },
+  "about": {
+    "title":    "Über uns",
+    "subtitle": "Lerne Deutsche Vokabeln – offline, immer.",
+    "features": {
+      "title": "Funktionen",
+      "grammar":  "Vollständige Grammatikdetails für Nomen, Verben & Adjektive",
+      "offline":  "Vollständig offline – Daten werden lokal gespeichert",
+      "cefr":     "CEFR-Niveaus A1–C2",
+      "tts":      "Text-to-Speech-Aussprache"
+    },
+    "tech": {
+      "title": "Erstellt mit",
+      "stack": "Ionic · Angular · Dexie (IndexedDB)"
+    }
+  },
+  "train": {
+    "title": "Trainieren",
+    "comingSoon": "Karteikarten-Training kommt bald."
+  },
+  "quiz": {
+    "title": "Quiz",
+    "start": {
+      "heading": "Vokabelquiz",
+      "subtitle": "Teste dein Deutsch mit Multiple-Choice-Fragen.",
+      "settings": "Quiz-Einstellungen",
+      "quizType": "Quiz-Typ",
+      "direction": "Richtung",
+      "deToEn": "Deutsch → Englisch",
+      "enToDe": "Englisch → Deutsch",
+      "questionCount": "Fragen",
+      "begin": "Quiz starten"
+    },
+    "type": {
+      "multipleChoice": "Multiple Choice",
+      "fillBlank": "Lückentext",
+      "matching": "Wörter zuordnen"
+    },
+    "question": {
+      "counter": "Frage {{current}} von {{total}}",
+      "translateToEn": "Ins Englische übersetzen",
+      "translateToDe": "Ins Deutsche übersetzen",
+      "correct": "Richtig!",
+      "wrong": "Falsch! Richtige Antwort:",
+      "next": "Weiter",
+      "finish": "Ergebnis anzeigen"
+    },
+    "fill": {
+      "instruction": "Ergänze das fehlende deutsche Wort",
+      "placeholder": "Fehlendes Wort eingeben...",
+      "check": "Prüfen"
+    },
+    "match": {
+      "instruction": "Ordne jedes deutsche Wort seiner englischen Übersetzung zu",
+      "allMatched": "Alle zugeordnet! Gut gemacht!"
+    },
+    "result": {
+      "heading": "Quiz abgeschlossen!",
+      "backToList": "Zur Quiz-Liste",
+      "playAgain": "Nochmal spielen",
+      "goHome": "Zum Dashboard"
+    },
+    "grade": {
+      "excellent": "Ausgezeichnet! Weiter so!",
+      "good": "Gut gemacht!",
+      "fair": "Nicht schlecht, übe weiter!",
+      "keepPracticing": "Übe weiter, du schaffst das!"
+    },
+    "list": {
+      "heading": "Meine Quizze",
+      "new": "Neues Quiz",
+      "random": "Zufälliges Quiz",
+      "empty": "Noch keine Quizze. Starte dein erstes Quiz!",
+      "in-progress": "Läuft",
+      "completed": "Abgeschlossen"
+    },
+    "delete": {
+      "title": "Quiz löschen",
+      "message": "Bist du sicher, dass du dieses Quiz löschen möchtest?"
+    }
+  },
+  "common": {
+    "cancel": "Abbrechen",
+    "delete": "Löschen"
+  }
+}

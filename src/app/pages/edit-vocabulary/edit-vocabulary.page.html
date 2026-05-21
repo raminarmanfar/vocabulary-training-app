@@ -1,0 +1,282 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="isNew() ? '/home' : '/detail/' + existingVocab()?._id"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ (isNew() ? 'edit.titleNew' : 'edit.titleEdit') | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()" [disabled]="form.invalid || saving()">
+        <ion-icon name="save" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="form">
+
+    <!-- Basic Info -->
+    <ion-card>
+      <ion-card-header><ion-card-title>{{ 'edit.section.basic' | translate }}</ion-card-title></ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">{{ 'edit.field.german' | translate }}</ion-label>
+          <ion-input formControlName="german" [placeholder]="'edit.field.germanPh' | translate"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">{{ 'edit.field.english' | translate }}</ion-label>
+          <ion-input formControlName="english" [placeholder]="'edit.field.englishPh' | translate"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">{{ 'edit.field.wordType' | translate }}</ion-label>
+          <ion-select formControlName="wordType">
+            @for (t of wordTypes; track t) {
+              <ion-select-option [value]="t">{{ t }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">{{ 'edit.field.level' | translate }}</ion-label>
+          <ion-select formControlName="level">
+            @for (l of levels; track l) {
+              <ion-select-option [value]="l">{{ l }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">{{ 'edit.field.description' | translate }}</ion-label>
+          <ion-textarea formControlName="description" rows="2" [placeholder]="'edit.field.descriptionPh' | translate"></ion-textarea>
+        </ion-item>
+        <ion-item>
+          <ion-label>{{ 'edit.field.learned' | translate }}</ion-label>
+          <ion-toggle formControlName="learned" slot="end"></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">{{ 'edit.field.image' | translate }}</ion-label>
+          <div class="image-picker">
+            @if (imagePreview()) {
+              <div class="image-preview-wrap">
+                <img [src]="imagePreview()!" class="image-preview" alt="preview" />
+                <ion-button fill="clear" color="danger" class="remove-image-btn" (click)="removeImage()">
+                  <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
+                </ion-button>
+              </div>
+            } @else {
+              <label class="pick-image-label">
+                <ion-icon name="image-outline"></ion-icon>
+                <span>{{ 'edit.field.imagePick' | translate }}</span>
+                <input type="file" accept="image/*" (change)="pickImage($event)" hidden />
+              </label>
+            }
+          </div>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Examples -->
+    <ion-card>
+      <ion-card-header><ion-card-title>{{ 'edit.section.examples' | translate }}</ion-card-title></ion-card-header>
+      <ion-card-content>
+        @for (ex of examples.controls; track $index; let i = $index) {
+          <div [formGroup]="$any(ex)" class="example-group">
+            <ion-item>
+              <ion-label position="stacked">{{ 'edit.example.germanLabel' | translate }}</ion-label>
+              <ion-input formControlName="german" [placeholder]="'edit.example.germanPh' | translate"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">{{ 'edit.example.englishLabel' | translate }}</ion-label>
+              <ion-input formControlName="english" [placeholder]="'edit.example.englishPh' | translate"></ion-input>
+            </ion-item>
+            <ion-button fill="outline" color="danger" size="small" (click)="removeExample(i)">
+              <ion-icon name="remove" slot="start"></ion-icon> {{ 'edit.example.remove' | translate }}
+            </ion-button>
+          </div>
+        }
+        @if (examples.length < 5) {
+          <ion-button fill="outline" (click)="addExample()" style="margin-top:8px">
+            <ion-icon name="add" slot="start"></ion-icon> {{ 'edit.example.add' | translate }}
+          </ion-button>
+        }
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Noun details -->
+    @if (selectedWordType === 'noun') {
+      <ion-card>
+        <ion-card-header><ion-card-title>{{ 'edit.section.noun' | translate }}</ion-card-title></ion-card-header>
+        <ion-card-content>
+          <ion-item>
+            <ion-label position="stacked">{{ 'edit.field.article' | translate }}</ion-label>
+            <ion-select formControlName="nounArticle">
+              @for (a of articles; track a) {
+                <ion-select-option [value]="a">{{ a }}</ion-select-option>
+              }
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">{{ 'edit.field.plural' | translate }}</ion-label>
+            <ion-input formControlName="nounPlural" placeholder="e.g. die Hunde"></ion-input>
+          </ion-item>
+
+          <ion-accordion-group>
+            <ion-accordion value="bestimmt">
+              <ion-item slot="header" color="light"><ion-label>{{ 'grammar.bestimmt' | translate }}</ion-label></ion-item>
+              <div slot="content" formGroupName="nounBestimmt">
+                <ion-item><ion-label position="stacked">Nominativ</ion-label><ion-input formControlName="nominative"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Akkusativ</ion-label><ion-input formControlName="akkusativ"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Genitiv</ion-label><ion-input formControlName="genitiv"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Dativ</ion-label><ion-input formControlName="dativ"></ion-input></ion-item>
+              </div>
+            </ion-accordion>
+            <ion-accordion value="unbestimmt">
+              <ion-item slot="header" color="light"><ion-label>{{ 'grammar.unbestimmt' | translate }}</ion-label></ion-item>
+              <div slot="content" formGroupName="nounUnbestimmt">
+                <ion-item><ion-label position="stacked">Nominativ</ion-label><ion-input formControlName="nominative"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Akkusativ</ion-label><ion-input formControlName="akkusativ"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Genitiv</ion-label><ion-input formControlName="genitiv"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Dativ</ion-label><ion-input formControlName="dativ"></ion-input></ion-item>
+              </div>
+            </ion-accordion>
+          </ion-accordion-group>
+        </ion-card-content>
+      </ion-card>
+    }
+
+    <!-- Verb details -->
+    @if (selectedWordType === 'verb') {
+      <ion-card>
+        <ion-card-header><ion-card-title>{{ 'edit.section.verb' | translate }}</ion-card-title></ion-card-header>
+        <ion-card-content>
+          <ion-item>
+            <ion-label>{{ 'edit.field.separable' | translate }}</ion-label>
+            <ion-toggle formControlName="verbIsSeparable" slot="end"></ion-toggle>
+          </ion-item>
+          <ion-item>
+            <ion-label>{{ 'edit.field.regular' | translate }}</ion-label>
+            <ion-toggle formControlName="verbIsRegular" slot="end"></ion-toggle>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">{{ 'edit.field.hilfsverb' | translate }}</ion-label>
+            <ion-select formControlName="verbHilfsverb">
+              <ion-select-option value="haben">haben</ion-select-option>
+              <ion-select-option value="sein">sein</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-accordion-group>
+            <ion-accordion value="present">
+              <ion-item slot="header" color="light"><ion-label>Präsens</ion-label></ion-item>
+              <div slot="content" formGroupName="verbPresent">
+                <ion-item><ion-label position="stacked">ich</ion-label><ion-input formControlName="ich"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">du</ion-label><ion-input formControlName="du"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">er/sie/es</ion-label><ion-input formControlName="erSieEs"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">wir</ion-label><ion-input formControlName="wir"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">ihr</ion-label><ion-input formControlName="ihr"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">sie/Sie</ion-label><ion-input formControlName="sie"></ion-input></ion-item>
+              </div>
+            </ion-accordion>
+            <ion-accordion value="simplePast">
+              <ion-item slot="header" color="light"><ion-label>Präteritum</ion-label></ion-item>
+              <div slot="content" formGroupName="verbSimplePast">
+                <ion-item><ion-label position="stacked">ich</ion-label><ion-input formControlName="ich"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">du</ion-label><ion-input formControlName="du"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">er/sie/es</ion-label><ion-input formControlName="erSieEs"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">wir</ion-label><ion-input formControlName="wir"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">ihr</ion-label><ion-input formControlName="ihr"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">sie/Sie</ion-label><ion-input formControlName="sie"></ion-input></ion-item>
+              </div>
+            </ion-accordion>
+            <ion-accordion value="pastPerfect">
+              <ion-item slot="header" color="light"><ion-label>Perfekt</ion-label></ion-item>
+              <div slot="content" formGroupName="verbPastPerfect">
+                <ion-item><ion-label position="stacked">ich</ion-label><ion-input formControlName="ich"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">du</ion-label><ion-input formControlName="du"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">er/sie/es</ion-label><ion-input formControlName="erSieEs"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">wir</ion-label><ion-input formControlName="wir"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">ihr</ion-label><ion-input formControlName="ihr"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">sie/Sie</ion-label><ion-input formControlName="sie"></ion-input></ion-item>
+              </div>
+            </ion-accordion>
+            <ion-accordion value="future">
+              <ion-item slot="header" color="light"><ion-label>Futur I</ion-label></ion-item>
+              <div slot="content" formGroupName="verbFuture">
+                <ion-item><ion-label position="stacked">ich</ion-label><ion-input formControlName="ich"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">du</ion-label><ion-input formControlName="du"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">er/sie/es</ion-label><ion-input formControlName="erSieEs"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">wir</ion-label><ion-input formControlName="wir"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">ihr</ion-label><ion-input formControlName="ihr"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">sie/Sie</ion-label><ion-input formControlName="sie"></ion-input></ion-item>
+              </div>
+            </ion-accordion>
+            <ion-accordion value="imperative">
+              <ion-item slot="header" color="light"><ion-label>Imperativ</ion-label></ion-item>
+              <div slot="content" formGroupName="verbImperative">
+                <ion-item><ion-label position="stacked">du</ion-label><ion-input formControlName="du"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">wir</ion-label><ion-input formControlName="wir"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">ihr</ion-label><ion-input formControlName="ihr"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Sie</ion-label><ion-input formControlName="Sie"></ion-input></ion-item>
+              </div>
+            </ion-accordion>
+          </ion-accordion-group>
+        </ion-card-content>
+      </ion-card>
+    }
+
+    <!-- Adjective details -->
+    @if (selectedWordType === 'adjective') {
+      <ion-card>
+        <ion-card-header><ion-card-title>{{ 'edit.section.adjective' | translate }}</ion-card-title></ion-card-header>
+        <ion-card-content>
+          <ion-item>
+            <ion-label position="stacked">{{ 'edit.field.komparativ' | translate }}</ion-label>
+            <ion-input formControlName="adjKomparativ" placeholder="e.g. schöner"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">{{ 'edit.field.superlativ' | translate }}</ion-label>
+            <ion-input formControlName="adjSuperlativ" placeholder="e.g. am schönsten"></ion-input>
+          </ion-item>
+
+          <ion-accordion-group>
+            <ion-accordion value="maskulin">
+              <ion-item slot="header" color="light"><ion-label>{{ 'grammar.maskulin' | translate }}</ion-label></ion-item>
+              <div slot="content" formGroupName="adjMaskulin">
+                <ion-item><ion-label position="stacked">Nominativ</ion-label><ion-input formControlName="nominative"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Akkusativ</ion-label><ion-input formControlName="akkusativ"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Genitiv</ion-label><ion-input formControlName="genitiv"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Dativ</ion-label><ion-input formControlName="dativ"></ion-input></ion-item>
+              </div>
+            </ion-accordion>
+            <ion-accordion value="feminin">
+              <ion-item slot="header" color="light"><ion-label>{{ 'grammar.feminin' | translate }}</ion-label></ion-item>
+              <div slot="content" formGroupName="adjFeminin">
+                <ion-item><ion-label position="stacked">Nominativ</ion-label><ion-input formControlName="nominative"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Akkusativ</ion-label><ion-input formControlName="akkusativ"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Genitiv</ion-label><ion-input formControlName="genitiv"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Dativ</ion-label><ion-input formControlName="dativ"></ion-input></ion-item>
+              </div>
+            </ion-accordion>
+            <ion-accordion value="neutral">
+              <ion-item slot="header" color="light"><ion-label>{{ 'grammar.neutral' | translate }}</ion-label></ion-item>
+              <div slot="content" formGroupName="adjNeutral">
+                <ion-item><ion-label position="stacked">Nominativ</ion-label><ion-input formControlName="nominative"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Akkusativ</ion-label><ion-input formControlName="akkusativ"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Genitiv</ion-label><ion-input formControlName="genitiv"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Dativ</ion-label><ion-input formControlName="dativ"></ion-input></ion-item>
+              </div>
+            </ion-accordion>
+            <ion-accordion value="plural">
+              <ion-item slot="header" color="light"><ion-label>{{ 'grammar.plural' | translate }}</ion-label></ion-item>
+              <div slot="content" formGroupName="adjPlurar">
+                <ion-item><ion-label position="stacked">Nominativ</ion-label><ion-input formControlName="nominative"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Akkusativ</ion-label><ion-input formControlName="akkusativ"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Genitiv</ion-label><ion-input formControlName="genitiv"></ion-input></ion-item>
+                <ion-item><ion-label position="stacked">Dativ</ion-label><ion-input formControlName="dativ"></ion-input></ion-item>
+              </div>
+            </ion-accordion>
+          </ion-accordion-group>
+        </ion-card-content>
+      </ion-card>
+    }
+
+  </form>
+</ion-content>

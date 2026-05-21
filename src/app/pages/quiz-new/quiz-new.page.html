@@ -1,0 +1,256 @@
+<ion-header>
+  <ion-toolbar color="warning">
+    <ion-buttons slot="start">
+      <button class="back-btn-dark" (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>{{ 'quiz.title' | translate }}</ion-title>
+    @if (phase() === 'question') {
+      <ion-badge slot="end" color="light" class="score-badge">
+        {{ score() }} / {{ questions.length }}
+      </ion-badge>
+    }
+  </ion-toolbar>
+  @if (phase() === 'question') {
+    <ion-progress-bar [value]="progress()" color="success"></ion-progress-bar>
+  }
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- ─── START SCREEN ─── -->
+  @if (phase() === 'start') {
+    <div class="start-screen">
+      <div class="start-hero">
+        <ion-icon name="help-circle-outline" class="hero-icon"></ion-icon>
+        <h1>{{ 'quiz.start.heading' | translate }}</h1>
+        <p>{{ 'quiz.start.subtitle' | translate }}</p>
+      </div>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ 'quiz.start.settings' | translate }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+
+          <div class="setting-row">
+            <ion-label>{{ 'quiz.start.quizType' | translate }}</ion-label>
+            <ion-select
+              [value]="quizType()"
+              (ionChange)="quizType.set($any($event).detail.value)"
+              interface="popover"
+              class="setting-select">
+              @for (t of quizTypes; track t.value) {
+                <ion-select-option [value]="t.value">{{ t.labelKey | translate }}</ion-select-option>
+              }
+            </ion-select>
+          </div>
+
+          @if (quizType() === 'multiple-choice') {
+            <div class="setting-row">
+              <ion-label>{{ 'quiz.start.direction' | translate }}</ion-label>
+              <ion-select
+                [value]="direction()"
+                (ionChange)="direction.set($any($event).detail.value)"
+                interface="popover"
+                class="setting-select">
+                <ion-select-option value="de-en">{{ 'quiz.start.deToEn' | translate }}</ion-select-option>
+                <ion-select-option value="en-de">{{ 'quiz.start.enToDe' | translate }}</ion-select-option>
+              </ion-select>
+            </div>
+          }
+
+          <div class="setting-row">
+            <ion-label>{{ 'quiz.start.questionCount' | translate }}</ion-label>
+            <ion-select
+              [value]="questionCount()"
+              (ionChange)="questionCount.set($any($event).detail.value)"
+              interface="popover"
+              class="setting-select">
+              @for (n of questionCountOptions; track n) {
+                <ion-select-option [value]="n">{{ n }}</ion-select-option>
+              }
+            </ion-select>
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+
+      <div class="type-cards">
+        @for (t of quizTypes; track t.value) {
+          <div class="type-card" [class.active]="quizType() === t.value" (click)="quizType.set(t.value)">
+            <ion-icon [name]="t.icon"></ion-icon>
+            <span>{{ t.labelKey | translate }}</span>
+          </div>
+        }
+      </div>
+
+      <ion-button expand="block" color="warning" (click)="startQuiz()" class="start-btn">
+        {{ 'quiz.start.begin' | translate }}
+        <ion-icon slot="end" name="arrow-forward"></ion-icon>
+      </ion-button>
+    </div>
+  }
+
+  <!-- ─── QUESTION SCREEN ─── -->
+  @if (phase() === 'question' && currentQuestion()) {
+
+    <!-- MULTIPLE CHOICE -->
+    @if (currentQuestion()!.type === 'multiple-choice') {
+      <div class="question-screen">
+        <p class="question-counter">
+          {{ 'quiz.question.counter' | translate: { current: currentIndex() + 1, total: questions.length } }}
+        </p>
+        <ion-card class="prompt-card">
+          <ion-card-content>
+            <p class="direction-hint">
+              {{ direction() === 'de-en' ? ('quiz.question.translateToEn' | translate) : ('quiz.question.translateToDe' | translate) }}
+            </p>
+            <h1 class="prompt-word">{{ questionPrompt() }}</h1>
+            <ion-badge color="medium" class="type-badge">
+              {{ ('wordType.' + mcQuestion!.vocab.wordType) | translate }}
+            </ion-badge>
+          </ion-card-content>
+        </ion-card>
+        <div class="options-grid">
+          @for (opt of mcQuestion!.options; track opt) {
+            <ion-button expand="block" [color]="optionColor(opt)"
+              [disabled]="answered() && opt !== mcQuestion!.correctAnswer && opt !== selectedAnswer()"
+              (click)="selectAnswer(opt)" class="option-btn">
+              @if (optionIcon(opt)) {
+                <ion-icon slot="start" [name]="optionIcon(opt)!"></ion-icon>
+              }
+              {{ opt }}
+            </ion-button>
+          }
+        </div>
+        @if (answered()) {
+          <div class="feedback">
+            @if (selectedAnswer() === mcQuestion!.correctAnswer) {
+              <p class="feedback-correct"><ion-icon name="checkmark-circle"></ion-icon> {{ 'quiz.question.correct' | translate }}</p>
+            } @else {
+              <p class="feedback-wrong"><ion-icon name="close-circle"></ion-icon> {{ 'quiz.question.wrong' | translate }} <strong>{{ mcQuestion!.correctAnswer }}</strong></p>
+            }
+            <ion-button expand="block" color="warning" (click)="next()">
+              {{ currentIndex() + 1 < questions.length ? ('quiz.question.next' | translate) : ('quiz.question.finish' | translate) }}
+              <ion-icon slot="end" name="arrow-forward"></ion-icon>
+            </ion-button>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- FILL IN THE BLANK -->
+    @if (currentQuestion()!.type === 'fill-blank') {
+      <div class="question-screen">
+        <p class="question-counter">
+          {{ 'quiz.question.counter' | translate: { current: currentIndex() + 1, total: questions.length } }}
+        </p>
+        <ion-card class="prompt-card">
+          <ion-card-content>
+            <p class="direction-hint">{{ 'quiz.fill.instruction' | translate }}</p>
+            <p class="fill-sentence">{{ fillQuestion!.sentence }}</p>
+            <ion-badge color="medium" class="type-badge">
+              {{ ('wordType.' + fillQuestion!.vocab.wordType) | translate }}
+            </ion-badge>
+          </ion-card-content>
+        </ion-card>
+        <div class="fill-input-row">
+          <ion-input fill="outline" [placeholder]="'quiz.fill.placeholder' | translate"
+            [value]="fillInput()" (ionInput)="fillInput.set($any($event).detail.value)"
+            [disabled]="fillChecked()" (keyup.enter)="checkFill()" class="fill-input">
+          </ion-input>
+          @if (!fillChecked()) {
+            <ion-button color="warning" (click)="checkFill()">{{ 'quiz.fill.check' | translate }}</ion-button>
+          }
+        </div>
+        @if (fillChecked()) {
+          <div class="feedback">
+            @if (fillCorrect()) {
+              <p class="feedback-correct"><ion-icon name="checkmark-circle"></ion-icon> {{ 'quiz.question.correct' | translate }}</p>
+            } @else {
+              <p class="feedback-wrong"><ion-icon name="close-circle"></ion-icon> {{ 'quiz.question.wrong' | translate }} <strong>{{ fillQuestion!.vocab.german }}</strong></p>
+            }
+            <p class="full-sentence-hint"><em>{{ fillQuestion!.fullSentence }}</em></p>
+            <ion-button expand="block" color="warning" (click)="next()">
+              {{ currentIndex() + 1 < questions.length ? ('quiz.question.next' | translate) : ('quiz.question.finish' | translate) }}
+              <ion-icon slot="end" name="arrow-forward"></ion-icon>
+            </ion-button>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- MATCHING -->
+    @if (currentQuestion()!.type === 'matching') {
+      <div class="question-screen">
+        <p class="question-counter">
+          {{ 'quiz.question.counter' | translate: { current: currentIndex() + 1, total: questions.length } }}
+        </p>
+        <ion-card class="prompt-card">
+          <ion-card-content>
+            <p class="direction-hint">{{ 'quiz.match.instruction' | translate }}</p>
+          </ion-card-content>
+        </ion-card>
+        <div class="match-grid">
+          <div class="match-col">
+            @for (item of matchQuestion!.leftItems; track item.id) {
+              <ion-button expand="block" [color]="leftColor(item.id)" [disabled]="isMatchedLeft(item.id)"
+                (click)="selectLeft(item.id)" class="match-btn">
+                {{ item.german }}
+              </ion-button>
+            }
+          </div>
+          <div class="match-col">
+            @for (item of matchQuestion!.rightItems; track item.id) {
+              <ion-button expand="block" [color]="rightColor(item.id)" [disabled]="isMatchedRight(item.id)"
+                (click)="selectRight(item.id)" class="match-btn">
+                {{ item.english }}
+              </ion-button>
+            }
+          </div>
+        </div>
+        @if (matchDone()) {
+          <div class="feedback">
+            <p class="feedback-correct"><ion-icon name="checkmark-circle"></ion-icon> {{ 'quiz.match.allMatched' | translate }}</p>
+            <ion-button expand="block" color="warning" (click)="next()">
+              {{ currentIndex() + 1 < questions.length ? ('quiz.question.next' | translate) : ('quiz.question.finish' | translate) }}
+              <ion-icon slot="end" name="arrow-forward"></ion-icon>
+            </ion-button>
+          </div>
+        }
+      </div>
+    }
+  }
+
+  <!-- ─── RESULT SCREEN ─── -->
+  @if (phase() === 'result') {
+    <div class="result-screen">
+      <div class="result-hero">
+        <ion-icon name="trophy-outline" class="trophy-icon"></ion-icon>
+        <h1>{{ 'quiz.result.heading' | translate }}</h1>
+      </div>
+      <ion-card class="score-card">
+        <ion-card-content>
+          <div class="score-circle">
+            <span class="score-number">{{ score() }}</span>
+            <span class="score-total">/ {{ maxScore() }}</span>
+          </div>
+          <p class="score-percent">{{ scorePercent() }}%</p>
+          <p class="score-grade">{{ scoreGrade() | translate }}</p>
+        </ion-card-content>
+      </ion-card>
+      <div class="result-actions">
+        <ion-button expand="block" color="warning" (click)="restart()">
+          <ion-icon slot="start" name="refresh-outline"></ion-icon>
+          {{ 'quiz.result.playAgain' | translate }}
+        </ion-button>
+        <ion-button expand="block" fill="outline" (click)="goBack()">
+          {{ 'quiz.result.backToList' | translate }}
+        </ion-button>
+      </div>
+    </div>
+  }
+
+</ion-content>

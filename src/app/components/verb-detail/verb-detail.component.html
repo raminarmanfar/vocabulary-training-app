@@ -1,0 +1,107 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>{{ 'verb.title' | translate }}</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <!-- Chips -->
+    <div class="chips-row">
+      <ion-chip [color]="details.isSeparable ? 'warning' : 'medium'">
+        {{ (details.isSeparable ? 'verb.separable' : 'verb.inseparable') | translate }}
+      </ion-chip>
+      <ion-chip [color]="details.isRegular ? 'success' : 'danger'">
+        {{ (details.isRegular ? 'verb.regular' : 'verb.irregular') | translate }}
+      </ion-chip>
+      <ion-chip color="primary">
+        {{ 'edit.field.hilfsverb' | translate }}: {{ details.hilfsverb }}
+      </ion-chip>
+    </div>
+
+    <!-- Conjugation tables -->
+    <ion-accordion-group>
+      <!-- Present -->
+      <ion-accordion value="present">
+        <ion-item slot="header" color="light">
+          <ion-label>{{ 'verb.present' | translate }}</ion-label>
+        </ion-item>
+        <div slot="content">
+          <ion-grid>
+            @for (p of pronouns; track p) {
+              <ion-row>
+                <ion-col size="4"><strong>{{ pronounLabels[p] }}</strong></ion-col>
+                <ion-col size="8">{{ details.present[p] }}</ion-col>
+              </ion-row>
+            }
+          </ion-grid>
+        </div>
+      </ion-accordion>
+
+      <!-- Simple Past -->
+      <ion-accordion value="simplePast">
+        <ion-item slot="header" color="light">
+          <ion-label>{{ 'verb.simplePast' | translate }}</ion-label>
+        </ion-item>
+        <div slot="content">
+          <ion-grid>
+            @for (p of pronouns; track p) {
+              <ion-row>
+                <ion-col size="4"><strong>{{ pronounLabels[p] }}</strong></ion-col>
+                <ion-col size="8">{{ details.simplePast[p] }}</ion-col>
+              </ion-row>
+            }
+          </ion-grid>
+        </div>
+      </ion-accordion>
+
+      <!-- Past Perfect -->
+      <ion-accordion value="pastPerfect">
+        <ion-item slot="header" color="light">
+          <ion-label>{{ 'verb.pastPerfect' | translate }}</ion-label>
+        </ion-item>
+        <div slot="content">
+          <ion-grid>
+            @for (p of pronouns; track p) {
+              <ion-row>
+                <ion-col size="4"><strong>{{ pronounLabels[p] }}</strong></ion-col>
+                <ion-col size="8">{{ details.pastPerfect[p] }}</ion-col>
+              </ion-row>
+            }
+          </ion-grid>
+        </div>
+      </ion-accordion>
+
+      <!-- Future -->
+      <ion-accordion value="future">
+        <ion-item slot="header" color="light">
+          <ion-label>{{ 'verb.future' | translate }}</ion-label>
+        </ion-item>
+        <div slot="content">
+          <ion-grid>
+            @for (p of pronouns; track p) {
+              <ion-row>
+                <ion-col size="4"><strong>{{ pronounLabels[p] }}</strong></ion-col>
+                <ion-col size="8">{{ details.future[p] }}</ion-col>
+              </ion-row>
+            }
+          </ion-grid>
+        </div>
+      </ion-accordion>
+
+      <!-- Imperative -->
+      <ion-accordion value="imperative">
+        <ion-item slot="header" color="light">
+          <ion-label>{{ 'verb.imperative' | translate }}</ion-label>
+        </ion-item>
+        <div slot="content">
+          <ion-grid>
+            @for (p of imperativePronouns; track p) {
+              <ion-row>
+                <ion-col size="4"><strong>{{ p }}</strong></ion-col>
+                <ion-col size="8">{{ details.imperative[p] }}</ion-col>
+              </ion-row>
+            }
+          </ion-grid>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
+  </ion-card-content>
+</ion-card>

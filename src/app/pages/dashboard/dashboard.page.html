@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>🇩🇪 {{ 'app.title' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="dashboard-content">
+  <div class="dashboard-hero">
+    <h1>{{ 'dashboard.welcome' | translate }}</h1>
+    <p>{{ 'dashboard.subtitle' | translate }}</p>
+  </div>
+
+  <ion-grid class="tiles-grid">
+    <ion-row>
+      @for (tile of tiles; track tile.route) {
+        <ion-col size="6">
+          <ion-card
+            class="tile-card"
+            button
+            (click)="navigate(tile.route)"
+            [attr.data-color]="tile.color">
+            <ion-card-content class="tile-content">
+              <div class="tile-icon-wrap" [class]="'bg-' + tile.color">
+                <ion-icon [name]="tile.icon" class="tile-icon"></ion-icon>
+              </div>
+              <h2 class="tile-label">{{ tile.labelKey | translate }}</h2>
+              <p class="tile-desc">{{ tile.descKey | translate }}</p>
+            </ion-card-content>
+            <ion-ripple-effect></ion-ripple-effect>
+          </ion-card>
+        </ion-col>
+      }
+    </ion-row>
+  </ion-grid>
+</ion-content>

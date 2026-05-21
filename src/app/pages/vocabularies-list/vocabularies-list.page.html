@@ -1,0 +1,97 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'home.title' | translate }}</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      [value]="searchTerm()"
+      (ionInput)="searchTerm.set($any($event).detail.value)"
+      [placeholder]="'home.search.placeholder' | translate"
+      debounce="200">
+    </ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar class="filter-toolbar">
+    <div class="filter-row">
+      <ion-select
+        [value]="filterType()"
+        (ionChange)="filterType.set($any($event).detail.value)"
+        [placeholder]="'home.filter.typePlaceholder' | translate"
+        interface="popover"
+        class="filter-select">
+        @for (t of wordTypes; track t.value) {
+          <ion-select-option [value]="t.value">{{ t.labelKey | translate }}</ion-select-option>
+        }
+      </ion-select>
+      <ion-select
+        [value]="filterLevel()"
+        (ionChange)="filterLevel.set($any($event).detail.value)"
+        [placeholder]="'home.filter.levelPlaceholder' | translate"
+        interface="popover"
+        class="filter-select">
+        @for (l of levels; track l.value) {
+          <ion-select-option [value]="l.value">{{ l.value === '' ? ('home.filter.allLevels' | translate) : l.label }}</ion-select-option>
+        }
+      </ion-select>
+      <ion-select
+        [value]="filterLearned()"
+        (ionChange)="filterLearned.set($any($event).detail.value)"
+        interface="popover"
+        class="filter-select">
+        <ion-select-option value="all">{{ 'home.filter.all' | translate }}</ion-select-option>
+        <ion-select-option value="unlearned">{{ 'home.filter.unlearned' | translate }}</ion-select-option>
+        <ion-select-option value="learned">{{ 'home.filter.learned' | translate }}</ion-select-option>
+      </ion-select>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    @for (vocab of filteredVocabs(); track vocab._id) {
+      <ion-item button (click)="openDetail(vocab._id)">
+        <ion-label>
+          <h2>
+            <strong>
+              @if (vocab.wordType === 'noun' && vocab.nounDetails) {
+                <span class="article">{{ vocab.nounDetails.article }}</span>
+              }
+              {{ vocab.german }}
+            </strong>
+          </h2>
+          <p>{{ vocab.english }}</p>
+        </ion-label>
+        <ion-badge slot="end" [color]="wordTypeColor(vocab.wordType)" style="margin-right:6px">
+          {{ ('wordType.' + vocab.wordType) | translate }}
+        </ion-badge>
+        <ion-badge slot="end" color="medium" style="margin-right:6px">{{ vocab.level }}</ion-badge>
+        <ion-icon
+          slot="end"
+          [name]="vocab.learned ? 'checkmark-circle' : 'ellipse-outline'"
+          [color]="vocab.learned ? 'success' : 'medium'">
+        </ion-icon>
+      </ion-item>
+    }
+    @if (filteredVocabs().length === 0) {
+      <ion-item>
+        <ion-label class="ion-text-center">{{ 'home.empty' | translate }}</ion-label>
+      </ion-item>
+    }
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addNew()" color="primary">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <p class="vocab-count">
+      {{ 'home.footer.count' | translate: { count: filteredVocabs().length, total: totalVocabs() } }}
+    </p>
+  </ion-toolbar>
+</ion-footer>

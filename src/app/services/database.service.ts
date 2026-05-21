@@ -1,0 +1,94 @@
+import { Injectable } from '@angular/core';
+import Dexie, { Table } from 'dexie';
+import { Vocabulary } from '../models/vocabulary.model';
+import { QuizSet } from '../models/quiz-set.model';
+
+interface AppSetting { key: string; value: string; }
+
+class VocabDatabase extends Dexie {
+  vocabularies!: Table<Vocabulary, string>;
+  settings!: Table<AppSetting, string>;
+  quizSets!: Table<QuizSet, string>;
+
+  constructor() {
+    super('VocabTrainer');
+    this.version(1).stores({
+      vocabularies: '_id, wordType, level, learned, german, english'
+    });
+    this.version(2).stores({
+      vocabularies: '_id, wordType, level, learned, german, english',
+      settings: 'key'
+    });
+    this.version(3).stores({
+      vocabularies: '_id, wordType, level, learned, german, english',
+      settings: 'key',
+      quizSets: '_id, status, createdAt'
+    });
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class DatabaseService {
+  private db = new VocabDatabase();
+
+  async getAll(): Promise<Vocabulary[]> {
+    return this.db.vocabularies.toArray();
+  }
+
+  async getById(id: string): Promise<Vocabulary> {
+    const item = await this.db.vocabularies.get(id);
+    if (!item) throw new Error(`Vocabulary ${id} not found`);
+    return item;
+  }
+
+  async save(vocab: Vocabulary): Promise<Vocabulary> {
+    vocab.updatedAt = new Date().toISOString();
+    if (!vocab._id) {
+      vocab._id = `vocab_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      vocab.createdAt = vocab.updatedAt;
+    }
+    await this.db.vocabularies.put(vocab);
+    return vocab;
+  }
+
+  async delete(vocab: Vocabulary): Promise<void> {
+    await this.db.vocabularies.delete(vocab._id);
+  }
+
+  async bulkSave(vocabs: Vocabulary[]): Promise<void> {
+    await this.db.vocabularies.bulkPut(vocabs);
+  }
+
+  async getSetting(key: string): Promise<string | null> {
+    const item = await this.db.settings.get(key);
+    return item?.value ?? null;
+  }
+
+  async saveSetting(key: string, value: string): Promise<void> {
+    await this.db.settings.put({ key, value });
+  }
+
+  async getAllQuizSets(): Promise<QuizSet[]> {
+    return this.db.quizSets.orderBy('createdAt').reverse().toArray();
+  }
+
+  async getQuizSetById(id: string): Promise<QuizSet | undefined> {
+    return this.db.quizSets.get(id);
+  }
+
+  async saveQuizSet(qs: QuizSet): Promise<void> {
+    await this.db.quizSets.put(qs);
+  }
+
+  async deleteQuizSet(id: string): Promise<void> {
+    await this.db.quizSets.delete(id);
+  }
+
+  async clearAllVocabularies(): Promise<void> {
+    await this.db.vocabularies.clear();
+  }
+
+  async clearAllQuizSets(): Promise<void> {
+    await this.db.quizSets.clear();
+  }
+}

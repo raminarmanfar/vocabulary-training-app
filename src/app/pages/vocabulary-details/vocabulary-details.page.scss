@@ -1,0 +1,47 @@
+.vocab-card {
+  margin: 16px;
+}
+
+.vocab-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.vocab-actions {
+  display: flex;
+  flex-direction: row;
+}
+
+.german-word {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.english-word {
+  font-size: 1.1rem;
+  color: var(--ion-color-medium);
+  margin: 4px 0 8px;
+}
+
+.chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.description {
+  font-style: italic;
+  color: var(--ion-color-medium);
+}
+
+.example-translation {
+  padding: 12px 16px;
+  background: var(--ion-color-light);
+  p {
+    margin: 0;
+    color: var(--ion-color-medium-shade);
+    font-style: italic;
+  }
+}

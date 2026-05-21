@@ -1,0 +1,54 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>{{ 'noun.title' | translate }}</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-item lines="none">
+      <ion-label>
+        <strong>{{ 'noun.article' | translate }}:</strong>
+        <ion-badge [color]="details.article === 'der' ? 'primary' : details.article === 'die' ? 'danger' : 'success'" style="margin-left:8px">
+          {{ details.article }}
+        </ion-badge>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label><strong>{{ 'noun.plural' | translate }}:</strong> {{ details.plural }}</ion-label>
+    </ion-item>
+
+    <ion-accordion-group>
+      <!-- Definite article declension -->
+      <ion-accordion value="bestimmt">
+        <ion-item slot="header" color="light">
+          <ion-label>{{ 'grammar.bestimmt' | translate }}</ion-label>
+        </ion-item>
+        <div slot="content">
+          <ion-grid class="dek-table">
+            @for (c of cases; track c) {
+              <ion-row>
+                <ion-col size="5"><strong>{{ caseKeys[c] | translate }}</strong></ion-col>
+                <ion-col size="7">{{ details.deklinationBestimmt[c] }}</ion-col>
+              </ion-row>
+            }
+          </ion-grid>
+        </div>
+      </ion-accordion>
+
+      <!-- Indefinite article declension -->
+      <ion-accordion value="unbestimmt">
+        <ion-item slot="header" color="light">
+          <ion-label>{{ 'grammar.unbestimmt' | translate }}</ion-label>
+        </ion-item>
+        <div slot="content">
+          <ion-grid class="dek-table">
+            @for (c of cases; track c) {
+              <ion-row>
+                <ion-col size="5"><strong>{{ caseKeys[c] | translate }}</strong></ion-col>
+                <ion-col size="7">{{ details.deklinationUnbestimmt[c] }}</ion-col>
+              </ion-row>
+            }
+          </ion-grid>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
+  </ion-card-content>
+</ion-card>
