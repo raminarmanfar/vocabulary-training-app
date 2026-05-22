@@ -35,28 +35,18 @@ ion-footer ion-toolbar {
   padding: 4px 0;
 }
 
+.filter-dropdown {
+  flex: 1;
+  min-width: 0;
+}
+
 .filter-select {
   flex: 1;
   min-width: 0;
   border: 1px solid var(--ion-color-light-shade);
   border-radius: 8px;
-  font-size: 0.9rem;
-  width: 100%;
-
-  &::part(container) {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 8px;
-  }
-
-  &::part(text),
-  &::part(placeholder) {
-    flex: 1;
-  }
-
-  &::part(icon) {
-    flex-shrink: 0;
-  }
+  font-size: 0.85rem;
+  --padding-start: 10px;
+  --padding-end: 10px;
+  height: 36px;
 }

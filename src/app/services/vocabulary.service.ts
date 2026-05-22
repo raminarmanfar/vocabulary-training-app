@@ -61,10 +61,10 @@ export class VocabularyService {
     return vocabs.length;
   }
 
-  filter(vocabs: Vocabulary[], wordType?: WordType | '', level?: CefrLevel | '', searchTerm?: string): Vocabulary[] {
+  filter(vocabs: Vocabulary[], wordTypes?: WordType[], levels?: CefrLevel[], searchTerm?: string): Vocabulary[] {
     return vocabs.filter(v => {
-      const matchType = !wordType || v.wordType === wordType;
-      const matchLevel = !level || v.level === level;
+      const matchType = !wordTypes?.length || wordTypes.includes(v.wordType);
+      const matchLevel = !levels?.length || levels.includes(v.level as CefrLevel);
       const term = (searchTerm || '').toLowerCase();
       const matchSearch = !term || v.german.toLowerCase().includes(term) || v.english.toLowerCase().includes(term);
       return matchType && matchLevel && matchSearch;

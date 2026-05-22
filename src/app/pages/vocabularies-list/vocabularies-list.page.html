@@ -15,26 +15,56 @@
   </ion-toolbar>
   <ion-toolbar class="filter-toolbar">
     <div class="filter-row">
-      <ion-select
-        [value]="filterType()"
-        (ionChange)="filterType.set($any($event).detail.value)"
-        [placeholder]="'home.filter.typePlaceholder' | translate"
-        interface="popover"
-        class="filter-select">
-        @for (t of wordTypes; track t.value) {
-          <ion-select-option [value]="t.value">{{ t.labelKey | translate }}</ion-select-option>
-        }
-      </ion-select>
-      <ion-select
-        [value]="filterLevel()"
-        (ionChange)="filterLevel.set($any($event).detail.value)"
-        [placeholder]="'home.filter.levelPlaceholder' | translate"
-        interface="popover"
-        class="filter-select">
-        @for (l of levels; track l.value) {
-          <ion-select-option [value]="l.value">{{ l.value === '' ? ('home.filter.allLevels' | translate) : l.label }}</ion-select-option>
-        }
-      </ion-select>
+
+      <!-- Word Type multi-select popover -->
+      <div class="filter-dropdown">
+        <ion-button id="type-trigger" fill="outline" size="small" class="filter-btn" expand="block">
+          @if (isAllTypesSelected()) {
+            {{ 'home.filter.allTypes' | translate }}
+          } @else {
+            {{ filterTypes().length }}/{{ allWordTypeValues.length }}
+          }
+          <ion-icon name="chevron-down-outline" slot="end"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="type-trigger" triggerAction="click" [dismissOnSelect]="false" size="auto">
+          <ng-template>
+            <ion-list lines="full">
+              @for (t of wordTypes; track t.value) {
+                <ion-item button detail="false" (click)="toggleType(t.value)">
+                  <ion-checkbox slot="start" [checked]="filterTypes().includes(t.value)"></ion-checkbox>
+                  <ion-label>{{ t.labelKey | translate }}</ion-label>
+                </ion-item>
+              }
+            </ion-list>
+          </ng-template>
+        </ion-popover>
+      </div>
+
+      <!-- CEFR Level multi-select popover -->
+      <div class="filter-dropdown">
+        <ion-button id="level-trigger" fill="outline" size="small" class="filter-btn" expand="block">
+          @if (isAllLevelsSelected()) {
+            {{ 'home.filter.allLevels' | translate }}
+          } @else {
+            {{ filterLevels().length }}/{{ allLevelValues.length }}
+          }
+          <ion-icon name="chevron-down-outline" slot="end"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="level-trigger" triggerAction="click" [dismissOnSelect]="false" size="auto">
+          <ng-template>
+            <ion-list lines="full">
+              @for (l of levels; track l.value) {
+                <ion-item button detail="false" (click)="toggleLevel(l.value)">
+                  <ion-checkbox slot="start" [checked]="filterLevels().includes(l.value)"></ion-checkbox>
+                  <ion-label>{{ l.label }}</ion-label>
+                </ion-item>
+              }
+            </ion-list>
+          </ng-template>
+        </ion-popover>
+      </div>
+
+      <!-- Learned status single-select -->
       <ion-select
         [value]="filterLearned()"
         (ionChange)="filterLearned.set($any($event).detail.value)"
@@ -44,6 +74,7 @@
         <ion-select-option value="unlearned">{{ 'home.filter.unlearned' | translate }}</ion-select-option>
         <ion-select-option value="learned">{{ 'home.filter.learned' | translate }}</ion-select-option>
       </ion-select>
+
     </div>
   </ion-toolbar>
 </ion-header>
