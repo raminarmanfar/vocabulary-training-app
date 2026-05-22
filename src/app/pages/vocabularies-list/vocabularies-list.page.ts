@@ -65,14 +65,16 @@ export class VocabulariesListPage implements OnInit {
 
   toggleType(type: WordType) {
     const current = this.filterTypes();
+    if (current.includes(type) && current.length === 1) return;
     const next = current.includes(type) ? current.filter(t => t !== type) : [...current, type];
-    this.filterTypes.set(next.length === 0 ? [...this.allWordTypeValues] : next);
+    this.filterTypes.set(next);
   }
 
   toggleLevel(level: CefrLevel) {
     const current = this.filterLevels();
+    if (current.includes(level) && current.length === 1) return;
     const next = current.includes(level) ? current.filter(l => l !== level) : [...current, level];
-    this.filterLevels.set(next.length === 0 ? [...this.allLevelValues] : next);
+    this.filterLevels.set(next);
   }
 
   wordTypes: Array<{ value: WordType; labelKey: string }> = [
