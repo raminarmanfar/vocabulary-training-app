@@ -36,8 +36,8 @@ export class TrainSummaryPage implements OnInit {
   sessions = signal<TrainSession[]>([]);
   sessionsLoaded = signal(false);
 
-  selectedDate = signal<string | null>(this.todayStr);
   readonly todayStr = new Date().toISOString().slice(0, 10);
+  selectedDate = signal<string | null>(this.todayStr);
 
   sessionsByDate = computed(() => {
     const map = new Map<string, TrainSession[]>();
