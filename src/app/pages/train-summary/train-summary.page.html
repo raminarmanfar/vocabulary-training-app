@@ -12,52 +12,16 @@
   <!-- ── CALENDAR / LIST MODE ───────────────────────── -->
   @if (mode() === 'list') {
 
-    <div class="cal-card">
-      <div class="cal-card-inner">
-
-        <!-- Month navigation -->
-        <div class="cal-nav">
-          <ion-button fill="clear" size="small" (click)="prevMonth()">
-            <ion-icon name="chevron-back-outline" slot="icon-only"></ion-icon>
-          </ion-button>
-          <span class="cal-month-label">{{ monthLabel() }}</span>
-          <ion-button fill="clear" size="small" (click)="nextMonth()">
-            <ion-icon name="chevron-forward-outline" slot="icon-only"></ion-icon>
-          </ion-button>
-        </div>
-
-        <!-- Weekday header row -->
-        <div class="cal-grid">
-          @for (key of weekDayKeys; track key) {
-            <div class="cal-weekday">{{ 'trainSummary.' + key | translate }}</div>
-          }
-
-          <!-- Day cells -->
-          @for (cell of calendarCells(); track cell.dateStr || $index) {
-            @if (cell.date) {
-              @if (cell.sessions.length > 0) {
-                <button class="cal-day has-sessions"
-                        [class.selected]="selectedDate() === cell.dateStr"
-                        [class.today]="isToday(cell.dateStr)"
-                        (touchend)="$event.preventDefault(); selectDate(cell.dateStr)"
-                        (click)="selectDate(cell.dateStr)">
-                  <span class="cal-day-num">{{ cell.date.getDate() }}</span>
-                  <span class="cal-dot"></span>
-                </button>
-              } @else {
-                <div class="cal-day"
-                     [class.today]="isToday(cell.dateStr)">
-                  <span class="cal-day-num">{{ cell.date.getDate() }}</span>
-                </div>
-              }
-            } @else {
-              <div class="cal-day cal-day-empty"></div>
-            }
-          }
-        </div>
-
-      </div>
-    </div>
+    <ion-datetime
+      presentation="date"
+      [firstDayOfWeek]="1"
+      size="cover"
+      color="success"
+      [max]="todayStr"
+      [highlightedDates]="highlightedDates()"
+      [isDateEnabled]="isDateEnabledFn"
+      (ionChange)="onDateChange($event)">
+    </ion-datetime>
 
     <!-- Empty state -->
     @if (sessions().length === 0) {
