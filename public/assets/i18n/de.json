@@ -145,7 +145,8 @@
     "language": {
       "label":  "App-Sprache",
       "en":     "English",
-      "de":     "Deutsch"
+      "de":     "Deutsch",
+      "tr":     "Türkçe"
     },
     "theme": {
       "label": "Dunkelmodus",

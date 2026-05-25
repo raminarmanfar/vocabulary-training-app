@@ -1,0 +1,371 @@
+{
+  "app": {
+    "title": "Vocab Trainer"
+  },
+  "dashboard": {
+    "welcome": "Hoş geldiniz!",
+    "subtitle": "Almanca kelime eğitim uygulamanız",
+    "tiles": {
+      "vocabularies": {
+        "label": "Kelimeler",
+        "description": "Almanca kelime listenizi görüntüleyin ve yönetin"
+      },
+      "train": {
+        "label": "Antrenman",
+        "description": "Kelimeleri ezberlemek için kart alıştırması yapın"
+      },
+      "quiz": {
+        "label": "Quiz",
+        "description": "Çoktan seçmeli sorularla bilginizi test edin"
+      },
+      "about": {
+        "label": "Hakkında",
+        "description": "Bu uygulama hakkında"
+      },
+      "settings": {
+        "label": "Ayarlar",
+        "description": "Uygulama tercihleri ve veri yönetimi"
+      }
+    }
+  },
+  "home": {
+    "title": "Kelimeler",
+    "search": {
+      "placeholder": "Almanca veya İngilizce ara..."
+    },
+    "filter": {
+      "typePlaceholder": "Kelime türü",
+      "levelPlaceholder": "Seviye",
+      "allTypes": "Tüm türler",
+      "allLevels": "Tüm seviyeler",
+      "all": "Tümü",
+      "learned": "Öğrenildi",
+      "unlearned": "Öğrenilmedi"
+    },
+    "empty": "Kelime bulunamadı.",
+    "footer": {
+      "count": "{{total}} kelimeden {{count}} tanesi"
+    }
+  },
+  "wordType": {
+    "unknown": "Bilmiyorum",
+    "noun": "İsim",
+    "verb": "Fiil",
+    "adjective": "Sıfat",
+    "adverb": "Zarf",
+    "preposition": "Edat",
+    "conjunction": "Bağlaç",
+    "pronoun": "Zamir",
+    "other": "Diğer"
+  },
+  "detail": {
+    "exampleSentences": "Örnek Cümleler",
+    "synonymsAntonyms": "Eş Anlamlılar & Zıt Anlamlılar",
+    "synonyms": "Eş Anlamlılar",
+    "antonyms": "Zıt Anlamlılar",
+    "learned": "Öğrenildi ✓",
+    "pronounce": "Seslendir",
+    "stammformen": "Temel Formlar",
+    "delete": {
+      "header": "Kelimeyi Sil",
+      "message": "Bu kelimeyi silmek istediğinizden emin misiniz?",
+      "cancel": "İptal",
+      "confirm": "Sil"
+    },
+    "regenerate": {
+      "header": "Yapay Zeka ile Yeniden Oluştur",
+      "message": "Bu, mevcut içeriği yapay zeka tarafından oluşturulan yeni bir girişle değiştirecektir. Devam edilsin mi?",
+      "cancel": "İptal",
+      "confirm": "Yeniden Oluştur",
+      "success": "Kelime güncellendi!",
+      "error": "Yeniden oluşturma başarısız. Lütfen tekrar deneyin."
+    }
+  },
+  "edit": {
+    "titleNew": "Kelime Ekle",
+    "titleEdit": "Kelimeyi Düzenle",
+    "section": {
+      "basic": "Temel Bilgiler",
+      "examples": "Örnek Cümleler (maks. 5)",
+      "noun": "İsim Ayrıntıları",
+      "verb": "Fiil Ayrıntıları",
+      "adjective": "Sıfat Ayrıntıları"
+    },
+    "field": {
+      "german": "Almanca Kelime *",
+      "germanPh": "örn. der Hund",
+      "english": "İngilizce Çeviri *",
+      "englishPh": "örn. dog",
+      "wordType": "Kelime Türü *",
+      "level": "CEFR Seviyesi *",
+      "description": "Açıklama",
+      "descriptionPh": "İsteğe bağlı açıklama...",
+      "learned": "Zaten Öğrenildi",
+      "image": "Resim",
+      "imagePick": "Resim seçmek için dokunun",
+      "article": "Artikel",
+      "plural": "Çoğul",
+      "separable": "Ayrılabilir",
+      "regular": "Düzenli",
+      "hilfsverb": "Yardımcı Fiil",
+      "komparativ": "Karşılaştırma",
+      "superlativ": "En Üstünlük"
+    },
+    "duplicate": {
+      "title": "Kelime Zaten Mevcut",
+      "message": "Bu kelime ve aynı türde bir kelime zaten mevcut. Değiştirmek mi yoksa yok saymak mı istiyorsunuz?",
+      "replace": "Değiştir",
+      "ignore": "Yok Say"
+    },
+    "example": {
+      "germanLabel": "Almanca",
+      "germanPh": "Almanca cümle",
+      "englishLabel": "İngilizce",
+      "englishPh": "İngilizce çeviri",
+      "remove": "Kaldır",
+      "add": "Örnek Ekle"
+    }
+  },
+  "grammar": {
+    "nominativ": "Nominatif",
+    "akkusativ": "Akuzatif",
+    "genitiv": "Genitif",
+    "dativ": "Datif",
+    "bestimmt": "Belirli artikel çekimi",
+    "unbestimmt": "Belirsiz artikel çekimi",
+    "maskulin": "Eril (der)",
+    "feminin": "Dişil (die)",
+    "neutral": "Nötr (das)",
+    "plural": "Çoğul (die)"
+  },
+  "noun": {
+    "title": "İsim Ayrıntıları",
+    "article": "Artikel",
+    "plural": "Çoğul"
+  },
+  "verb": {
+    "title": "Fiil Ayrıntıları",
+    "conjugations": "Çekimler",
+    "separable": "Ayrılabilir",
+    "inseparable": "Ayrılamaz",
+    "regular": "Düzenli",
+    "irregular": "Düzensiz",
+    "present": "Präsens (Geniş Zaman)",
+    "simplePast": "Präteritum (Geçmiş Zaman)",
+    "pastPerfect": "Perfekt (Geçmiş Zaman)",
+    "future": "Futur I (Gelecek Zaman)",
+    "imperative": "Imperativ (Emir Kipi)"
+  },
+  "adjective": {
+    "title": "Sıfat Ayrıntıları",
+    "komparativ": "Karşılaştırma",
+    "superlativ": "En Üstünlük"
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "language": {
+      "label": "Uygulama Dili",
+      "en": "English",
+      "de": "Deutsch",
+      "tr": "Türkçe"
+    },
+    "theme": {
+      "label": "Karanlık Mod",
+      "on": "Açık",
+      "off": "Kapalı"
+    },
+    "data": {
+      "label": "Veri",
+      "export": "Veriyi Dışa Aktar",
+      "import": "Veriyi İçe Aktar",
+      "exportSuccess": "{{count}} kelime dışa aktarıldı",
+      "importSuccess": "{{count}} kelime içe aktarıldı",
+      "importError": "Geçersiz dosya formatı",
+      "importModeTitle": "İçe aktarma modu",
+      "importModeMsg": "{{count}} kelime bulundu. Bunları nasıl içe aktarmak istiyorsunuz?",
+      "importMerge": "Birleştir",
+      "importReplace": "Tümünü Değiştir",
+      "clear": "Tüm verileri temizle",
+      "erase": "Sil",
+      "eraseVocabs": "Tüm kelimeleri sil",
+      "eraseVocabsTitle": "Tüm kelimeler silinsin mi?",
+      "eraseVocabsMsg": "Bu işlem tüm kelimeleri kalıcı olarak silecektir. Bu geri alınamaz.",
+      "eraseVocabsDone": "Tüm kelimeler silindi",
+      "eraseQuizzes": "Tüm quizleri sil",
+      "eraseQuizzesTitle": "Tüm quizler silinsin mi?",
+      "eraseQuizzesMsg": "Bu işlem tüm quiz geçmişini kalıcı olarak silecektir. Bu geri alınamaz.",
+      "eraseQuizzesDone": "Tüm quizler silindi",
+      "eraseSummary": "Tüm antrenman geçmişini sil",
+      "eraseSummaryTitle": "Antrenman geçmişi silinsin mi?",
+      "eraseSummaryMsg": "Bu işlem tüm antrenman oturumu verilerini kalıcı olarak silecektir. Bu geri alınamaz.",
+      "eraseSummaryDone": "Antrenman geçmişi silindi"
+    },
+    "comingSoon": "Daha fazla ayar yakında."
+  },
+  "about": {
+    "title": "Hakkında",
+    "subtitle": "Almanca kelime öğrenin — çevrimdışı, her zaman.",
+    "bio": "Ramin Armanfar tarafından geliştirilmiştir. Modern ve kullanıcı dostu uygulamalar oluşturma tutkusuyla Kıdemli Full-Stack Yazılım Geliştirici.",
+    "linkedin": "LinkedIn'de Bağlan",
+    "github": "GitHub Profili",
+    "email": "E-posta Gönder",
+    "features": {
+      "title": "Özellikler",
+      "grammar": "İsimler, fiiller ve sıfatlar için tam dilbilgisi ayrıntıları",
+      "offline": "Tam çevrimdışı çalışır — veriler yerel olarak depolanır",
+      "cefr": "CEFR seviyeleri A1–C2",
+      "tts": "Metin okuma telaffuzu"
+    },
+    "tech": {
+      "title": "Teknolojiler",
+      "stack": "Ionic · Angular · Dexie (IndexedDB)"
+    }
+  },
+  "trainSummary": {
+    "title": "Antrenman Özeti",
+    "learned": "Öğrenildi",
+    "notLearned": "Öğrenilmedi",
+    "totalTime": "Toplam Süre",
+    "cards": "İncelenen Kartlar",
+    "trainAgain": "Tekrar Antrenman Yap",
+    "noSessions": "Henüz antrenman oturumu yok. Geçmişinizi görmek için antrenmana başlayın.",
+    "noSessionsOnDay": "Bu günde antrenman oturumu yok.",
+    "noSessionsThisMonth": "Bu ay antrenman oturumu yok.",
+    "learnedTotal": "Öğrenildi",
+    "sessions": "Oturumlar",
+    "notFound": "Oturum bulunamadı.",
+    "dailyBreakdown": "Günlük Dağılım",
+    "tabs": {
+      "calendar": "Günlük Rapor",
+      "monthly": "Aylık"
+    },
+    "mon": "Pt",
+    "tue": "Sa",
+    "wed": "Ça",
+    "thu": "Pe",
+    "fri": "Cu",
+    "sat": "Ct",
+    "sun": "Pz"
+  },
+  "train": {
+    "title": "Antrenman",
+    "tapToReveal": "Görmek için dokunun",
+    "remaining": "{{count}} kart kaldı",
+    "plural": "Çoğul",
+    "komparativ": "Karşılaştırma",
+    "superlativ": "En Üstünlük",
+    "inf": "Mastar",
+    "present3": "er/sie/es",
+    "past": "Geçmiş",
+    "perfect": "Perf.",
+    "learned": "Öğrenildi",
+    "notLearned": "Öğrenilmedi",
+    "details": "Ayrıntılar",
+    "markLearned": "Öğrenildi Olarak İşaretle",
+    "markUnlearned": "Öğrenilmedi Olarak İşaretle",
+    "next": "Sonraki kart",
+    "restart": "Baştan başla",
+    "allLearned": {
+      "heading": "Tamamlandı!",
+      "message": "Tüm kelimeleri öğrendiniz. Harika iş!"
+    }
+  },
+  "quiz": {
+    "title": "Quiz",
+    "start": {
+      "heading": "Kelime Quiz'i",
+      "subtitle": "Çoktan seçmeli sorularla Almanca bilginizi test edin.",
+      "settings": "Quiz Ayarları",
+      "quizType": "Quiz Türü",
+      "direction": "Yön",
+      "deToEn": "Almanca → İngilizce",
+      "enToDe": "İngilizce → Almanca",
+      "questionCount": "Sorular",
+      "begin": "Quiz'i Başlat"
+    },
+    "type": {
+      "multipleChoice": "Çoktan Seçmeli",
+      "fillBlank": "Boşluk Doldur",
+      "matching": "Eşleştir"
+    },
+    "question": {
+      "counter": "Soru {{current}} / {{total}}",
+      "translateToEn": "İngilizce'ye çevirin",
+      "translateToDe": "Almanca'ya çevirin",
+      "correct": "Doğru!",
+      "wrong": "Yanlış! Doğru cevap:",
+      "next": "İleri",
+      "finish": "Sonuçları Gör"
+    },
+    "fill": {
+      "instruction": "Eksik Almanca kelimeyi doldurun",
+      "placeholder": "Eksik kelimeyi yazın...",
+      "check": "Kontrol Et"
+    },
+    "match": {
+      "instruction": "Her Almanca kelimeyi İngilizce çevirisiyle eşleştirin",
+      "allMatched": "Hepsi eşleştirildi! Aferin!"
+    },
+    "result": {
+      "heading": "Quiz Tamamlandı!",
+      "backToList": "Quiz Listesine Dön",
+      "playAgain": "Tekrar Oyna",
+      "goHome": "Gösterge Paneline Git"
+    },
+    "grade": {
+      "excellent": "Mükemmel! Öyle devam edin!",
+      "good": "Güzel iş!",
+      "fair": "Fena değil, pratik yapmaya devam edin!",
+      "keepPracticing": "Pratik yapmaya devam edin, başaracaksınız!"
+    },
+    "list": {
+      "heading": "Quizlerim",
+      "new": "Yeni Quiz",
+      "random": "Rastgele Quiz",
+      "empty": "Henüz quiz yok. İlk quiz'inizi başlatın!",
+      "in-progress": "Devam Ediyor",
+      "completed": "Tamamlandı"
+    },
+    "delete": {
+      "title": "Quiz'i Sil",
+      "message": "Bu quiz'i silmek istediğinizden emin misiniz?"
+    }
+  },
+  "common": {
+    "cancel": "İptal",
+    "delete": "Sil"
+  },
+  "ai": {
+    "fab": {
+      "tooltip": "Yapay Zeka ile Ekle"
+    },
+    "modal": {
+      "title": "Yapay Zeka Kelimesi",
+      "hint": "Bir Almanca kelime girin. Türünü biliyorsanız seçin — aksi takdirde \"Bilmiyorum\" seçin, yapay zeka tespit edecektir.",
+      "wordLabel": "Almanca Kelime",
+      "wordPlaceholder": "örn. laufen",
+      "typeLabel": "Kelime Türü",
+      "generate": "Oluştur",
+      "generating": "Kelime oluşturuluyor…",
+      "retry": "Tekrar Dene",
+      "save": "Kütüphaneye Kaydet",
+      "saving": "Kaydediliyor…",
+      "examples": "Örnek Cümleler",
+      "bestimmt": "Belirli artikel çekimi",
+      "unbestimmt": "Belirsiz artikel çekimi",
+      "present": "Präsens (Geniş Zaman)"
+    },
+    "error": {
+      "unknown": "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.",
+      "saveFailed": "Kelime kaydedilemedi. Lütfen tekrar deneyin.",
+      "notGermanWord": "Bu bir Almanca kelime gibi görünmüyor. Lütfen geçerli bir Almanca kelime girin.",
+      "misspelled": "\"{{correction}}\" — bunu mu demek istediniz? Lütfen yazımı düzeltin ve tekrar deneyin."
+    },
+    "duplicate": {
+      "header": "Kelime Zaten Mevcut",
+      "message": "\"{{word}}\" zaten kütüphanenizde. Yeni yapay zeka girişiyle değiştirmek ister misiniz?",
+      "cancel": "Mevcut Olanı Koru",
+      "replace": "Değiştir"
+    }
+  }
+}

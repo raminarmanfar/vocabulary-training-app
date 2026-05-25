@@ -2,7 +2,7 @@ import { Injectable, signal, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DatabaseService } from './database.service';
 
-export type AppLanguage = 'en' | 'de';
+export type AppLanguage = 'en' | 'de' | 'tr';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
@@ -11,7 +11,7 @@ export class LanguageService {
   readonly currentLang = signal<AppLanguage>('de');
 
   constructor() {
-    this.translate.addLangs(['en', 'de']);
+    this.translate.addLangs(['en', 'de', 'tr']);
     this.translate.setDefaultLang('de');
     // Apply default immediately so the translate pipe works before init completes
     this.translate.use('de');
@@ -19,7 +19,7 @@ export class LanguageService {
 
   async init(): Promise<void> {
     const saved = await this.db.getSetting('language');
-    const lang: AppLanguage = saved === 'en' ? 'en' : 'de';
+    const lang: AppLanguage = saved === 'en' ? 'en' : saved === 'tr' ? 'tr' : 'de';
     this.currentLang.set(lang);
     this.translate.use(lang);
   }

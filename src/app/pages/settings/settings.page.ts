@@ -47,6 +47,7 @@ import { DatabaseService } from '../../services/database.service';
             style="max-width:120px">
             <ion-select-option value="en">{{ 'settings.language.en' | translate }}</ion-select-option>
             <ion-select-option value="de">{{ 'settings.language.de' | translate }}</ion-select-option>
+            <ion-select-option value="tr">{{ 'settings.language.tr' | translate }}</ion-select-option>
           </ion-select>
         </ion-item>
         <ion-item>
