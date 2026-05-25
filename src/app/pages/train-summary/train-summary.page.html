@@ -5,24 +5,27 @@
     </ion-buttons>
     <ion-title>{{ 'trainSummary.title' | translate }}</ion-title>
   </ion-toolbar>
+
+  @if (mode() === 'list') {
+    <ion-toolbar>
+      <ion-segment [value]="activeTab()" (ionChange)="activeTab.set($any($event.detail.value))">
+        <ion-segment-button value="calendar">
+          <ion-icon name="calendar-outline"></ion-icon>
+          {{ 'trainSummary.tabs.calendar' | translate }}
+        </ion-segment-button>
+        <ion-segment-button value="monthly">
+          <ion-icon name="bar-chart-outline"></ion-icon>
+          {{ 'trainSummary.tabs.monthly' | translate }}
+        </ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+  }
 </ion-header>
 
 <ion-content class="ion-padding">
 
   <!-- ── CALENDAR / LIST MODE ───────────────────────── -->
   @if (mode() === 'list') {
-
-    <!-- Tab segment -->
-    <ion-segment [value]="activeTab()" (ionChange)="activeTab.set($any($event.detail.value))">
-      <ion-segment-button value="calendar">
-        <ion-icon name="calendar-outline"></ion-icon>
-        {{ 'trainSummary.tabs.calendar' | translate }}
-      </ion-segment-button>
-      <ion-segment-button value="monthly">
-        <ion-icon name="bar-chart-outline"></ion-icon>
-        {{ 'trainSummary.tabs.monthly' | translate }}
-      </ion-segment-button>
-    </ion-segment>
 
     <!-- ── TAB 1: CALENDAR ── -->
     @if (activeTab() === 'calendar') {
