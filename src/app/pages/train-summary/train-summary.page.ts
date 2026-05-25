@@ -61,8 +61,10 @@ export class TrainSummaryPage implements OnInit {
     return d ? (this.sessionsByDate().get(d) ?? []) : [];
   });
 
-  isDateEnabledFn = (isoString: string) =>
-    this.sessionsByDate().has(isoString.slice(0, 10));
+  isDateEnabledFn = computed(() => {
+    const map = this.sessionsByDate();
+    return (isoString: string) => map.has(isoString.slice(0, 10));
+  });
 
   constructor() {
     addIcons({ checkmarkCircleOutline, closeCircleOutline, timeOutline, refreshOutline, trophyOutline });
