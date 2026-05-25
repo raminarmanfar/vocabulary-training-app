@@ -173,7 +173,7 @@
   gap: 2px;
   padding: 8px 4px;
   border-radius: 12px;
-  min-height: 56px;
+  min-height: 64px;
   background: var(--ion-color-light);
   text-align: center;
 
@@ -223,10 +223,17 @@
     color: var(--ion-color-medium);
   }
 
-  .month-time-inline {
+  .month-time-row {
+    display: flex;
+    align-items: center;
+    gap: 2px;
     font-size: 0.68rem;
-    color: var(--ion-color-medium);
-    font-weight: 400;
+    color: var(--ion-color-primary);
+    font-weight: 500;
+
+    ion-icon {
+      font-size: 0.72rem;
+    }
   }
 
   .month-empty {
