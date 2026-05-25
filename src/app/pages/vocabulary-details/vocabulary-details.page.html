@@ -31,13 +31,36 @@
           <div>
             <ion-card-title class="german-word">{{ v.german }}</ion-card-title>
             <p class="english-word">{{ v.english }}</p>
+
+            @if (v.wordType === 'noun' && v.nounDetails) {
+              <div class="word-meta-row">
+                <ion-badge [color]="v.nounDetails.article === 'der' ? 'primary' : v.nounDetails.article === 'die' ? 'danger' : 'success'" class="article-badge">
+                  {{ v.nounDetails.article }}
+                </ion-badge>
+                <span class="word-meta-item">{{ v.german }}</span>
+                <span class="word-meta-sep">·</span>
+                <span class="word-meta-label">{{ 'noun.plural' | translate }}:</span>
+                <span class="word-meta-item">{{ v.nounDetails.plural }}</span>
+              </div>
+            }
+
+            @if (v.wordType === 'verb' && v.verbDetails) {
+              <div class="stammformen-row">
+                <span class="word-meta-label">{{ 'detail.stammformen' | translate }}:</span>
+                <span class="stammform">{{ v.german }}</span>
+                <span class="stammform-sep">·</span>
+                <span class="stammform">{{ v.verbDetails.present.erSieEs }}</span>
+                <span class="stammform-sep">·</span>
+                <span class="stammform">{{ v.verbDetails.simplePast.ich }}</span>
+                <span class="stammform-sep">·</span>
+                <span class="stammform">{{ v.verbDetails.pastPerfect.ich }}</span>
+              </div>
+            }
           </div>
           <div class="vocab-actions">
-            @if (ttsSupported()) {
-              <ion-button fill="clear" (click)="speak()">
-                <ion-icon name="volume-high" slot="icon-only" color="primary"></ion-icon>
-              </ion-button>
-            }
+            <ion-button fill="clear" (click)="speak()" title="{{ 'detail.pronounce' | translate }}">
+              <ion-icon name="volume-high" slot="icon-only" color="primary"></ion-icon>
+            </ion-button>
             <ion-button fill="clear" (click)="toggleLearned()">
               <ion-icon
                 [name]="v.learned ? 'checkmark-circle' : 'ellipse-outline'"

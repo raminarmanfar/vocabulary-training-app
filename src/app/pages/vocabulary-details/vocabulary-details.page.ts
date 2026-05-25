@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
-  IonButton, IonIcon, IonChip, IonLabel, IonCard, IonCardHeader,
+  IonButton, IonIcon, IonChip, IonLabel, IonBadge, IonCard, IonCardHeader,
   IonCardTitle, IonCardContent, IonItem, IonAccordionGroup, IonAccordion,
   IonImg, IonSpinner
 } from '@ionic/angular/standalone';
@@ -26,7 +26,7 @@ import { AdjectiveDetailComponent } from '../../components/adjective-detail/adje
   standalone: true,
   imports: [
     IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
-    IonButton, IonIcon, IonChip, IonLabel, IonCard, IonCardHeader,
+    IonButton, IonIcon, IonChip, IonLabel, IonBadge, IonCard, IonCardHeader,
     IonCardTitle, IonCardContent, IonItem, IonAccordionGroup, IonAccordion,
     IonImg, IonSpinner,
     NounDetailComponent, VerbDetailComponent, AdjectiveDetailComponent,

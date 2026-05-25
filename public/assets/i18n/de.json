@@ -41,8 +41,8 @@
   },
   "detail": {
     "exampleSentences": "Beispielsätze",
-    "learned": "Gelernt ✓",
-    "delete": {
+    "learned": "Gelernt ✓",    "pronounce": "Aussprechen",
+    "stammformen": "Stammformen",    "delete": {
       "header":  "Vokabel löschen",
       "message": "Bist du sicher, dass du diese Vokabel löschen möchtest?",
       "cancel":  "Abbrechen",

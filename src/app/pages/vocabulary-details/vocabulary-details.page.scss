@@ -1,3 +1,54 @@
+.word-meta-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0 0;
+  font-size: 0.95rem;
+
+  .article-badge {
+    font-size: 0.8rem;
+    padding: 3px 7px;
+  }
+
+  .word-meta-label {
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+
+  .word-meta-item {
+    color: var(--ion-color-dark);
+  }
+
+  .word-meta-sep {
+    color: var(--ion-color-medium);
+  }
+}
+
+.stammformen-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+
+  .word-meta-label {
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    margin-right: 2px;
+  }
+
+  .stammform {
+    font-style: italic;
+    color: var(--ion-color-dark);
+  }
+
+  .stammform-sep {
+    color: var(--ion-color-medium);
+  }
+}
+
 .vocab-card {
   margin: 16px;
 }

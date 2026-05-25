@@ -41,8 +41,8 @@
   },
   "detail": {
     "exampleSentences": "Example Sentences",
-    "learned": "Learned ✓",
-    "delete": {
+    "learned": "Learned ✓",    "pronounce": "Pronounce",
+    "stammformen": "Principal Forms",    "delete": {
       "header":  "Delete Vocabulary",
       "message": "Are you sure you want to delete this vocabulary?",
       "cancel":  "Cancel",
