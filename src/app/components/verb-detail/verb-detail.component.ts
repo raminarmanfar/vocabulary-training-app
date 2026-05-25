@@ -1,11 +1,14 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import {
   IonCard, IonCardHeader, IonCardTitle, IonCardContent,
   IonChip, IonLabel, IonAccordionGroup, IonAccordion, IonItem,
-  IonGrid, IonRow, IonCol
+  IonGrid, IonRow, IonCol, IonButton, IonIcon
 } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { volumeHighOutline } from 'ionicons/icons';
 import { VerbDetails } from '../../models/vocabulary.model';
+import { TtsService } from '../../services/tts.service';
 
 @Component({
   selector: 'app-verb-detail',
@@ -15,12 +18,13 @@ import { VerbDetails } from '../../models/vocabulary.model';
   imports: [
     IonCard, IonCardHeader, IonCardTitle, IonCardContent,
     IonChip, IonLabel, IonAccordionGroup, IonAccordion, IonItem,
-    IonGrid, IonRow, IonCol,
+    IonGrid, IonRow, IonCol, IonButton, IonIcon,
     TranslatePipe
   ]
 })
 export class VerbDetailComponent {
   @Input() details!: VerbDetails;
+  private tts = inject(TtsService);
 
   pronouns = ['ich', 'du', 'erSieEs', 'wir', 'ihr', 'sie'] as const;
   pronounLabels: Record<string, string> = {
@@ -28,4 +32,10 @@ export class VerbDetailComponent {
   };
 
   imperativePronouns = ['du', 'wir', 'ihr', 'Sie'] as const;
+
+  constructor() { addIcons({ volumeHighOutline }); }
+
+  speak(text: string) {
+    if (text) this.tts.speak(text);
+  }
 }

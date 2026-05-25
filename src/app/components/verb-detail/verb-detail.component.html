@@ -28,7 +28,12 @@
             @for (p of pronouns; track p) {
               <ion-row>
                 <ion-col size="4"><strong>{{ pronounLabels[p] }}</strong></ion-col>
-                <ion-col size="8">{{ details.present[p] }}</ion-col>
+                <ion-col size="6">{{ details.present[p] }}</ion-col>
+                <ion-col size="2">
+                  <ion-button fill="clear" size="small" (click)="speak(pronounLabels[p] + ' ' + details.present[p])">
+                    <ion-icon name="volume-high-outline" slot="icon-only" color="primary"></ion-icon>
+                  </ion-button>
+                </ion-col>
               </ion-row>
             }
           </ion-grid>
@@ -45,7 +50,12 @@
             @for (p of pronouns; track p) {
               <ion-row>
                 <ion-col size="4"><strong>{{ pronounLabels[p] }}</strong></ion-col>
-                <ion-col size="8">{{ details.simplePast[p] }}</ion-col>
+                <ion-col size="6">{{ details.simplePast[p] }}</ion-col>
+                <ion-col size="2">
+                  <ion-button fill="clear" size="small" (click)="speak(pronounLabels[p] + ' ' + details.simplePast[p])">
+                    <ion-icon name="volume-high-outline" slot="icon-only" color="primary"></ion-icon>
+                  </ion-button>
+                </ion-col>
               </ion-row>
             }
           </ion-grid>
@@ -62,7 +72,12 @@
             @for (p of pronouns; track p) {
               <ion-row>
                 <ion-col size="4"><strong>{{ pronounLabels[p] }}</strong></ion-col>
-                <ion-col size="8">{{ details.pastPerfect[p] }}</ion-col>
+                <ion-col size="6">{{ details.pastPerfect[p] }}</ion-col>
+                <ion-col size="2">
+                  <ion-button fill="clear" size="small" (click)="speak(pronounLabels[p] + ' ' + details.pastPerfect[p])">
+                    <ion-icon name="volume-high-outline" slot="icon-only" color="primary"></ion-icon>
+                  </ion-button>
+                </ion-col>
               </ion-row>
             }
           </ion-grid>
@@ -79,7 +94,12 @@
             @for (p of pronouns; track p) {
               <ion-row>
                 <ion-col size="4"><strong>{{ pronounLabels[p] }}</strong></ion-col>
-                <ion-col size="8">{{ details.future[p] }}</ion-col>
+                <ion-col size="6">{{ details.future[p] }}</ion-col>
+                <ion-col size="2">
+                  <ion-button fill="clear" size="small" (click)="speak(pronounLabels[p] + ' ' + details.future[p])">
+                    <ion-icon name="volume-high-outline" slot="icon-only" color="primary"></ion-icon>
+                  </ion-button>
+                </ion-col>
               </ion-row>
             }
           </ion-grid>
@@ -96,7 +116,12 @@
             @for (p of imperativePronouns; track p) {
               <ion-row>
                 <ion-col size="4"><strong>{{ p }}</strong></ion-col>
-                <ion-col size="8">{{ details.imperative[p] }}</ion-col>
+                <ion-col size="6">{{ details.imperative[p] }}</ion-col>
+                <ion-col size="2">
+                  <ion-button fill="clear" size="small" (click)="speak(details.imperative[p])">
+                    <ion-icon name="volume-high-outline" slot="icon-only" color="primary"></ion-icon>
+                  </ion-button>
+                </ion-col>
               </ion-row>
             }
           </ion-grid>
