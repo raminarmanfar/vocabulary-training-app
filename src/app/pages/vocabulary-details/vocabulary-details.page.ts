@@ -60,9 +60,9 @@ export class VocabularyDetailsPage implements OnInit, ViewWillEnter {
     this.vocab.set(v);
   }
 
-  speak() {
+  async speak() {
     const v = this.vocab();
-    if (v) this.tts.speak(v.german);
+    if (v) await this.tts.speak(v.german);
   }
 
   async toggleLearned() {

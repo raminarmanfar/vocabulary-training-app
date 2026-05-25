@@ -1,38 +1,41 @@
 import { Injectable } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
+import { TextToSpeech } from '@capacitor-community/text-to-speech';
 
 @Injectable({ providedIn: 'root' })
 export class TtsService {
+  private readonly isNative = Capacitor.isNativePlatform();
   private synth: SpeechSynthesis | null = typeof window !== 'undefined' ? window.speechSynthesis : null;
-  private voicesReady = false;
 
   constructor() {
-    if (this.synth) {
-      // Voices load asynchronously; cache them once available
-      if (this.synth.getVoices().length > 0) {
-        this.voicesReady = true;
-      } else {
-        this.synth.addEventListener('voiceschanged', () => { this.voicesReady = true; }, { once: true });
+    if (!this.isNative && this.synth) {
+      // Trigger voice list load on web
+      if (this.synth.getVoices().length === 0) {
+        this.synth.addEventListener('voiceschanged', () => {}, { once: true });
       }
     }
   }
 
-  speak(text: string, lang = 'de-DE'): void {
-    if (!this.synth) return;
-    // cancel() + immediate speak() silently drops speech in Chrome/WebView — use a small delay
-    this.synth.cancel();
-    setTimeout(() => {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
-      utterance.rate = 0.9;
-      // Prefer an exact German voice if one is available
-      const voices = this.synth!.getVoices();
-      const germanVoice = voices.find(v => v.lang === lang) ?? voices.find(v => v.lang.startsWith('de'));
-      if (germanVoice) utterance.voice = germanVoice;
-      this.synth!.speak(utterance);
-    }, 100);
+  async speak(text: string, lang = 'de-DE'): Promise<void> {
+    if (this.isNative) {
+      await TextToSpeech.stop().catch(() => {});
+      await TextToSpeech.speak({ text, lang, rate: 0.9, volume: 1.0 });
+    } else {
+      if (!this.synth) return;
+      this.synth.cancel();
+      setTimeout(() => {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 0.9;
+        const voices = this.synth!.getVoices();
+        const germanVoice = voices.find(v => v.lang === lang) ?? voices.find(v => v.lang.startsWith('de'));
+        if (germanVoice) utterance.voice = germanVoice;
+        this.synth!.speak(utterance);
+      }, 100);
+    }
   }
 
   isSupported(): boolean {
-    return !!this.synth;
+    return this.isNative || !!this.synth;
   }
 }
