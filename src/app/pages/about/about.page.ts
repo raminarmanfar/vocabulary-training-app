@@ -27,7 +27,11 @@ import { personCircleOutline, logoGithub, schoolOutline } from 'ionicons/icons';
     <ion-content class="ion-padding">
       <ion-card style="margin-top:16px;text-align:center">
         <ion-card-content>
-          <ion-icon name="person-circle-outline" style="font-size:80px;color:var(--ion-color-tertiary)"></ion-icon>
+          <img
+            src="assets/images/me-formal.webp"
+            alt="Ramin Armanfar"
+            style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid var(--ion-color-tertiary);margin-bottom:12px"
+          />
           <h1 style="font-weight:700">{{ 'app.title' | translate }}</h1>
           <p style="color:var(--ion-color-medium)">{{ 'about.subtitle' | translate }}</p>
         </ion-card-content>
