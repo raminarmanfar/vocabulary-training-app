@@ -64,16 +64,37 @@
         </ion-popover>
       </div>
 
-      <!-- Learned status single-select -->
-      <ion-select
-        [value]="filterLearned()"
-        (ionChange)="filterLearned.set($any($event).detail.value)"
-        interface="popover"
-        class="filter-select">
-        <ion-select-option value="all">{{ 'home.filter.all' | translate }}</ion-select-option>
-        <ion-select-option value="unlearned">{{ 'home.filter.unlearned' | translate }}</ion-select-option>
-        <ion-select-option value="learned">{{ 'home.filter.learned' | translate }}</ion-select-option>
-      </ion-select>
+      <!-- Learned status single-select popover -->
+      <div class="filter-dropdown">
+        <ion-button id="learned-trigger" fill="outline" size="small" class="filter-btn" expand="block">
+          @if (filterLearned() === 'all') {
+            {{ 'home.filter.all' | translate }}
+          } @else if (filterLearned() === 'learned') {
+            {{ 'home.filter.learned' | translate }}
+          } @else {
+            {{ 'home.filter.unlearned' | translate }}
+          }
+          <ion-icon name="chevron-down-outline" slot="end"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="learned-trigger" triggerAction="click" [dismissOnSelect]="true" size="auto">
+          <ng-template>
+            <ion-list lines="full">
+              <ion-item button detail="false" (click)="filterLearned.set('all')">
+                <ion-checkbox slot="start" [checked]="filterLearned() === 'all'"></ion-checkbox>
+                <ion-label>{{ 'home.filter.all' | translate }}</ion-label>
+              </ion-item>
+              <ion-item button detail="false" (click)="filterLearned.set('unlearned')">
+                <ion-checkbox slot="start" [checked]="filterLearned() === 'unlearned'"></ion-checkbox>
+                <ion-label>{{ 'home.filter.unlearned' | translate }}</ion-label>
+              </ion-item>
+              <ion-item button detail="false" (click)="filterLearned.set('learned')">
+                <ion-checkbox slot="start" [checked]="filterLearned() === 'learned'"></ion-checkbox>
+                <ion-label>{{ 'home.filter.learned' | translate }}</ion-label>
+              </ion-item>
+            </ion-list>
+          </ng-template>
+        </ion-popover>
+      </div>
 
     </div>
   </ion-toolbar>

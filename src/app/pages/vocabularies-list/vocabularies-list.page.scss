@@ -40,13 +40,15 @@ ion-footer ion-toolbar {
   min-width: 0;
 }
 
-.filter-select {
-  flex: 1;
-  min-width: 0;
-  border: 1px solid var(--ion-color-light-shade);
-  border-radius: 8px;
-  font-size: 0.85rem;
-  --padding-start: 10px;
-  --padding-end: 10px;
+.filter-btn {
+  width: 100%;
   height: 36px;
+  --border-radius: 8px;
+  --border-color: var(--ion-color-light-shade);
+  --color: var(--ion-color-dark);
+  --background: var(--ion-color-light);
+  font-size: 0.8rem;
+  font-weight: normal;
+  text-transform: none;
+  letter-spacing: 0;
 }

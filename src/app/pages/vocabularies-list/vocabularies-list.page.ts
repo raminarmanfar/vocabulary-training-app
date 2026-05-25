@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel,
-  IonBadge, IonIcon, IonFab, IonFabButton, IonSearchbar, IonSelect,
-  IonSelectOption, IonPopover, IonCheckbox, IonButton,
+  IonBadge, IonIcon, IonFab, IonFabButton, IonSearchbar,
+  IonPopover, IonCheckbox, IonButton,
   IonButtons, IonBackButton, IonFooter
 } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -22,8 +22,8 @@ import { Vocabulary, WordType, CefrLevel } from '../../models/vocabulary.model';
   imports: [
     FormsModule,
     IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel,
-    IonBadge, IonIcon, IonFab, IonFabButton, IonSearchbar, IonSelect,
-    IonSelectOption, IonPopover, IonCheckbox, IonButton,
+    IonBadge, IonIcon, IonFab, IonFabButton, IonSearchbar,
+    IonPopover, IonCheckbox, IonButton,
     IonButtons, IonBackButton, IonFooter,
     TranslatePipe
   ]
