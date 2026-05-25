@@ -14,6 +14,7 @@ const routes: Routes = [
   { path: 'vocabulary-details/:id', loadComponent: () => import('./pages/vocabulary-details/vocabulary-details.page').then(m => m.VocabularyDetailsPage) },
   { path: 'edit-vocabulary/:id', loadComponent: () => import('./pages/edit-vocabulary/edit-vocabulary.page').then(m => m.EditVocabularyPage) },
   { path: 'train', loadComponent: () => import('./pages/train/train.page').then(m => m.TrainPage) },
+  { path: 'train-summary/:id', loadComponent: () => import('./pages/train-summary/train-summary.page').then(m => m.TrainSummaryPage) },
   { path: 'quiz', loadComponent: () => import('./pages/quiz/quiz.page').then(m => m.QuizPage) },
   { path: 'quiz/new', loadComponent: () => import('./pages/quiz-new/quiz-new.page').then(m => m.QuizNewPage) },
   { path: 'about', loadComponent: () => import('./pages/about/about.page').then(m => m.AboutPage) },

@@ -13,7 +13,9 @@ import {
 } from 'ionicons/icons';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { TtsService } from '../../services/tts.service';
+import { DatabaseService } from '../../services/database.service';
 import { Vocabulary } from '../../models/vocabulary.model';
+import { TrainSession, TrainSessionItem } from '../../models/train-session.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -31,6 +33,7 @@ export class TrainPage implements OnInit, ViewWillEnter {
   private router = inject(Router);
   private vocabService = inject(VocabularyService);
   private tts = inject(TtsService);
+  private db = inject(DatabaseService);
   private translate = inject(TranslateService);
 
   private allVocabs = toSignal(this.vocabService.vocabs$, { initialValue: [] as Vocabulary[] });
@@ -41,13 +44,21 @@ export class TrainPage implements OnInit, ViewWillEnter {
   flipped = signal(false);
   done = signal(false);
 
+  // Session tracking
+  private sessionStartedAt = 0;
+  private cardShownAt = 0;
+  private sessionItems: TrainSessionItem[] = [];
+
   constructor() {
     addIcons({ checkmarkCircleOutline, ellipseOutline, informationCircleOutline, refreshOutline, arrowForwardOutline, schoolOutline, volumeHighOutline, closeCircleOutline });
   }
 
   async ngOnInit() {
+    this.sessionStartedAt = Date.now();
+    this.cardShownAt = Date.now();
+    this.sessionItems = [];
     await this.vocabService.load();
-    this.pickRandom();
+    await this.pickRandom();
   }
 
   async ionViewWillEnter() {
@@ -58,16 +69,20 @@ export class TrainPage implements OnInit, ViewWillEnter {
     if (v) {
       const refreshed = await this.vocabService.getById(v._id);
       this.current.set(refreshed);
-    } else {
-      this.pickRandom();
+    } else if (!this.done()) {
+      await this.pickRandom();
     }
   }
 
-  pickRandom() {
+  async pickRandom() {
     const pool = this.unlearned();
     if (!pool.length) {
       this.current.set(null);
-      this.done.set(true);
+      if (this.sessionItems.length > 0) {
+        await this.saveSession();
+      } else {
+        this.done.set(true);
+      }
       return;
     }
     // Exclude current card if possible so we don't get the same one twice in a row
@@ -77,6 +92,22 @@ export class TrainPage implements OnInit, ViewWillEnter {
     this.current.set(next);
     this.flipped.set(false);
     this.done.set(false);
+    this.cardShownAt = Date.now();
+  }
+
+  private async saveSession() {
+    const now = Date.now();
+    const session: TrainSession = {
+      _id: `session_${now}_${Math.random().toString(36).slice(2)}`,
+      startedAt: new Date(this.sessionStartedAt).toISOString(),
+      finishedAt: new Date(now).toISOString(),
+      totalTimeMs: now - this.sessionStartedAt,
+      learnedCount: this.sessionItems.filter(i => i.learnedInSession).length,
+      notLearnedCount: this.sessionItems.filter(i => !i.learnedInSession).length,
+      items: [...this.sessionItems]
+    };
+    await this.db.saveTrainSession(session);
+    this.router.navigate(['/train-summary', session._id], { replaceUrl: true });
   }
 
   async speak(event: Event, text: string) {
@@ -91,19 +122,29 @@ export class TrainPage implements OnInit, ViewWillEnter {
   async markLearned() {
     const v = this.current();
     if (!v) return;
-    if (!v.learned) {
-      await this.vocabService.toggleLearned(v);
-    }
-    this.pickRandom();
+    this.sessionItems.push({
+      vocabId: v._id,
+      german: v.german,
+      english: v.english,
+      learnedInSession: true,
+      timeSpentMs: Date.now() - this.cardShownAt
+    });
+    if (!v.learned) await this.vocabService.toggleLearned(v);
+    await this.pickRandom();
   }
 
   async markNotLearned() {
     const v = this.current();
     if (!v) return;
-    if (v.learned) {
-      await this.vocabService.toggleLearned(v);
-    }
-    this.pickRandom();
+    this.sessionItems.push({
+      vocabId: v._id,
+      german: v.german,
+      english: v.english,
+      learnedInSession: false,
+      timeSpentMs: Date.now() - this.cardShownAt
+    });
+    if (v.learned) await this.vocabService.toggleLearned(v);
+    await this.pickRandom();
   }
 
   goToDetails() {
@@ -111,9 +152,12 @@ export class TrainPage implements OnInit, ViewWillEnter {
     if (v) this.router.navigate(['/vocabulary-details', v._id]);
   }
 
-  restart() {
+  async restart() {
+    this.sessionStartedAt = Date.now();
+    this.cardShownAt = Date.now();
+    this.sessionItems = [];
     this.done.set(false);
-    this.pickRandom();
+    await this.pickRandom();
   }
 
   levelColor(level: string): string {

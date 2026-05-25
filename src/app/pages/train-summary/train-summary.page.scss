@@ -1,0 +1,76 @@
+.stats-card {
+  margin-bottom: 16px;
+}
+
+.session-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--ion-color-medium);
+  margin-bottom: 16px;
+}
+
+.stats-row {
+  display: flex;
+  gap: 10px;
+  justify-content: space-around;
+}
+
+.stat-box {
+  text-align: center;
+  flex: 1;
+  padding: 12px 6px;
+  border-radius: 10px;
+}
+
+.stat-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  margin-top: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.stat-learned {
+  background: rgba(var(--ion-color-success-rgb), 0.12);
+  .stat-number { color: var(--ion-color-success); }
+  .stat-label  { color: var(--ion-color-success); }
+}
+
+.stat-not-learned {
+  background: rgba(var(--ion-color-danger-rgb), 0.12);
+  .stat-number { color: var(--ion-color-danger); }
+  .stat-label  { color: var(--ion-color-danger); }
+}
+
+.stat-time {
+  background: rgba(var(--ion-color-primary-rgb), 0.12);
+  .stat-number { color: var(--ion-color-primary); }
+  .stat-label  { color: var(--ion-color-primary); }
+}
+
+.list-heading {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ion-color-medium);
+  margin: 0 4px 8px;
+  font-weight: 600;
+}
+
+.item-list {
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.train-again-row {
+  padding: 4px 0 16px;
+}

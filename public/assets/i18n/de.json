@@ -192,6 +192,14 @@
       "stack": "Ionic · Angular · Dexie (IndexedDB)"
     }
   },
+  "trainSummary": {
+    "title": "Sitzungsauswertung",
+    "learned": "Gelernt",
+    "notLearned": "Nicht gelernt",
+    "totalTime": "Gesamtzeit",
+    "cards": "Karten geübt",
+    "trainAgain": "Nochmal trainieren"
+  },
   "train": {
     "title": "Trainieren",
     "tapToReveal": "Tippe zum Aufdecken",

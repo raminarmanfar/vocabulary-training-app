@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import Dexie, { Table } from 'dexie';
 import { Vocabulary } from '../models/vocabulary.model';
 import { QuizSet } from '../models/quiz-set.model';
+import { TrainSession } from '../models/train-session.model';
 
 interface AppSetting { key: string; value: string; }
 
@@ -9,6 +10,7 @@ class VocabDatabase extends Dexie {
   vocabularies!: Table<Vocabulary, string>;
   settings!: Table<AppSetting, string>;
   quizSets!: Table<QuizSet, string>;
+  trainSessions!: Table<TrainSession, string>;
 
   constructor() {
     super('VocabTrainer');
@@ -23,6 +25,12 @@ class VocabDatabase extends Dexie {
       vocabularies: '_id, wordType, level, learned, german, english',
       settings: 'key',
       quizSets: '_id, status, createdAt'
+    });
+    this.version(4).stores({
+      vocabularies: '_id, wordType, level, learned, german, english',
+      settings: 'key',
+      quizSets: '_id, status, createdAt',
+      trainSessions: '_id, startedAt'
     });
   }
 }
@@ -90,5 +98,21 @@ export class DatabaseService {
 
   async clearAllQuizSets(): Promise<void> {
     await this.db.quizSets.clear();
+  }
+
+  async getAllTrainSessions(): Promise<TrainSession[]> {
+    return this.db.trainSessions.orderBy('startedAt').reverse().toArray();
+  }
+
+  async getTrainSessionById(id: string): Promise<TrainSession | undefined> {
+    return this.db.trainSessions.get(id);
+  }
+
+  async saveTrainSession(session: TrainSession): Promise<void> {
+    await this.db.trainSessions.put(session);
+  }
+
+  async deleteTrainSession(id: string): Promise<void> {
+    await this.db.trainSessions.delete(id);
   }
 }
