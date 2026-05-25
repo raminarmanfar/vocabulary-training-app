@@ -10,6 +10,8 @@ import {
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { sparkles, save, close, refreshOutline, checkmarkCircle, micOutline, mic } from 'ionicons/icons';
+import { SpeechRecognition } from '@capacitor-community/speech-recognition';
+import { Capacitor } from '@capacitor/core';
 import { VocabAiService, AiVocabResponse } from '../../services/vocab-ai.service';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { LanguageService } from '../../services/language.service';
@@ -49,7 +51,9 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
   errorMsg = signal('');
   recording = signal(false);
   speechSupported = signal(false);
-  private recognition: any = null;
+  private partialListener: any = null;
+  // Web Speech API fallback for browser
+  private webRecognition: any = null;
 
   readonly wordTypes: Array<{ value: WordType | 'unknown'; labelKey: string }> = [
     { value: 'unknown',     labelKey: 'wordType.unknown' },
@@ -75,20 +79,28 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (SR) {
-      this.speechSupported.set(true);
-      this.recognition = new SR();
-      this.recognition.lang = 'de-DE';
-      this.recognition.interimResults = false;
-      this.recognition.maxAlternatives = 1;
-      this.recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript.trim();
-        this.word.set(transcript);
-        this.recording.set(false);
-      };
-      this.recognition.onerror = () => this.recording.set(false);
-      this.recognition.onend = () => this.recording.set(false);
+    if (Capacitor.isNativePlatform()) {
+      // Native: use Capacitor plugin
+      SpeechRecognition.available().then(({ available }) => {
+        this.speechSupported.set(available);
+      });
+    } else {
+      // Browser: fall back to Web Speech API
+      const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SR) {
+        this.speechSupported.set(true);
+        this.webRecognition = new SR();
+        this.webRecognition.lang = 'de-DE';
+        this.webRecognition.interimResults = false;
+        this.webRecognition.maxAlternatives = 1;
+        this.webRecognition.onresult = (event: any) => {
+          const transcript = event.results[0][0].transcript.trim();
+          this.word.set(transcript);
+          this.recording.set(false);
+        };
+        this.webRecognition.onerror = () => this.recording.set(false);
+        this.webRecognition.onend   = () => this.recording.set(false);
+      }
     }
     if (this.initialWord) {
       this.word.set(this.initialWord);
@@ -97,18 +109,57 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.recognition?.abort();
+    this.stopRecording();
   }
 
-  toggleRecording() {
+  async toggleRecording() {
     if (this.recording()) {
-      this.recognition?.stop();
-      this.recording.set(false);
+      await this.stopRecording();
     } else {
-      this.word.set('');
-      this.recognition?.start();
+      await this.startRecording();
+    }
+  }
+
+  private async startRecording() {
+    this.word.set('');
+    if (Capacitor.isNativePlatform()) {
+      // Request permission if not already granted
+      const { speechRecognition } = await SpeechRecognition.requestPermissions();
+      if (speechRecognition !== 'granted') return;
+
+      // Listen for partial results to update the input live
+      this.partialListener = await SpeechRecognition.addListener('partialResults', (data) => {
+        if (data.matches?.length) this.word.set(data.matches[0]);
+      });
+
+      this.recording.set(true);
+      try {
+        const result = await SpeechRecognition.start({
+          language: 'de-DE',
+          maxResults: 1,
+          partialResults: true,
+          popup: false,
+        });
+        if (result.matches?.length) this.word.set(result.matches[0]);
+      } catch { /* user cancelled or error */ }
+      this.recording.set(false);
+      this.partialListener?.remove();
+      this.partialListener = null;
+    } else {
+      this.webRecognition?.start();
       this.recording.set(true);
     }
+  }
+
+  private async stopRecording() {
+    if (Capacitor.isNativePlatform()) {
+      await SpeechRecognition.stop().catch(() => {});
+      this.partialListener?.remove();
+      this.partialListener = null;
+    } else {
+      this.webRecognition?.stop();
+    }
+    this.recording.set(false);
   }
 
   dismiss() {
