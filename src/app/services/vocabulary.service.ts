@@ -44,6 +44,13 @@ export class VocabularyService {
     return this.db.getAll();
   }
 
+  async resetAllLearned(): Promise<void> {
+    const vocabs = await this.db.getAll();
+    const reset = vocabs.map(v => ({ ...v, learned: false }));
+    await this.db.bulkSave(reset);
+    await this.load();
+  }
+
   findDuplicate(german: string, wordType: WordType, excludeId: string = ''): Vocabulary | undefined {
     const term = german.trim().toLowerCase();
     return this.vocabsSubject.value.find(v =>

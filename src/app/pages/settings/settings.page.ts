@@ -187,6 +187,7 @@ export class SettingsPage {
     const { role } = await alert.onDidDismiss();
     if (role === 'confirm') {
       await this.dbService.clearAllTrainSessions();
+      await this.vocabService.resetAllLearned();
       this.toast.set({ open: true, message: this.translate.instant('settings.data.eraseSummaryDone'), color: 'success' });
     }
   }
