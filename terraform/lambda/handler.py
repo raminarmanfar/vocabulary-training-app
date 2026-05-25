@@ -15,7 +15,11 @@ CEFR_LEVELS = {"A1", "A2", "B1", "B2", "C1", "C2"}
 
 SYSTEM_PROMPT = """You are a German language expert. When given a German word,
 you respond ONLY with a single valid JSON object — no markdown, no explanation, just raw JSON.
-The JSON must conform exactly to the schema described in the user message."""
+
+IMPORTANT: First check if the input is a real, correctly-spelled German word.
+- If the input is NOT German (e.g. English, French, etc.), return ONLY: {"_isValidGerman": false, "_correction": null}
+- If the input is a misspelling of a German word, return ONLY: {"_isValidGerman": false, "_correction": "<corrected German word>"}
+- If the input IS a valid German word, return the full vocabulary JSON described in the user message."""
 
 def build_user_prompt(word: str, word_type: str | None) -> str:
     if word_type:
@@ -247,6 +251,26 @@ def handler(event, context):
             "statusCode": 502,
             "headers": cors_headers(),
             "body": json.dumps({"error": str(exc)})
+        }
+
+    # Check if Claude returned an early validation error (minimal JSON)
+    is_valid_german = vocab.pop("_isValidGerman", True)
+    correction = vocab.pop("_correction", None)
+
+    if not is_valid_german:
+        error_body = {"error": "WORD_MISSPELLED", "correction": correction} if correction else {"error": "NOT_GERMAN_WORD"}
+        return {
+            "statusCode": 422,
+            "headers": cors_headers(),
+            "body": json.dumps(error_body)
+        }
+
+    # If Claude returned only the validation fields and nothing else, treat as invalid
+    if not vocab.get("german"):
+        return {
+            "statusCode": 422,
+            "headers": cors_headers(),
+            "body": json.dumps({"error": "NOT_GERMAN_WORD"})
         }
 
     # Validate level field falls within known CEFR values

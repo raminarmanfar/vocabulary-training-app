@@ -279,8 +279,10 @@
       "present":        "Präsens"
     },
     "error": {
-      "unknown":    "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
-      "saveFailed": "Speichern fehlgeschlagen. Bitte versuche es erneut."
+      "unknown":       "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
+      "saveFailed":    "Speichern fehlgeschlagen. Bitte versuche es erneut.",
+      "notGermanWord": "Dies scheint kein deutsches Wort zu sein. Bitte gib ein gültiges deutsches Wort ein.",
+      "misspelled":    "Meintest du \"{{correction}}\"? Bitte korrigiere die Schreibweise und versuche es erneut."
     },
     "duplicate": {
       "header":  "Wort existiert bereits",

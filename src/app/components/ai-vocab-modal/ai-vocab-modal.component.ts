@@ -83,8 +83,15 @@ export class AiVocabModalComponent {
         this.step.set('preview');
       },
       error: (err) => {
-        const msg = err?.error?.error ?? err?.message ?? 'ai.error.unknown';
-        this.errorMsg.set(msg);
+        const code = err?.error?.error;
+        const correction = err?.error?.correction;
+        if (code === 'NOT_GERMAN_WORD') {
+          this.errorMsg.set(this.translate.instant('ai.error.notGermanWord'));
+        } else if (code === 'WORD_MISSPELLED' && correction) {
+          this.errorMsg.set(this.translate.instant('ai.error.misspelled', { correction }));
+        } else {
+          this.errorMsg.set(this.translate.instant(code ?? 'ai.error.unknown'));
+        }
         this.step.set('input');
       }
     });

@@ -279,8 +279,10 @@
       "present":        "Präsens (Present Tense)"
     },
     "error": {
-      "unknown":    "An unexpected error occurred. Please try again.",
-      "saveFailed": "Failed to save the vocabulary. Please try again."
+      "unknown":       "An unexpected error occurred. Please try again.",
+      "saveFailed":    "Failed to save the vocabulary. Please try again.",
+      "notGermanWord": "This doesn't appear to be a German word. Please enter a valid German vocabulary.",
+      "misspelled":    "\"{{correction}}\" — did you mean this? Please correct the spelling and try again."
     },
     "duplicate": {
       "header":  "Word Already Exists",
