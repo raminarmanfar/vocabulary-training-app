@@ -186,7 +186,11 @@
       "enrichDone": "Enriched {{count}} vocabularies",
       "enrichNone": "All vocabularies are already enriched",
       "enrichStarted": "Enrichment started — {{count}} vocabularies will be processed in the background",
-      "enrichCancelled": "Enrichment cancelled — {{count}} vocabularies were enriched"
+      "enrichCancelled": "Enrichment cancelled — {{count}} vocabularies were enriched",
+      "enrichScopeTitle": "Enrich scope",
+      "enrichScopeMsg": "Which vocabularies should be enriched by AI?",
+      "enrichScopeAll": "Entire database",
+      "enrichScopeNew": "Not yet enriched only"
     },
     "comingSoon": "More settings coming soon."
   },

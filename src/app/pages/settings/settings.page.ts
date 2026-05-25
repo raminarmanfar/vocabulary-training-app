@@ -281,19 +281,37 @@ export class SettingsPage {
 
   async enrichVocabs() {
     const vocabs = await this.vocabService.exportAll();
-    const toEnrich = vocabs.filter(v =>
-      !v.aiGenerated && !v.aiEnriched && (
-        !v.turkish || !v.persian || !v.synonyms?.length || !v.antonyms?.length ||
-        v.examples?.some(ex => !ex.turkish || !ex.persian)
-      )
-    );
+
+    // Step 1: ask scope
+    const scopeAlert = await this.alertCtrl.create({
+      header: this.translate.instant('settings.data.enrichScopeTitle'),
+      message: this.translate.instant('settings.data.enrichScopeMsg'),
+      buttons: [
+        { text: this.translate.instant('common.cancel'), role: 'cancel' },
+        { text: this.translate.instant('settings.data.enrichScopeNew'), role: 'new' },
+        { text: this.translate.instant('settings.data.enrichScopeAll'), role: 'all' }
+      ]
+    });
+    await scopeAlert.present();
+    const { role: scopeRole } = await scopeAlert.onDidDismiss();
+    if (scopeRole === 'cancel' || scopeRole === 'backdrop') return;
+
+    const toEnrich = scopeRole === 'all'
+      ? vocabs
+      : vocabs.filter(v =>
+          !v.aiGenerated && !v.aiEnriched && (
+            !v.turkish || !v.persian || !v.synonyms?.length || !v.antonyms?.length ||
+            v.examples?.some(ex => !ex.turkish || !ex.persian)
+          )
+        );
 
     if (!toEnrich.length) {
       this.toast.set({ open: true, message: this.translate.instant('settings.data.enrichNone'), color: 'primary' });
       return;
     }
 
-    const alert = await this.alertCtrl.create({
+    // Step 2: confirm count
+    const confirmAlert = await this.alertCtrl.create({
       header: this.translate.instant('settings.data.enrichTitle'),
       message: this.translate.instant('settings.data.enrichMsg', { count: toEnrich.length }),
       buttons: [
@@ -301,8 +319,8 @@ export class SettingsPage {
         { text: this.translate.instant('settings.data.enrich'), role: 'confirm' }
       ]
     });
-    await alert.present();
-    const { role } = await alert.onDidDismiss();
+    await confirmAlert.present();
+    const { role } = await confirmAlert.onDidDismiss();
     if (role !== 'confirm') return;
 
     this.toast.set({

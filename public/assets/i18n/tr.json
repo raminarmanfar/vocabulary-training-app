@@ -207,7 +207,11 @@
       "enrichDone": "{{count}} kelime zenginleştirildi",
       "enrichNone": "Tüm kelimeler zaten tam olarak zenginleştirilmiş",
       "enrichStarted": "Zenginleştirme başladı — {{count}} kelime arka planda işlenecek",
-      "enrichCancelled": "Zenginleştirme iptal edildi — {{count}} kelime zenginleştirildi"
+      "enrichCancelled": "Zenginleştirme iptal edildi — {{count}} kelime zenginleştirildi",
+      "enrichScopeTitle": "Zenginleştirme kapsamı",
+      "enrichScopeMsg": "Hangi kelimeler yapay zeka tarafından zenginleştirilsin?",
+      "enrichScopeAll": "Tüm veritabanı",
+      "enrichScopeNew": "Yalnızca zenginleştirilmemiş olanlar"
     },
     "comingSoon": "Daha fazla ayar yakında."
   },

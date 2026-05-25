@@ -207,7 +207,11 @@
       "enrichDone": "{{count}} لغت غنی‌سازی شد",
       "enrichNone": "همه لغات قبلاً کاملاً غنی‌سازی شده‌اند",
       "enrichStarted": "غنی‌سازی شروع شد — {{count}} لغت در پس‌زمینه پردازش خواهد شد",
-      "enrichCancelled": "غنی‌سازی لغو شد — {{count}} لغت غنی‌سازی شدند"
+      "enrichCancelled": "غنی‌سازی لغو شد — {{count}} لغت غنی‌سازی شدند",
+      "enrichScopeTitle": "محدوده غنی‌سازی",
+      "enrichScopeMsg": "کدام لغات توسط هوش مصنوعی غنی‌سازی شوند؟",
+      "enrichScopeAll": "کل پایگاه داده",
+      "enrichScopeNew": "فقط غنی‌سازی‌نشده‌ها"
     },
     "comingSoon": "تنظیمات بیشتر به زودی."
   },

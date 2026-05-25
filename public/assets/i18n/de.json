@@ -186,7 +186,11 @@
       "enrichDone": "{{count}} Vokabeln angereichert",
       "enrichNone": "Alle Vokabeln sind bereits vollständig angereichert",
       "enrichStarted": "Anreicherung gestartet — {{count}} Vokabeln werden im Hintergrund verarbeitet",
-      "enrichCancelled": "Anreicherung abgebrochen — {{count}} Vokabeln wurden angereichert"
+      "enrichCancelled": "Anreicherung abgebrochen — {{count}} Vokabeln wurden angereichert",
+      "enrichScopeTitle": "Anreicherungsbereich",
+      "enrichScopeMsg": "Welche Vokabeln sollen durch KI angereichert werden?",
+      "enrichScopeAll": "Gesamte Datenbank",
+      "enrichScopeNew": "Nur noch nicht angereicherte"
     },
     "comingSoon": "Weitere Einstellungen folgen bald."
   },
