@@ -193,12 +193,14 @@
     }
   },
   "trainSummary": {
-    "title": "Session Summary",
+    "title": "Session History",
     "learned": "Learned",
     "notLearned": "Not Learned",
     "totalTime": "Total Time",
     "cards": "Cards Reviewed",
-    "trainAgain": "Train Again"
+    "trainAgain": "Train Again",
+    "noSessions": "No training sessions yet. Start training to see your history here.",
+    "notFound": "Session not found."
   },
   "train": {
     "title": "Train",

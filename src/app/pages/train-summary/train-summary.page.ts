@@ -9,7 +9,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import {
   checkmarkCircleOutline, closeCircleOutline, timeOutline,
-  refreshOutline, trophyOutline
+  refreshOutline, trophyOutline, calendarOutline
 } from 'ionicons/icons';
 import { DatabaseService } from '../../services/database.service';
 import { TrainSession } from '../../models/train-session.model';
@@ -31,18 +31,29 @@ export class TrainSummaryPage implements OnInit {
   private router = inject(Router);
   private db = inject(DatabaseService);
 
+  mode = signal<'list' | 'detail'>('list');
   session = signal<TrainSession | null>(null);
+  sessions = signal<TrainSession[]>([]);
 
   constructor() {
-    addIcons({ checkmarkCircleOutline, closeCircleOutline, timeOutline, refreshOutline, trophyOutline });
+    addIcons({ checkmarkCircleOutline, closeCircleOutline, timeOutline, refreshOutline, trophyOutline, calendarOutline });
   }
 
   async ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      const session = await this.db.getTrainSessionById(id);
-      this.session.set(session ?? null);
+      this.mode.set('detail');
+      const s = await this.db.getTrainSessionById(id);
+      this.session.set(s ?? null);
+    } else {
+      this.mode.set('list');
+      const all = await this.db.getAllTrainSessions();
+      this.sessions.set(all);
     }
+  }
+
+  openSession(id: string) {
+    this.router.navigate(['/train-summary', id]);
   }
 
   formatTime(ms: number): string {
@@ -65,3 +76,4 @@ export class TrainSummaryPage implements OnInit {
     this.router.navigate(['/vocabulary-details', vocabId]);
   }
 }
+

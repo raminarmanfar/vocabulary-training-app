@@ -9,7 +9,8 @@ import { ViewWillEnter } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   checkmarkCircleOutline, ellipseOutline, informationCircleOutline,
-  refreshOutline, arrowForwardOutline, schoolOutline, volumeHighOutline, closeCircleOutline
+  refreshOutline, arrowForwardOutline, schoolOutline, volumeHighOutline, closeCircleOutline,
+  statsChartOutline
 } from 'ionicons/icons';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { TtsService } from '../../services/tts.service';
@@ -50,7 +51,7 @@ export class TrainPage implements OnInit, ViewWillEnter {
   private sessionItems: TrainSessionItem[] = [];
 
   constructor() {
-    addIcons({ checkmarkCircleOutline, ellipseOutline, informationCircleOutline, refreshOutline, arrowForwardOutline, schoolOutline, volumeHighOutline, closeCircleOutline });
+    addIcons({ checkmarkCircleOutline, ellipseOutline, informationCircleOutline, refreshOutline, arrowForwardOutline, schoolOutline, volumeHighOutline, closeCircleOutline, statsChartOutline });
   }
 
   async ngOnInit() {
@@ -150,6 +151,10 @@ export class TrainPage implements OnInit, ViewWillEnter {
   goToDetails() {
     const v = this.current();
     if (v) this.router.navigate(['/vocabulary-details', v._id]);
+  }
+
+  goToHistory() {
+    this.router.navigate(['/train-summary']);
   }
 
   async restart() {

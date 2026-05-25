@@ -193,12 +193,14 @@
     }
   },
   "trainSummary": {
-    "title": "Sitzungsauswertung",
+    "title": "Sitzungsverlauf",
     "learned": "Gelernt",
     "notLearned": "Nicht gelernt",
     "totalTime": "Gesamtzeit",
     "cards": "Karten geübt",
-    "trainAgain": "Nochmal trainieren"
+    "trainAgain": "Nochmal trainieren",
+    "noSessions": "Noch keine Trainingssitzungen. Starte das Training, um deinen Verlauf hier zu sehen.",
+    "notFound": "Sitzung nicht gefunden."
   },
   "train": {
     "title": "Trainieren",

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="success">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+      <ion-back-button [defaultHref]="mode() === 'detail' ? '/train-summary' : '/train'"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ 'trainSummary.title' | translate }}</ion-title>
   </ion-toolbar>
@@ -9,65 +9,118 @@
 
 <ion-content class="ion-padding">
 
-  @if (session(); as s) {
+  <!-- ── LIST MODE ─────────────────────────────────── -->
+  @if (mode() === 'list') {
 
-    <!-- Stats card -->
-    <ion-card class="stats-card">
-      <ion-card-content>
+    @if (sessions().length === 0) {
+      <div class="empty-state">
+        <ion-icon name="trophy-outline" class="empty-icon"></ion-icon>
+        <p>{{ 'trainSummary.noSessions' | translate }}</p>
+      </div>
+    }
 
-        <div class="session-date">
-          <ion-icon name="time-outline"></ion-icon>
-          {{ formatDate(s.startedAt) }}
-        </div>
+    @for (s of sessions(); track s._id) {
+      <ion-card class="session-card" button (click)="openSession(s._id)">
+        <ion-card-content>
 
-        <div class="stats-row">
-          <div class="stat-box stat-learned">
-            <div class="stat-number">{{ s.learnedCount }}</div>
-            <div class="stat-label">{{ 'trainSummary.learned' | translate }}</div>
+          <div class="session-date">
+            <ion-icon name="calendar-outline"></ion-icon>
+            {{ formatDate(s.startedAt) }}
           </div>
-          <div class="stat-box stat-not-learned">
-            <div class="stat-number">{{ s.notLearnedCount }}</div>
-            <div class="stat-label">{{ 'trainSummary.notLearned' | translate }}</div>
+
+          <div class="stats-row">
+            <div class="stat-box stat-learned">
+              <div class="stat-number">{{ s.learnedCount }}</div>
+              <div class="stat-label">{{ 'trainSummary.learned' | translate }}</div>
+            </div>
+            <div class="stat-box stat-not-learned">
+              <div class="stat-number">{{ s.notLearnedCount }}</div>
+              <div class="stat-label">{{ 'trainSummary.notLearned' | translate }}</div>
+            </div>
+            <div class="stat-box stat-time">
+              <div class="stat-number">{{ formatTime(s.totalTimeMs) }}</div>
+              <div class="stat-label">{{ 'trainSummary.totalTime' | translate }}</div>
+            </div>
           </div>
-          <div class="stat-box stat-time">
-            <div class="stat-number">{{ formatTime(s.totalTimeMs) }}</div>
-            <div class="stat-label">{{ 'trainSummary.totalTime' | translate }}</div>
+
+        </ion-card-content>
+      </ion-card>
+    }
+
+  }
+
+  <!-- ── DETAIL MODE ────────────────────────────────── -->
+  @if (mode() === 'detail') {
+
+    @if (!session()) {
+      <div class="empty-state">
+        <ion-icon name="trophy-outline" class="empty-icon"></ion-icon>
+        <p>{{ 'trainSummary.notFound' | translate }}</p>
+      </div>
+    }
+
+    @if (session(); as s) {
+
+      <!-- Stats card -->
+      <ion-card class="stats-card">
+        <ion-card-content>
+
+          <div class="session-date">
+            <ion-icon name="time-outline"></ion-icon>
+            {{ formatDate(s.startedAt) }}
           </div>
-        </div>
 
-      </ion-card-content>
-    </ion-card>
+          <div class="stats-row">
+            <div class="stat-box stat-learned">
+              <div class="stat-number">{{ s.learnedCount }}</div>
+              <div class="stat-label">{{ 'trainSummary.learned' | translate }}</div>
+            </div>
+            <div class="stat-box stat-not-learned">
+              <div class="stat-number">{{ s.notLearnedCount }}</div>
+              <div class="stat-label">{{ 'trainSummary.notLearned' | translate }}</div>
+            </div>
+            <div class="stat-box stat-time">
+              <div class="stat-number">{{ formatTime(s.totalTimeMs) }}</div>
+              <div class="stat-label">{{ 'trainSummary.totalTime' | translate }}</div>
+            </div>
+          </div>
 
-    <!-- Per-card breakdown -->
-    <h3 class="list-heading">{{ 'trainSummary.cards' | translate }}</h3>
+        </ion-card-content>
+      </ion-card>
 
-    <ion-list class="item-list">
-      @for (item of s.items; track item.vocabId) {
-        <ion-item button (click)="goToDetails(item.vocabId)" detail>
-          <ion-icon
-            slot="start"
-            [name]="item.learnedInSession ? 'checkmark-circle-outline' : 'close-circle-outline'"
-            [color]="item.learnedInSession ? 'success' : 'danger'">
-          </ion-icon>
-          <ion-label>
-            <h3>{{ item.german }}</h3>
-            <p>{{ item.english }}</p>
-          </ion-label>
-          <ion-badge slot="end" [color]="item.learnedInSession ? 'success' : 'danger'">
-            {{ formatTime(item.timeSpentMs) }}
-          </ion-badge>
-        </ion-item>
-      }
-    </ion-list>
+      <!-- Per-card breakdown -->
+      <h3 class="list-heading">{{ 'trainSummary.cards' | translate }}</h3>
 
-    <!-- Train again -->
-    <div class="train-again-row">
-      <ion-button expand="block" color="success" (click)="trainAgain()">
-        <ion-icon name="refresh-outline" slot="start"></ion-icon>
-        {{ 'trainSummary.trainAgain' | translate }}
-      </ion-button>
-    </div>
+      <ion-list class="item-list">
+        @for (item of s.items; track item.vocabId) {
+          <ion-item button (click)="goToDetails(item.vocabId)" detail>
+            <ion-icon
+              slot="start"
+              [name]="item.learnedInSession ? 'checkmark-circle-outline' : 'close-circle-outline'"
+              [color]="item.learnedInSession ? 'success' : 'danger'">
+            </ion-icon>
+            <ion-label>
+              <h3>{{ item.german }}</h3>
+              <p>{{ item.english }}</p>
+            </ion-label>
+            <ion-badge slot="end" [color]="item.learnedInSession ? 'success' : 'danger'">
+              {{ formatTime(item.timeSpentMs) }}
+            </ion-badge>
+          </ion-item>
+        }
+      </ion-list>
+
+      <!-- Train again -->
+      <div class="train-again-row">
+        <ion-button expand="block" color="success" (click)="trainAgain()">
+          <ion-icon name="refresh-outline" slot="start"></ion-icon>
+          {{ 'trainSummary.trainAgain' | translate }}
+        </ion-button>
+      </div>
+
+    }
 
   }
 
 </ion-content>
+
