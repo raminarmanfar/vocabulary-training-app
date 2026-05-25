@@ -120,6 +120,7 @@ export class TrainSummaryPage implements OnInit {
   }
 
   selectDate(dateStr: string) {
+    if (!this.sessionsByDate().has(dateStr)) return;
     this.selectedDate.set(this.selectedDate() === dateStr ? null : dateStr);
   }
 

@@ -39,7 +39,7 @@
                    [class.has-sessions]="cell.sessions.length > 0"
                    [class.selected]="selectedDate() === cell.dateStr"
                    [class.today]="isToday(cell.dateStr)"
-                   (click)="cell.sessions.length > 0 && selectDate(cell.dateStr)">
+                   (click)="selectDate(cell.dateStr)">
                 <span class="cal-day-num">{{ cell.date.getDate() }}</span>
                 @if (cell.sessions.length > 0) {
                   <span class="cal-dot"></span>
