@@ -13,6 +13,9 @@
     </ion-item>
     <ion-item lines="none">
       <ion-label><strong>{{ 'noun.plural' | translate }}:</strong> {{ details.plural }}</ion-label>
+      <ion-button fill="clear" slot="end" (click)="speakPlural($event)">
+        <ion-icon slot="icon-only" name="volume-high-outline"></ion-icon>
+      </ion-button>
     </ion-item>
 
     <ion-accordion-group>
