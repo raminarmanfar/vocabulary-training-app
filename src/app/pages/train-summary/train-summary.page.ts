@@ -42,7 +42,7 @@ export class TrainSummaryPage implements OnInit {
   readonly todayStr = new Date().toISOString().slice(0, 10);
   selectedDate = signal<string | null>(this.todayStr);
   activeTab = signal<'calendar' | 'monthly'>('calendar');
-  selectedMonth = signal<string | null>(null);
+  selectedMonth = signal<string | null>(this.todayStr.slice(0, 7));
 
   readonly currentYear = new Date().getFullYear();
   selectedYear = signal<number>(new Date().getFullYear());
