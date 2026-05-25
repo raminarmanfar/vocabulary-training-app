@@ -246,5 +246,28 @@
   "common": {
     "cancel": "Cancel",
     "delete": "Delete"
+  },
+  "ai": {
+    "fab": { "tooltip": "Add with AI" },
+    "modal": {
+      "title":          "AI Vocabulary",
+      "hint":           "Enter a German word and select its type. AI will generate the full vocabulary entry.",
+      "wordLabel":      "German Word",
+      "wordPlaceholder":"e.g. laufen",
+      "typeLabel":      "Word Type",
+      "generate":       "Generate",
+      "generating":     "Generating vocabulary…",
+      "retry":          "Try Again",
+      "save":           "Save to Library",
+      "saving":         "Saving…",
+      "examples":       "Example Sentences",
+      "bestimmt":       "Definite article declension",
+      "unbestimmt":     "Indefinite article declension",
+      "present":        "Präsens (Present Tense)"
+    },
+    "error": {
+      "unknown":    "An unexpected error occurred. Please try again.",
+      "saveFailed": "Failed to save the vocabulary. Please try again."
+    }
   }
 }

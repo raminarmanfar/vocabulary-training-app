@@ -1,0 +1,215 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      <ion-icon name="sparkles" style="margin-right:6px;vertical-align:middle"></ion-icon>
+      {{ 'ai.modal.title' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- ── STEP: INPUT ─────────────────────────────────────────────────────── -->
+  @if (step() === 'input') {
+    <div class="step-input">
+      <p class="hint">{{ 'ai.modal.hint' | translate }}</p>
+
+      <ion-list lines="full" class="input-list">
+        <ion-item>
+          <ion-label position="stacked">{{ 'ai.modal.wordLabel' | translate }}</ion-label>
+          <ion-input
+            [value]="word()"
+            (ionInput)="word.set($any($event).detail.value)"
+            [placeholder]="'ai.modal.wordPlaceholder' | translate"
+            clearInput="true"
+            (keyup.enter)="generate()">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">{{ 'ai.modal.typeLabel' | translate }}</ion-label>
+          <ion-select
+            [value]="wordType()"
+            (ionChange)="wordType.set($any($event).detail.value)"
+            interface="popover">
+            @for (t of wordTypes; track t.value) {
+              <ion-select-option [value]="t.value">{{ t.labelKey | translate }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+      </ion-list>
+
+      @if (errorMsg()) {
+        <p class="error-msg">{{ errorMsg() }}</p>
+      }
+
+      <ion-button
+        expand="block"
+        class="generate-btn"
+        [disabled]="!canGenerate()"
+        (click)="generate()">
+        <ion-icon name="sparkles" slot="start"></ion-icon>
+        {{ 'ai.modal.generate' | translate }}
+      </ion-button>
+    </div>
+  }
+
+  <!-- ── STEP: LOADING ───────────────────────────────────────────────────── -->
+  @if (step() === 'loading') {
+    <div class="step-loading">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>{{ 'ai.modal.generating' | translate }}</p>
+    </div>
+  }
+
+  <!-- ── STEP: PREVIEW ──────────────────────────────────────────────────── -->
+  @if (step() === 'preview' && result()) {
+    <div class="step-preview">
+
+      <!-- Header -->
+      <div class="preview-header">
+        <span class="preview-word">
+          @if (result()!.wordType === 'noun' && result()!.nounDetails) {
+            <span class="article">{{ result()!.nounDetails!.article }}</span>
+          }
+          {{ result()!.german }}
+        </span>
+        <ion-badge [color]="wordTypeColor(result()!.wordType)">
+          {{ ('wordType.' + result()!.wordType) | translate }}
+        </ion-badge>
+        <ion-badge [color]="levelColor(result()!.level)">{{ result()!.level }}</ion-badge>
+      </div>
+
+      <p class="translation">{{ result()!.english }}</p>
+
+      @if (result()!.description) {
+        <p class="description">{{ result()!.description }}</p>
+      }
+
+      <!-- Example sentences -->
+      @if (result()!.examples.length) {
+        <ion-card class="detail-card">
+          <ion-card-header>
+            <ion-card-title>{{ 'ai.modal.examples' | translate }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            @for (ex of result()!.examples; track $index) {
+              <div class="example-row">
+                <p class="example-de">{{ ex.german }}</p>
+                <p class="example-en">{{ ex.english }}</p>
+              </div>
+            }
+          </ion-card-content>
+        </ion-card>
+      }
+
+      <!-- Noun details -->
+      @if (result()!.wordType === 'noun' && result()!.nounDetails) {
+        <ion-card class="detail-card">
+          <ion-card-header>
+            <ion-card-title>{{ 'edit.section.noun' | translate }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="detail-grid">
+              <span class="detail-label">{{ 'edit.field.article' | translate }}</span>
+              <span>{{ result()!.nounDetails!.article }}</span>
+              <span class="detail-label">{{ 'edit.field.plural' | translate }}</span>
+              <span>{{ result()!.nounDetails!.plural }}</span>
+            </div>
+            <div class="deklination-block">
+              <p class="dek-title">{{ 'ai.modal.bestimmt' | translate }}</p>
+              @for (c of objectKeys(result()!.nounDetails!.deklinationBestimmt); track c) {
+                <div class="dek-row">
+                  <span class="dek-case">{{ ('grammar.' + c) | translate }}</span>
+                  <span>{{ $any(result()!.nounDetails!.deklinationBestimmt)[c] }}</span>
+                </div>
+              }
+            </div>
+            <div class="deklination-block">
+              <p class="dek-title">{{ 'ai.modal.unbestimmt' | translate }}</p>
+              @for (c of objectKeys(result()!.nounDetails!.deklinationUnbestimmt); track c) {
+                <div class="dek-row">
+                  <span class="dek-case">{{ ('grammar.' + c) | translate }}</span>
+                  <span>{{ $any(result()!.nounDetails!.deklinationUnbestimmt)[c] }}</span>
+                </div>
+              }
+            </div>
+          </ion-card-content>
+        </ion-card>
+      }
+
+      <!-- Verb details -->
+      @if (result()!.wordType === 'verb' && result()!.verbDetails) {
+        <ion-card class="detail-card">
+          <ion-card-header>
+            <ion-card-title>{{ 'edit.section.verb' | translate }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="detail-grid">
+              <span class="detail-label">{{ 'edit.field.hilfsverb' | translate }}</span>
+              <span>{{ result()!.verbDetails!.hilfsverb }}</span>
+              <span class="detail-label">{{ 'edit.field.separable' | translate }}</span>
+              <span>{{ result()!.verbDetails!.isSeparable ? '✓' : '✗' }}</span>
+              <span class="detail-label">{{ 'edit.field.regular' | translate }}</span>
+              <span>{{ result()!.verbDetails!.isRegular ? '✓' : '✗' }}</span>
+            </div>
+            <p class="tense-title">{{ 'ai.modal.present' | translate }}</p>
+            <div class="conjugation-grid">
+              @for (pronoun of objectKeys(result()!.verbDetails!.present); track pronoun) {
+                <span class="pronoun">{{ pronoun }}</span>
+                <span>{{ $any(result()!.verbDetails!.present)[pronoun] }}</span>
+              }
+            </div>
+          </ion-card-content>
+        </ion-card>
+      }
+
+      <!-- Adjective details -->
+      @if (result()!.wordType === 'adjective' && result()!.adjectiveDetails) {
+        <ion-card class="detail-card">
+          <ion-card-header>
+            <ion-card-title>{{ 'edit.section.adjective' | translate }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="detail-grid">
+              <span class="detail-label">{{ 'edit.field.komparativ' | translate }}</span>
+              <span>{{ result()!.adjectiveDetails!.komparativ }}</span>
+              <span class="detail-label">{{ 'edit.field.superlativ' | translate }}</span>
+              <span>{{ result()!.adjectiveDetails!.superlativ }}</span>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      }
+
+      @if (errorMsg()) {
+        <p class="error-msg">{{ errorMsg() }}</p>
+      }
+
+      <!-- Action buttons -->
+      <div class="action-row">
+        <ion-button fill="outline" (click)="reset()">
+          <ion-icon name="refresh-outline" slot="start"></ion-icon>
+          {{ 'ai.modal.retry' | translate }}
+        </ion-button>
+        <ion-button (click)="save()" color="success">
+          <ion-icon name="save" slot="start"></ion-icon>
+          {{ 'ai.modal.save' | translate }}
+        </ion-button>
+      </div>
+    </div>
+  }
+
+  <!-- ── STEP: SAVING ────────────────────────────────────────────────────── -->
+  @if (step() === 'saving') {
+    <div class="step-loading">
+      <ion-spinner name="crescent" color="success"></ion-spinner>
+      <p>{{ 'ai.modal.saving' | translate }}</p>
+    </div>
+  }
+
+</ion-content>

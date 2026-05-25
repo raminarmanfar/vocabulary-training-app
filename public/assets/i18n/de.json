@@ -246,5 +246,28 @@
   "common": {
     "cancel": "Abbrechen",
     "delete": "Löschen"
+  },
+  "ai": {
+    "fab": { "tooltip": "Mit KI hinzufügen" },
+    "modal": {
+      "title":          "KI-Vokabel",
+      "hint":           "Gib ein deutsches Wort ein und wähle die Wortart. Die KI erstellt den vollständigen Vokabeleintrag.",
+      "wordLabel":      "Deutsches Wort",
+      "wordPlaceholder":"z.B. laufen",
+      "typeLabel":      "Wortart",
+      "generate":       "Generieren",
+      "generating":     "Vokabel wird generiert…",
+      "retry":          "Erneut versuchen",
+      "save":           "In Bibliothek speichern",
+      "saving":         "Wird gespeichert…",
+      "examples":       "Beispielsätze",
+      "bestimmt":       "Deklination mit bestimmtem Artikel",
+      "unbestimmt":     "Deklination mit unbestimmtem Artikel",
+      "present":        "Präsens"
+    },
+    "error": {
+      "unknown":    "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
+      "saveFailed": "Speichern fehlgeschlagen. Bitte versuche es erneut."
+    }
   }
 }

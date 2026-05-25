@@ -4,15 +4,17 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel,
-  IonBadge, IonIcon, IonFab, IonFabButton, IonSearchbar,
+  IonBadge, IonIcon, IonFab, IonFabButton, IonFabList, IonSearchbar,
   IonPopover, IonCheckbox, IonButton,
-  IonButtons, IonBackButton, IonFooter
+  IonButtons, IonBackButton, IonFooter,
+  ModalController
 } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { add, checkmarkCircle, ellipseOutline, chevronDownOutline } from 'ionicons/icons';
+import { add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles } from 'ionicons/icons';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { Vocabulary, WordType, CefrLevel } from '../../models/vocabulary.model';
+import { AiVocabModalComponent } from '../../components/ai-vocab-modal/ai-vocab-modal.component';
 
 @Component({
   selector: 'app-vocabularies-list',
@@ -22,7 +24,7 @@ import { Vocabulary, WordType, CefrLevel } from '../../models/vocabulary.model';
   imports: [
     FormsModule,
     IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel,
-    IonBadge, IonIcon, IonFab, IonFabButton, IonSearchbar,
+    IonBadge, IonIcon, IonFab, IonFabButton, IonFabList, IonSearchbar,
     IonPopover, IonCheckbox, IonButton,
     IonButtons, IonBackButton, IonFooter,
     TranslatePipe
@@ -31,6 +33,7 @@ import { Vocabulary, WordType, CefrLevel } from '../../models/vocabulary.model';
 export class VocabulariesListPage implements OnInit {
   private router = inject(Router);
   private vocabService = inject(VocabularyService);
+  private modalCtrl = inject(ModalController);
 
   readonly allWordTypeValues: WordType[] = ['noun', 'verb', 'adjective', 'adverb', 'preposition', 'conjunction', 'pronoun', 'other'];
   readonly allLevelValues: CefrLevel[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
@@ -115,7 +118,7 @@ export class VocabulariesListPage implements OnInit {
   ];
 
   constructor() {
-    addIcons({ add, checkmarkCircle, ellipseOutline, chevronDownOutline });
+    addIcons({ add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles });
     effect(() => localStorage.setItem('filter_types', JSON.stringify(this.filterTypes())));
     effect(() => localStorage.setItem('filter_levels', JSON.stringify(this.filterLevels())));
     effect(() => localStorage.setItem('filter_learned', this.filterLearned()));
@@ -132,6 +135,18 @@ export class VocabulariesListPage implements OnInit {
 
   addNew() {
     this.router.navigate(['/edit-vocabulary', 'new']);
+  }
+
+  async addWithAi() {
+    const modal = await this.modalCtrl.create({
+      component: AiVocabModalComponent,
+      breakpoints: [0, 0.75, 1],
+      initialBreakpoint: 0.75,
+      handleBehavior: 'cycle',
+    });
+    await modal.present();
+    // No extra action needed; the modal saves to the database internally
+    // and VocabularyService.save() triggers a reload via BehaviorSubject.
   }
 
   goBack() {
