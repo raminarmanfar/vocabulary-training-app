@@ -149,6 +149,19 @@
         @if (selectedMonth()) {
           <h3 class="list-heading">{{ selectedMonthLabel() }}</h3>
 
+          <!-- Month calendar with highlighted training days -->
+          <ion-datetime
+            presentation="date"
+            [firstDayOfWeek]="1"
+            size="cover"
+            color="success"
+            [readonly]="true"
+            [min]="selectedMonthFirstDay()!"
+            [max]="selectedMonthLastDay()!"
+            [value]="selectedMonthFirstDay()!"
+            [highlightedDates]="highlightedDates()">
+          </ion-datetime>
+
           @if (monthlyReport().sessionCount === 0) {
             <p class="ion-text-center ion-padding" style="color: var(--ion-color-medium)">
               {{ 'trainSummary.noSessionsThisMonth' | translate }}

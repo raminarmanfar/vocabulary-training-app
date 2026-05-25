@@ -118,6 +118,19 @@ export class TrainSummaryPage implements OnInit {
     });
   });
 
+  selectedMonthFirstDay = computed(() => {
+    const m = this.selectedMonth();
+    return m ? `${m}-01` : null;
+  });
+
+  selectedMonthLastDay = computed(() => {
+    const m = this.selectedMonth();
+    if (!m) return null;
+    const [y, mo] = m.split('-').map(Number);
+    const lastDay = new Date(y, mo, 0).getDate();
+    return `${m}-${String(lastDay).padStart(2, '0')}`;
+  });
+
   selectedMonthLabel = computed(() => {
     const m = this.selectedMonth();
     if (!m) return '';
