@@ -202,6 +202,8 @@
     "present3": "er/sie/es",
     "past": "Prät.",
     "perfect": "Perf.",
+    "learned": "Learned",
+    "notLearned": "Not Learned",
     "details": "Details",
     "markLearned": "Mark as Learned",
     "markUnlearned": "Mark as Unlearned",

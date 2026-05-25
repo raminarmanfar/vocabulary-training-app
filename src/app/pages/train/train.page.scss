@@ -79,11 +79,27 @@
   flex-direction: column;
 }
 
+// Transparent full-size overlay — catches taps that shadow-DOM Ionic components
+// swallow on Android; sits behind all content (z-index 0) so interactive
+// elements above it still work normally.
+.flip-back-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  cursor: pointer;
+}
+
 .back-scroll {
   padding: 14px 16px 6px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+// Re-enable touch on interactive children inside back-scroll
+.tts-btn,
+.back-top-row ion-button {
+  pointer-events: auto;
 }
 
 .back-top-row {
@@ -98,11 +114,24 @@
   gap: 4px;
 }
 
-.small-chip {
-  height: 24px;
+// Plain <span> chips — avoids ion-chip swallowing touch events on Android
+.word-chip {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 16px;
   font-size: 0.75rem;
-  --padding-start: 8px;
-  --padding-end: 8px;
+  font-weight: 500;
+  color: #fff;
+
+  &.chip-primary   { background: var(--ion-color-primary); }
+  &.chip-success   { background: var(--ion-color-success); }
+  &.chip-warning   { background: var(--ion-color-warning); color: #000; }
+  &.chip-danger    { background: var(--ion-color-danger); }
+  &.chip-tertiary  { background: var(--ion-color-tertiary); }
+  &.chip-medium    { background: var(--ion-color-medium); }
+  &.chip-dark      { background: var(--ion-color-dark); }
+  &.chip-secondary { background: var(--ion-color-secondary); }
+  &.chip-light     { background: var(--ion-color-light); color: #000; }
 }
 
 .back-translation {

@@ -2,14 +2,14 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
-  IonButton, IonIcon, IonBadge, IonChip, IonLabel, IonImg
+  IonButton, IonIcon, IonBadge, IonImg
 } from '@ionic/angular/standalone';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ViewWillEnter } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   checkmarkCircleOutline, ellipseOutline, informationCircleOutline,
-  refreshOutline, arrowForwardOutline, schoolOutline, volumeHighOutline
+  refreshOutline, arrowForwardOutline, schoolOutline, volumeHighOutline, closeCircleOutline
 } from 'ionicons/icons';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { TtsService } from '../../services/tts.service';
@@ -21,7 +21,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   standalone: true,
   imports: [
     IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
-    IonButton, IonIcon, IonBadge, IonChip, IonLabel, IonImg,
+    IonButton, IonIcon, IonBadge, IonImg,
     TranslatePipe
   ],
   templateUrl: './train.page.html',
@@ -42,7 +42,7 @@ export class TrainPage implements OnInit, ViewWillEnter {
   done = signal(false);
 
   constructor() {
-    addIcons({ checkmarkCircleOutline, ellipseOutline, informationCircleOutline, refreshOutline, arrowForwardOutline, schoolOutline, volumeHighOutline });
+    addIcons({ checkmarkCircleOutline, ellipseOutline, informationCircleOutline, refreshOutline, arrowForwardOutline, schoolOutline, volumeHighOutline, closeCircleOutline });
   }
 
   async ngOnInit() {
@@ -88,19 +88,22 @@ export class TrainPage implements OnInit, ViewWillEnter {
     this.flipped.set(!this.flipped());
   }
 
-  async toggleLearned() {
+  async markLearned() {
     const v = this.current();
     if (!v) return;
-    await this.vocabService.toggleLearned(v);
-    // If we just marked it learned, move to next; if unlearned, stay on card
     if (!v.learned) {
-      this.pickRandom();
-    } else {
-      // re-fetch updated card state
-      const updated = await this.vocabService.getById(v._id);
-      this.current.set(updated);
-      this.flipped.set(true);
+      await this.vocabService.toggleLearned(v);
     }
+    this.pickRandom();
+  }
+
+  async markNotLearned() {
+    const v = this.current();
+    if (!v) return;
+    if (v.learned) {
+      await this.vocabService.toggleLearned(v);
+    }
+    this.pickRandom();
   }
 
   goToDetails() {
