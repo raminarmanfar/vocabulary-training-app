@@ -98,6 +98,14 @@
 // ── Calendar ─────────────────────────────────────────
 .cal-card {
   margin-bottom: 16px;
+  background: var(--ion-card-background, var(--ion-item-background, #fff));
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  overflow: hidden;
+}
+
+.cal-card-inner {
+  padding: 12px;
 }
 
 .cal-nav {

@@ -12,8 +12,8 @@
   <!-- ── CALENDAR / LIST MODE ───────────────────────── -->
   @if (mode() === 'list') {
 
-    <ion-card class="cal-card">
-      <ion-card-content>
+    <div class="cal-card">
+      <div class="cal-card-inner">
 
         <!-- Month navigation -->
         <div class="cal-nav">
@@ -39,6 +39,7 @@
                 <button class="cal-day has-sessions"
                         [class.selected]="selectedDate() === cell.dateStr"
                         [class.today]="isToday(cell.dateStr)"
+                        (touchend)="$event.preventDefault(); selectDate(cell.dateStr)"
                         (click)="selectDate(cell.dateStr)">
                   <span class="cal-day-num">{{ cell.date.getDate() }}</span>
                   <span class="cal-dot"></span>
@@ -55,8 +56,8 @@
           }
         </div>
 
-      </ion-card-content>
-    </ion-card>
+      </div>
+    </div>
 
     <!-- Empty state -->
     @if (sessions().length === 0) {
