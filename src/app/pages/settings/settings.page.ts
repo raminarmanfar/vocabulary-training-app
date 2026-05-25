@@ -294,6 +294,16 @@ export class SettingsPage {
     const { role } = await alert.onDidDismiss();
     if (role !== 'confirm') return;
 
+    // Notify user immediately then run in background (no await)
+    this.toast.set({
+      open: true,
+      message: this.translate.instant('settings.data.enrichStarted', { count: toEnrich.length }),
+      color: 'secondary'
+    });
+    this.runEnrichment(toEnrich);
+  }
+
+  private async runEnrichment(toEnrich: Vocabulary[]) {
     this.enriching.set(true);
     this.enrichCount.set(0);
     this.enrichTotal.set(toEnrich.length);

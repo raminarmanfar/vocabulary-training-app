@@ -184,7 +184,8 @@
       "enrichTitle": "Vokabeln anreichern",
       "enrichMsg": "{{count}} Vokabeln benötigen Anreicherung (fehlende Übersetzungen oder Synonyme). Die KI wird für jede aufgerufen. Fortfahren?",
       "enrichDone": "{{count}} Vokabeln angereichert",
-      "enrichNone": "Alle Vokabeln sind bereits vollständig angereichert"
+      "enrichNone": "Alle Vokabeln sind bereits vollständig angereichert",
+      "enrichStarted": "Anreicherung gestartet — {{count}} Vokabeln werden im Hintergrund verarbeitet"
     },
     "comingSoon": "Weitere Einstellungen folgen bald."
   },

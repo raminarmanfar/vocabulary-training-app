@@ -205,7 +205,8 @@
       "enrichTitle": "Kelimeleri zenginleştir",
       "enrichMsg": "{{count}} kelime zenginleştirme gerektiriyor (eksik çeviriler veya eş anlamlılar). Her biri için yapay zeka çağrılacak. Devam edilsin mi?",
       "enrichDone": "{{count}} kelime zenginleştirildi",
-      "enrichNone": "Tüm kelimeler zaten tam olarak zenginleştirilmiş"
+      "enrichNone": "Tüm kelimeler zaten tam olarak zenginleştirilmiş",
+      "enrichStarted": "Zenginleştirme başladı — {{count}} kelime arka planda işlenecek"
     },
     "comingSoon": "Daha fazla ayar yakında."
   },
