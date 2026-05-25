@@ -6,7 +6,7 @@ import {
 } from '@ionic/angular/standalone';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { bookOutline, helpCircleOutline, personOutline, settingsOutline, barbellOutline } from 'ionicons/icons';
+import { bookOutline, helpCircleOutline, personOutline, settingsOutline, barbellOutline, statsChartOutline } from 'ionicons/icons';
 
 interface Tile {
   labelKey: string;
@@ -29,15 +29,16 @@ interface Tile {
 })
 export class DashboardPage {
   tiles: Tile[] = [
-    { labelKey: 'dashboard.tiles.vocabularies.label', icon: 'book-outline',         color: 'primary',  route: '/vocabularies', descKey: 'dashboard.tiles.vocabularies.description' },
-    { labelKey: 'dashboard.tiles.train.label',        icon: 'barbell-outline',       color: 'success',  route: '/train',        descKey: 'dashboard.tiles.train.description' },
-    { labelKey: 'dashboard.tiles.quiz.label',         icon: 'help-circle-outline',  color: 'warning',  route: '/quiz',         descKey: 'dashboard.tiles.quiz.description' },
-    { labelKey: 'dashboard.tiles.about.label',        icon: 'person-outline',       color: 'tertiary', route: '/about',        descKey: 'dashboard.tiles.about.description' },
-    { labelKey: 'dashboard.tiles.settings.label',     icon: 'settings-outline',     color: 'medium',   route: '/settings',     descKey: 'dashboard.tiles.settings.description' }
+    { labelKey: 'dashboard.tiles.vocabularies.label',    icon: 'book-outline',         color: 'primary',  route: '/vocabularies',  descKey: 'dashboard.tiles.vocabularies.description' },
+    { labelKey: 'dashboard.tiles.train.label',             icon: 'barbell-outline',      color: 'success',  route: '/train',         descKey: 'dashboard.tiles.train.description' },
+    { labelKey: 'dashboard.tiles.trainHistory.label',      icon: 'stats-chart-outline',  color: 'success',  route: '/train-summary', descKey: 'dashboard.tiles.trainHistory.description' },
+    { labelKey: 'dashboard.tiles.quiz.label',              icon: 'help-circle-outline',  color: 'warning',  route: '/quiz',          descKey: 'dashboard.tiles.quiz.description' },
+    { labelKey: 'dashboard.tiles.about.label',             icon: 'person-outline',       color: 'tertiary', route: '/about',         descKey: 'dashboard.tiles.about.description' },
+    { labelKey: 'dashboard.tiles.settings.label',          icon: 'settings-outline',     color: 'medium',   route: '/settings',      descKey: 'dashboard.tiles.settings.description' }
   ];
 
   constructor(private router: Router, private translate: TranslateService) {
-    addIcons({ bookOutline, helpCircleOutline, personOutline, settingsOutline, barbellOutline });
+    addIcons({ bookOutline, helpCircleOutline, personOutline, settingsOutline, barbellOutline, statsChartOutline });
   }
 
   navigate(route: string) {
