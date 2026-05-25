@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
   IonList, IonItem, IonLabel, IonIcon, IonSelect, IonSelectOption,
@@ -6,7 +6,6 @@ import {
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { firstValueFrom } from 'rxjs';
 import { addIcons } from 'ionicons';
 import { languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline } from 'ionicons/icons';
 import { LanguageService, AppLanguage } from '../../services/language.service';
@@ -14,8 +13,7 @@ import { VocabularyService } from '../../services/vocabulary.service';
 import { QuizSetService } from '../../services/quiz-set.service';
 import { ThemeService } from '../../services/theme.service';
 import { DatabaseService } from '../../services/database.service';
-import { VocabAiService } from '../../services/vocab-ai.service';
-import { Vocabulary } from '../../models/vocabulary.model';
+import { EnrichmentService } from '../../services/enrichment.service';
 
 @Component({
   selector: 'app-settings',
@@ -85,17 +83,17 @@ import { Vocabulary } from '../../models/vocabulary.model';
           <ion-icon name="sparkles-outline" slot="start" color="secondary"></ion-icon>
           <ion-label>
             {{ 'settings.data.enrichVocabs' | translate }}
-            @if (enriching()) {
-              <p style="font-size:0.78rem;margin-top:2px">{{ enrichCount() }} / {{ enrichTotal() }}</p>
+            @if (enrichmentService.enriching()) {
+              <p style="font-size:0.78rem;margin-top:2px">{{ enrichmentService.enrichCount() }} / {{ enrichmentService.enrichTotal() }}</p>
             }
           </ion-label>
-          <ion-button slot="end" fill="outline" color="secondary" [disabled]="enriching()" (click)="enrichVocabs()">
+          <ion-button slot="end" fill="outline" color="secondary" [disabled]="enrichmentService.enriching()" (click)="enrichVocabs()">
             {{ 'settings.data.enrich' | translate }}
           </ion-button>
         </ion-item>
-        @if (enriching()) {
+        @if (enrichmentService.enriching()) {
           <ion-progress-bar
-            [value]="enrichTotal() ? enrichCount() / enrichTotal() : 0"
+            [value]="enrichmentService.enrichTotal() ? enrichmentService.enrichCount() / enrichmentService.enrichTotal() : 0"
             color="secondary"
             style="height:3px">
           </ion-progress-bar>
@@ -145,19 +143,26 @@ import { Vocabulary } from '../../models/vocabulary.model';
 export class SettingsPage {
   langService = inject(LanguageService);
   themeService = inject(ThemeService);
+  readonly enrichmentService = inject(EnrichmentService);
   private vocabService = inject(VocabularyService);
   private quizSetService = inject(QuizSetService);
   private dbService = inject(DatabaseService);
-  private aiService = inject(VocabAiService);
   private translate = inject(TranslateService);
   private alertCtrl = inject(AlertController);
 
   toast = signal<{ open: boolean; message: string; color: string }>({ open: false, message: '', color: 'success' });
-  enriching = signal(false);
-  enrichCount = signal(0);
-  enrichTotal = signal(0);
 
-  constructor() { addIcons({ languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline }); }
+  constructor() {
+    addIcons({ languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline });
+    // Surface the done-toast from the background service when the page is active
+    effect(() => {
+      const pending = this.enrichmentService.pendingToast();
+      if (pending) {
+        this.toast.set(pending);
+        this.enrichmentService.pendingToast.set(null);
+      }
+    });
+  }
 
   onLangChange(lang: AppLanguage) {
     this.langService.setLanguage(lang);
@@ -294,57 +299,12 @@ export class SettingsPage {
     const { role } = await alert.onDidDismiss();
     if (role !== 'confirm') return;
 
-    // Notify user immediately then run in background (no await)
     this.toast.set({
       open: true,
       message: this.translate.instant('settings.data.enrichStarted', { count: toEnrich.length }),
       color: 'secondary'
     });
-    this.runEnrichment(toEnrich);
-  }
-
-  private async runEnrichment(toEnrich: Vocabulary[]) {
-    this.enriching.set(true);
-    this.enrichCount.set(0);
-    this.enrichTotal.set(toEnrich.length);
-    let enrichedCount = 0;
-    const total = toEnrich.length;
-
-    for (let i = 0; i < total; i++) {
-      const vocab = toEnrich[i];
-      this.enrichCount.set(i + 1);
-      try {
-        const response = await firstValueFrom(
-          this.aiService.generate(vocab.german, vocab.wordType !== 'unknown' ? vocab.wordType : undefined)
-        );
-        // Spread from original vocab — preserves `learned` and all other fields unchanged
-        const updated: Vocabulary = { ...vocab };
-        if (!updated.turkish && response.turkish) updated.turkish = response.turkish;
-        if (!updated.persian && response.persian) updated.persian = response.persian;
-        if (!updated.synonyms?.length && response.synonyms?.length) updated.synonyms = response.synonyms;
-        if (!updated.antonyms?.length && response.antonyms?.length) updated.antonyms = response.antonyms;
-        if (updated.examples?.length && response.examples?.length) {
-          updated.examples = updated.examples.map((ex, idx) => {
-            const aiEx = response.examples[idx];
-            if (!aiEx) return ex;
-            return { ...ex, turkish: ex.turkish ?? aiEx.turkish, persian: ex.persian ?? aiEx.persian };
-          });
-        }
-        // Save immediately with aiEnriched flag so interruption won't re-process this vocab
-        await this.dbService.bulkSave([{ ...updated, aiEnriched: true }]);
-        enrichedCount++;
-      } catch { /* skip failed */ }
-      await new Promise(r => setTimeout(r, 100));
-    }
-
-    await this.vocabService.load();
-    this.enriching.set(false);
-    this.enrichCount.set(0);
-    this.enrichTotal.set(0);
-    this.toast.set({
-      open: true,
-      message: this.translate.instant('settings.data.enrichDone', { count: enrichedCount }),
-      color: 'success'
-    });
+    // Fire-and-forget — the singleton service keeps state alive across navigation
+    this.enrichmentService.start(toEnrich);
   }
 }
