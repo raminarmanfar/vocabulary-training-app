@@ -9,7 +9,7 @@
       "vocabularies": { "label": "Vokabeln",      "description": "Wortliste durchsuchen & verwalten" },
       "train":        { "label": "Trainieren",    "description": "Karteikarten üben, um Wörter zu lernen" },
       "quiz":         { "label": "Quiz",          "description": "Wissen mit Multiple-Choice testen" },
-      "about":        { "label": "Über uns",      "description": "Über diese App" },
+      "about":        { "label": "Über mich",      "description": "Über diese App" },
       "settings":     { "label": "Einstellungen", "description": "App-Einstellungen & Datenverwaltung" }
     }
   },
@@ -173,7 +173,7 @@
     "comingSoon": "Weitere Einstellungen folgen bald."
   },
   "about": {
-    "title":    "Über uns",
+    "title":    "Über mich",
     "subtitle": "Lerne Deutsche Vokabeln – offline, immer.",
     "bio":      "Entwickelt von Ramin Armanfar, einem Senior Full-Stack-Softwareentwickler mit Leidenschaft für moderne, benutzerfreundliche Anwendungen.",
     "linkedin": "Auf LinkedIn vernetzen",
