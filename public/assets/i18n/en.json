@@ -277,6 +277,12 @@
     "error": {
       "unknown":    "An unexpected error occurred. Please try again.",
       "saveFailed": "Failed to save the vocabulary. Please try again."
+    },
+    "duplicate": {
+      "header":  "Word Already Exists",
+      "message": "\"{{word}}\" is already in your library. Do you want to replace it with the new AI-generated entry?",
+      "cancel":  "Keep Existing",
+      "replace": "Replace"
     }
   }
 }

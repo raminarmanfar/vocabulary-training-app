@@ -5,14 +5,14 @@ import {
   IonInput, IonSelect, IonSelectOption, IonButton, IonButtons,
   IonIcon, IonSpinner, IonList, IonBadge,
   IonCard, IonCardHeader, IonCardTitle, IonCardContent,
-  ModalController, ToastController
+  AlertController, ModalController, ToastController
 } from '@ionic/angular/standalone';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { sparkles, save, close, refreshOutline, checkmarkCircle } from 'ionicons/icons';
 import { VocabAiService, AiVocabResponse } from '../../services/vocab-ai.service';
 import { VocabularyService } from '../../services/vocabulary.service';
-import { WordType, CefrLevel } from '../../models/vocabulary.model';
+import { WordType, CefrLevel, Vocabulary } from '../../models/vocabulary.model';
 
 type ModalStep = 'input' | 'loading' | 'preview' | 'saving';
 
@@ -33,6 +33,8 @@ type ModalStep = 'input' | 'loading' | 'preview' | 'saving';
 export class AiVocabModalComponent {
   private modalCtrl   = inject(ModalController);
   private toastCtrl   = inject(ToastController);
+  private alertCtrl   = inject(AlertController);
+  private translate   = inject(TranslateService);
   private aiService   = inject(VocabAiService);
   private vocabService = inject(VocabularyService);
 
@@ -97,9 +99,33 @@ export class AiVocabModalComponent {
     const res = this.result();
     if (!res) return;
 
+    // Check for duplicate by German word (case-insensitive)
+    const term = res.german.trim().toLowerCase();
+    const existing = this.vocabService.vocabsSubject.value
+      .find((v: Vocabulary) => v.german.trim().toLowerCase() === term);
+
+    if (existing) {
+      const alert = await this.alertCtrl.create({
+        header: this.translate.instant('ai.duplicate.header'),
+        message: this.translate.instant('ai.duplicate.message', { word: existing.german }),
+        buttons: [
+          { text: this.translate.instant('ai.duplicate.cancel'), role: 'cancel', handler: () => this.step.set('preview') },
+          { text: this.translate.instant('ai.duplicate.replace'), handler: () => this.doSave(res, existing._id) }
+        ]
+      });
+      this.step.set('preview');
+      await alert.present();
+      return;
+    }
+
+    await this.doSave(res);
+  }
+
+  private async doSave(res: AiVocabResponse, existingId?: string) {
     this.step.set('saving');
     try {
       const vocab = this.aiService.toVocabulary(res);
+      if (existingId) vocab._id = existingId;
       const saved = await this.vocabService.save(vocab);
       const toast = await this.toastCtrl.create({
         message: '',

@@ -277,6 +277,12 @@
     "error": {
       "unknown":    "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
       "saveFailed": "Speichern fehlgeschlagen. Bitte versuche es erneut."
+    },
+    "duplicate": {
+      "header":  "Wort existiert bereits",
+      "message": "\"{{word}}\" ist bereits in deiner Bibliothek. Möchtest du es durch den neuen KI-generierten Eintrag ersetzen?",
+      "cancel":  "Bestehenden behalten",
+      "replace": "Ersetzen"
     }
   }
 }
