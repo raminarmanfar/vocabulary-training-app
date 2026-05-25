@@ -193,7 +193,20 @@
   },
   "train": {
     "title": "Train",
-    "comingSoon": "Flashcard training coming soon."
+    "tapToReveal": "Tap to reveal",
+    "remaining": "{{count}} cards remaining",
+    "plural": "Plural",
+    "komparativ": "Comparative",
+    "superlativ": "Superlative",
+    "details": "Details",
+    "markLearned": "Mark as Learned",
+    "markUnlearned": "Mark as Unlearned",
+    "next": "Next card",
+    "restart": "Start over",
+    "allLearned": {
+      "heading": "All done!",
+      "message": "You have learned all the vocabularies. Great job!"
+    }
   },
   "quiz": {
     "title": "Quiz",

@@ -193,7 +193,20 @@
   },
   "train": {
     "title": "Trainieren",
-    "comingSoon": "Karteikarten-Training kommt bald."
+    "tapToReveal": "Tippe zum Aufdecken",
+    "remaining": "{{count}} Karten übrig",
+    "plural": "Plural",
+    "komparativ": "Komparativ",
+    "superlativ": "Superlativ",
+    "details": "Details",
+    "markLearned": "Als gelernt markieren",
+    "markUnlearned": "Als ungelernt markieren",
+    "next": "Nächste Karte",
+    "restart": "Neu starten",
+    "allLearned": {
+      "heading": "Alles erledigt!",
+      "message": "Du hast alle Vokabeln gelernt. Gut gemacht!"
+    }
   },
   "quiz": {
     "title": "Quiz",

@@ -1,40 +1,114 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
-  IonIcon, IonCard, IonCardContent
+  IonButton, IonIcon, IonBadge, IonChip, IonLabel
 } from '@ionic/angular/standalone';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { ViewWillEnter } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { constructOutline } from 'ionicons/icons';
+import {
+  checkmarkCircleOutline, ellipseOutline, informationCircleOutline,
+  refreshOutline, arrowForwardOutline, schoolOutline
+} from 'ionicons/icons';
+import { VocabularyService } from '../../services/vocabulary.service';
+import { Vocabulary } from '../../models/vocabulary.model';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-train',
   standalone: true,
   imports: [
     IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
-    IonIcon, IonCard, IonCardContent,
+    IonButton, IonIcon, IonBadge, IonChip, IonLabel,
     TranslatePipe
   ],
-  template: `
-    <ion-header>
-      <ion-toolbar color="success">
-        <ion-buttons slot="start">
-          <ion-back-button defaultHref="/dashboard"></ion-back-button>
-        </ion-buttons>
-        <ion-title>{{ 'train.title' | translate }}</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content class="ion-padding ion-text-center">
-      <ion-card style="margin-top:40px">
-        <ion-card-content>
-          <ion-icon name="construct-outline" style="font-size:64px;color:var(--ion-color-medium)"></ion-icon>
-          <p>{{ 'train.comingSoon' | translate }}</p>
-        </ion-card-content>
-      </ion-card>
-    </ion-content>
-  `
+  templateUrl: './train.page.html',
+  styleUrls: ['./train.page.scss']
 })
-export class TrainPage {
-  constructor() { addIcons({ constructOutline }); }
+export class TrainPage implements OnInit, ViewWillEnter {
+  private router = inject(Router);
+  private vocabService = inject(VocabularyService);
+  private translate = inject(TranslateService);
+
+  private allVocabs = toSignal(this.vocabService.vocabs$, { initialValue: [] as Vocabulary[] });
+
+  unlearned = computed(() => this.allVocabs().filter(v => !v.learned));
+
+  current = signal<Vocabulary | null>(null);
+  flipped = signal(false);
+  done = signal(false);
+
+  constructor() {
+    addIcons({ checkmarkCircleOutline, ellipseOutline, informationCircleOutline, refreshOutline, arrowForwardOutline, schoolOutline });
+  }
+
+  async ngOnInit() {
+    await this.vocabService.load();
+    this.pickRandom();
+  }
+
+  async ionViewWillEnter() {
+    await this.vocabService.load();
+    this.pickRandom();
+  }
+
+  pickRandom() {
+    const pool = this.unlearned();
+    if (!pool.length) {
+      this.current.set(null);
+      this.done.set(true);
+      return;
+    }
+    // Exclude current card if possible so we don't get the same one twice in a row
+    const currentId = this.current()?._id;
+    const candidates = pool.length > 1 ? pool.filter(v => v._id !== currentId) : pool;
+    const next = candidates[Math.floor(Math.random() * candidates.length)];
+    this.current.set(next);
+    this.flipped.set(false);
+    this.done.set(false);
+  }
+
+  flip() {
+    this.flipped.set(!this.flipped());
+  }
+
+  async toggleLearned() {
+    const v = this.current();
+    if (!v) return;
+    await this.vocabService.toggleLearned(v);
+    // If we just marked it learned, move to next; if unlearned, stay on card
+    if (!v.learned) {
+      this.pickRandom();
+    } else {
+      // re-fetch updated card state
+      const updated = await this.vocabService.getById(v._id);
+      this.current.set(updated);
+      this.flipped.set(true);
+    }
+  }
+
+  goToDetails() {
+    const v = this.current();
+    if (v) this.router.navigate(['/vocabulary-details', v._id]);
+  }
+
+  restart() {
+    this.done.set(false);
+    this.pickRandom();
+  }
+
+  levelColor(level: string): string {
+    const map: Record<string, string> = { A1: 'success', A2: 'success', B1: 'warning', B2: 'warning', C1: 'danger', C2: 'danger' };
+    return map[level] ?? 'medium';
+  }
+
+  wordTypeColor(type: string): string {
+    const map: Record<string, string> = {
+      noun: 'primary', verb: 'success', adjective: 'warning',
+      adverb: 'tertiary', preposition: 'medium', conjunction: 'dark',
+      pronoun: 'secondary', other: 'light'
+    };
+    return map[type] ?? 'medium';
+  }
 }
