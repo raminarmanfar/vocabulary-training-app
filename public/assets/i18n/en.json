@@ -47,6 +47,14 @@
       "message": "Are you sure you want to delete this vocabulary?",
       "cancel":  "Cancel",
       "confirm": "Delete"
+    },
+    "regenerate": {
+      "header":  "Regenerate with AI",
+      "message": "This will replace the current content with a new AI-generated entry. Continue?",
+      "cancel":  "Cancel",
+      "confirm": "Regenerate",
+      "success": "Vocabulary updated!",
+      "error":   "Regeneration failed. Please try again."
     }
   },
   "edit": {

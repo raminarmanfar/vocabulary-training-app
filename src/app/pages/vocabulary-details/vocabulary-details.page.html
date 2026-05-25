@@ -5,6 +5,13 @@
     </ion-buttons>
     <ion-title>{{ vocab()?.german }}</ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="confirmRegenerate()" [disabled]="regenerating()" title="Regenerate with AI">
+        @if (regenerating()) {
+          <ion-spinner name="crescent" slot="icon-only"></ion-spinner>
+        } @else {
+          <ion-icon name="sparkles" slot="icon-only"></ion-icon>
+        }
+      </ion-button>
       <ion-button (click)="edit()">
         <ion-icon name="create" slot="icon-only"></ion-icon>
       </ion-button>

@@ -47,6 +47,14 @@
       "message": "Bist du sicher, dass du diese Vokabel löschen möchtest?",
       "cancel":  "Abbrechen",
       "confirm": "Löschen"
+    },
+    "regenerate": {
+      "header":  "Mit KI neu generieren",
+      "message": "Der aktuelle Inhalt wird durch einen neuen KI-generierten Eintrag ersetzt. Fortfahren?",
+      "cancel":  "Abbrechen",
+      "confirm": "Neu generieren",
+      "success": "Vokabel aktualisiert!",
+      "error":   "Generierung fehlgeschlagen. Bitte versuche es erneut."
     }
   },
   "edit": {
