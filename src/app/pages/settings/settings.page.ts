@@ -87,12 +87,13 @@ import { EnrichmentService } from '../../services/enrichment.service';
               <p style="font-size:0.78rem;margin-top:2px">{{ enrichmentService.enrichCount() }} / {{ enrichmentService.enrichTotal() }}</p>
             }
           </ion-label>
-          <ion-button slot="end" fill="outline" color="secondary" [disabled]="enrichmentService.enriching()" (click)="enrichVocabs()">
-            {{ 'settings.data.enrich' | translate }}
-          </ion-button>
           @if (enrichmentService.enriching()) {
             <ion-button slot="end" fill="clear" color="danger" (click)="enrichmentService.cancel()">
               {{ 'common.cancel' | translate }}
+            </ion-button>
+          } @else {
+            <ion-button slot="end" fill="outline" color="secondary" (click)="enrichVocabs()">
+              {{ 'settings.data.enrich' | translate }}
             </ion-button>
           }
         </ion-item>
