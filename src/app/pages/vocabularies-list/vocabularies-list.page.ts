@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -35,10 +35,30 @@ export class VocabulariesListPage implements OnInit {
   readonly allWordTypeValues: WordType[] = ['noun', 'verb', 'adjective', 'adverb', 'preposition', 'conjunction', 'pronoun', 'other'];
   readonly allLevelValues: CefrLevel[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
+  private loadTypes(): WordType[] {
+    try {
+      const saved = localStorage.getItem('filter_types');
+      if (saved) return JSON.parse(saved) as WordType[];
+    } catch {}
+    return [...this.allWordTypeValues];
+  }
+
+  private loadLevels(): CefrLevel[] {
+    try {
+      const saved = localStorage.getItem('filter_levels');
+      if (saved) return JSON.parse(saved) as CefrLevel[];
+    } catch {}
+    return [...this.allLevelValues];
+  }
+
+  private loadLearned(): 'all' | 'learned' | 'unlearned' {
+    return (localStorage.getItem('filter_learned') as 'all' | 'learned' | 'unlearned') || 'all';
+  }
+
   searchTerm = signal('');
-  filterTypes = signal<WordType[]>(['noun', 'verb', 'adjective', 'adverb', 'preposition', 'conjunction', 'pronoun', 'other']);
-  filterLevels = signal<CefrLevel[]>(['A1', 'A2', 'B1', 'B2', 'C1', 'C2']);
-  filterLearned = signal<'all' | 'learned' | 'unlearned'>('all');
+  filterTypes = signal<WordType[]>(this.loadTypes());
+  filterLevels = signal<CefrLevel[]>(this.loadLevels());
+  filterLearned = signal<'all' | 'learned' | 'unlearned'>(this.loadLearned());
 
   private allVocabs = toSignal(this.vocabService.vocabs$, { initialValue: [] as Vocabulary[] });
 
@@ -96,6 +116,9 @@ export class VocabulariesListPage implements OnInit {
 
   constructor() {
     addIcons({ add, checkmarkCircle, ellipseOutline, chevronDownOutline });
+    effect(() => localStorage.setItem('filter_types', JSON.stringify(this.filterTypes())));
+    effect(() => localStorage.setItem('filter_levels', JSON.stringify(this.filterLevels())));
+    effect(() => localStorage.setItem('filter_learned', this.filterLearned()));
   }
 
   async ngOnInit() {
