@@ -145,8 +145,10 @@ export class VocabulariesListPage implements OnInit {
       handleBehavior: 'cycle',
     });
     await modal.present();
-    // No extra action needed; the modal saves to the database internally
-    // and VocabularyService.save() triggers a reload via BehaviorSubject.
+    const { data, role } = await modal.onWillDismiss();
+    if (role === 'saved' && data?._id) {
+      this.router.navigate(['/vocabulary-details', data._id]);
+    }
   }
 
   goBack() {
