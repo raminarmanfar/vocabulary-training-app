@@ -226,7 +226,8 @@
     "tech": {
       "title": "ساخته شده با",
       "stack": "Ionic · Angular · Dexie (IndexedDB)"
-    }
+    },
+    "copyright": "© {{year}} Ramin Armanfar · v{{version}} · تمام حقوق محفوظ است."
   },
   "trainSummary": {
     "title": "خلاصه تمرین",

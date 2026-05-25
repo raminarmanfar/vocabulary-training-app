@@ -61,6 +61,7 @@ import { personCircleOutline, logoGithub, schoolOutline, logoLinkedin, codeSlash
         </ion-card-content>
       </ion-card>
 
+      <!-- Tech stack card -->
       <ion-card>
         <ion-card-header><ion-card-title>{{ 'about.features.title' | translate }}</ion-card-title></ion-card-header>
         <ion-card-content>
@@ -82,9 +83,16 @@ import { personCircleOutline, logoGithub, schoolOutline, logoLinkedin, codeSlash
           </ion-item>
         </ion-card-content>
       </ion-card>
+
+      <!-- Copyright footer -->
+      <p style="text-align:center;font-size:0.78rem;color:var(--ion-color-medium);margin:16px 0 24px">
+        {{ 'about.copyright' | translate:{ year: appYear, version: appVersion } }}
+      </p>
     </ion-content>
   `
 })
 export class AboutPage {
+  readonly appVersion = '1.0.0';
+  readonly appYear = 2026;
   constructor() { addIcons({ personCircleOutline, logoGithub, schoolOutline, logoLinkedin, codeSlashOutline, mailOutline }); }
 }

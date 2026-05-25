@@ -205,7 +205,8 @@
     "tech": {
       "title": "Built With",
       "stack": "Ionic · Angular · Dexie (IndexedDB)"
-    }
+    },
+    "copyright": "© {{year}} Ramin Armanfar · v{{version}} · All rights reserved."
   },
   "trainSummary": {
     "title": "Train Summary",

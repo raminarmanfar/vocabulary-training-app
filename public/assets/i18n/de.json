@@ -205,7 +205,8 @@
     "tech": {
       "title": "Erstellt mit",
       "stack": "Ionic · Angular · Dexie (IndexedDB)"
-    }
+    },
+    "copyright": "© {{year}} Ramin Armanfar · v{{version}} · Alle Rechte vorbehalten."
   },
   "trainSummary": {
     "title": "Trainingsübersicht",

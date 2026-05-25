@@ -226,7 +226,8 @@
     "tech": {
       "title": "Teknolojiler",
       "stack": "Ionic · Angular · Dexie (IndexedDB)"
-    }
+    },
+    "copyright": "© {{year}} Ramin Armanfar · v{{version}} · Tüm hakları saklıdır."
   },
   "trainSummary": {
     "title": "Antrenman Özeti",
