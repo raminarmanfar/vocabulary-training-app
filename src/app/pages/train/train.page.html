@@ -65,6 +65,9 @@
 
             <!-- English translation -->
             <div class="back-translation">{{ v.english }}</div>
+            @if (translation(); as t) {
+              <div class="back-translation-secondary">{{ t }}</div>
+            }
 
             <!-- Image -->
             @if (v.imagePath) {

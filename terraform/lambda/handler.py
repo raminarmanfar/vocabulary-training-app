@@ -64,6 +64,8 @@ Return a JSON object with exactly these fields:
 {{
   "german": "<the German word, capitalised if noun>",
   "english": "<English translation(s), comma-separated if multiple>",
+  "turkish": "<Turkish translation(s), comma-separated if multiple>",
+  "persian": "<Persian/Farsi translation(s), comma-separated if multiple>",
   {type_field_note},
   "level": "<CEFR level: A1 | A2 | B1 | B2 | C1 | C2>",
   "description": "<optional short grammar note or usage tip, or null>",
@@ -179,6 +181,7 @@ Return a JSON object with exactly these fields:
 Rules:
 - Return ONLY the raw JSON object. No markdown code blocks, no preamble.
 - All string values must be properly escaped JSON strings.
+- "english", "turkish", and "persian" fields must always be filled with accurate translations.
 - "level" must be one of: A1, A2, B1, B2, C1, C2 — choose based on typical learner exposure.
 - For verbs, provide exactly 3 example sentences: one in Präsens, one in Präteritum, one in Perfekt.
 - For nouns, provide exactly 3 example sentences: at least one must use the plural form of the noun.

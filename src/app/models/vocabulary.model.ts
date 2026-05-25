@@ -77,6 +77,8 @@ export interface Vocabulary {
   nounDetails?: NounDetails;
   verbDetails?: VerbDetails;
   adjectiveDetails?: AdjectiveDetails;
+  turkish?: string;
+  persian?: string;
   synonyms?: string[];
   antonyms?: string[];
   createdAt: string;

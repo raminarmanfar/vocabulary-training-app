@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, signal, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import {
@@ -15,6 +15,7 @@ import { create, trash, volumeHigh, checkmarkCircle, ellipseOutline, imageOutlin
 import { VocabularyService } from '../../services/vocabulary.service';
 import { TtsService } from '../../services/tts.service';
 import { VocabAiService } from '../../services/vocab-ai.service';
+import { LanguageService } from '../../services/language.service';
 import { Vocabulary, WordType } from '../../models/vocabulary.model';
 import { NounDetailComponent } from '../../components/noun-detail/noun-detail.component';
 import { VerbDetailComponent } from '../../components/verb-detail/verb-detail.component';
@@ -45,6 +46,7 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
   private toastCtrl = inject(ToastController);
   private translate = inject(TranslateService);
   private modalCtrl = inject(ModalController);
+  private langService = inject(LanguageService);
 
   @ViewChild(IonContent) private content!: IonContent;
 
@@ -52,6 +54,15 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
 
   vocab = signal<Vocabulary | null>(null);
   regenerating = signal(false);
+
+  translation = computed(() => {
+    const lang = this.langService.currentLang();
+    const v = this.vocab();
+    if (!v) return null;
+    if (lang === 'tr') return v.turkish ?? null;
+    if (lang === 'fa') return v.persian ?? null;
+    return null;
+  });
 
   constructor() {
     addIcons({ create, trash, volumeHigh, checkmarkCircle, ellipseOutline, imageOutline, sparkles });
@@ -139,6 +150,8 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
           nounDetails:      response.nounDetails ?? undefined,
           verbDetails:      response.verbDetails ?? undefined,
           adjectiveDetails: response.adjectiveDetails ?? undefined,
+          turkish:          response.turkish ?? undefined,
+          persian:          response.persian ?? undefined,
           synonyms:         response.synonyms ?? [],
           antonyms:         response.antonyms ?? [],
           updatedAt:        new Date().toISOString(),

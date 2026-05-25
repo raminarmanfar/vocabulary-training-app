@@ -16,6 +16,7 @@ import {
 import { VocabularyService } from '../../services/vocabulary.service';
 import { TtsService } from '../../services/tts.service';
 import { DatabaseService } from '../../services/database.service';
+import { LanguageService } from '../../services/language.service';
 import { Vocabulary } from '../../models/vocabulary.model';
 import { TrainSession, TrainSessionItem } from '../../models/train-session.model';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -37,6 +38,7 @@ export class TrainPage implements OnInit, OnDestroy, ViewWillEnter, ViewWillLeav
   private tts = inject(TtsService);
   private db = inject(DatabaseService);
   private translate = inject(TranslateService);
+  private langService = inject(LanguageService);
 
   private allVocabs = toSignal(this.vocabService.vocabs$, { initialValue: [] as Vocabulary[] });
 
@@ -46,6 +48,15 @@ export class TrainPage implements OnInit, OnDestroy, ViewWillEnter, ViewWillLeav
   flipped = signal(false);
   done = signal(false);
   elapsedSec = signal(0);
+
+  translation = computed(() => {
+    const lang = this.langService.currentLang();
+    const v = this.current();
+    if (!v) return null;
+    if (lang === 'tr') return v.turkish ?? null;
+    if (lang === 'fa') return v.persian ?? null;
+    return null;
+  });
 
   private timerInterval: ReturnType<typeof setInterval> | null = null;
   private appStateHandle: { remove: () => Promise<void> } | null = null;

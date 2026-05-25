@@ -40,6 +40,9 @@
               </div>
             </div>
             <p class="english-word">{{ v.english }}</p>
+            @if (translation(); as t) {
+              <p class="translation-word">{{ t }}</p>
+            }
 
             @if (v.wordType === 'noun' && v.nounDetails) {
               <div class="word-meta-row">

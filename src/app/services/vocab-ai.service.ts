@@ -10,6 +10,8 @@ import {
 export interface AiVocabResponse {
   german: string;
   english: string;
+  turkish?: string | null;
+  persian?: string | null;
   wordType: WordType;
   level: string;
   description?: string | null;
@@ -46,6 +48,8 @@ export class VocabAiService {
       level: response.level as Vocabulary['level'],
       description: response.description ?? undefined,
       examples: response.examples ?? [],
+      turkish: response.turkish ?? undefined,
+      persian: response.persian ?? undefined,
       learned: false,
       nounDetails: response.nounDetails ?? undefined,
       verbDetails: response.verbDetails ?? undefined,
