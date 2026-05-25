@@ -200,7 +200,8 @@
     "cards": "Karten geübt",
     "trainAgain": "Nochmal trainieren",
     "noSessions": "Noch keine Trainingssitzungen. Starte das Training, um deinen Verlauf hier zu sehen.",
-    "notFound": "Sitzung nicht gefunden."
+    "notFound": "Sitzung nicht gefunden.",
+    "mon": "Mo", "tue": "Di", "wed": "Mi", "thu": "Do", "fri": "Fr", "sat": "Sa", "sun": "So"
   },
   "train": {
     "title": "Trainieren",
