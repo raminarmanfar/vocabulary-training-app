@@ -25,6 +25,27 @@ def build_user_prompt(word: str, word_type: str | None) -> str:
         type_instruction = 'word type: auto-detect from the word itself'
         type_field_note = '"wordType": "<detect the correct type: noun | verb | adjective | adverb | preposition | conjunction | pronoun | other>"'
 
+    is_verb = word_type == "verb"
+    is_auto = word_type is None
+
+    if is_verb:
+        examples_schema = """[
+    { "german": "<example in Präsens (present tense)>",         "english": "<translation>" },
+    { "german": "<example in Präteritum (simple past)>",        "english": "<translation>" },
+    { "german": "<example in Perfekt (present perfect tense)>", "english": "<translation>" }
+  ]"""
+    elif is_auto:
+        examples_schema = """[
+    { "german": "<example sentence 1>", "english": "<translation>" },
+    { "german": "<example sentence 2>", "english": "<translation>" },
+    <if word is a verb, add a third example: { "german": "<Perfekt example>", "english": "<translation>" }>
+  ]"""
+    else:
+        examples_schema = """[
+    { "german": "<example sentence>", "english": "<translation>" },
+    { "german": "<second example>",  "english": "<translation>" }
+  ]"""
+
     base = f"""Generate a complete vocabulary entry for the German word "{word}" ({type_instruction}).
 
 Return a JSON object with exactly these fields:
@@ -35,10 +56,7 @@ Return a JSON object with exactly these fields:
   {type_field_note},
   "level": "<CEFR level: A1 | A2 | B1 | B2 | C1 | C2>",
   "description": "<optional short grammar note or usage tip, or null>",
-  "examples": [
-    {{ "german": "<example sentence>", "english": "<translation>" }},
-    {{ "german": "<second example>",  "english": "<translation>" }}
-  ]"""
+  "examples": {examples_schema}"""
 
     if word_type == "noun":
         base += """,
@@ -149,7 +167,8 @@ Rules:
 - Return ONLY the raw JSON object. No markdown code blocks, no preamble.
 - All string values must be properly escaped JSON strings.
 - "level" must be one of: A1, A2, B1, B2, C1, C2 — choose based on typical learner exposure.
-- Provide exactly 2 natural example sentences.
+- For verbs, provide exactly 3 example sentences: one in Präsens, one in Präteritum, one in Perfekt.
+- For all other word types, provide exactly 2 natural example sentences.
 - For nouns the "german" field should NOT include the article (just the noun), article goes in nounDetails.
 - "wordType" must be one of: noun, verb, adjective, adverb, preposition, conjunction, pronoun, other.
 - Fill nounDetails / verbDetails / adjectiveDetails according to the detected or given wordType; set the other two to null.
