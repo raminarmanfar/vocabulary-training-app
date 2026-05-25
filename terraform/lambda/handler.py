@@ -171,7 +171,9 @@ Return a JSON object with exactly these fields:
   "verbDetails": null,
   "adjectiveDetails": null"""
 
-    base += """
+    base += """,
+  "synonyms": ["<German synonym 1>", "<German synonym 2>", "<German synonym 3>"],
+  "antonyms": ["<German antonym 1>", "<German antonym 2>"]
 }
 
 Rules:
@@ -184,6 +186,8 @@ Rules:
 - For nouns the "german" field should NOT include the article (just the noun), article goes in nounDetails.
 - "wordType" must be one of: noun, verb, adjective, adverb, preposition, conjunction, pronoun, other.
 - Fill nounDetails / verbDetails / adjectiveDetails according to the detected or given wordType; set the other two to null.
+- "synonyms": list up to 5 German synonyms or near-synonyms for the word; use [] if none exist.
+- "antonyms": list up to 5 German antonyms for the word; use [] if none exist.
 """
     return base
 

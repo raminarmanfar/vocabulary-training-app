@@ -139,5 +139,36 @@
         </ion-card-content>
       </ion-card>
     }
+
+    <!-- Synonyms & Antonyms -->
+    @if ((v.synonyms && v.synonyms.length > 0) || (v.antonyms && v.antonyms.length > 0)) {
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ 'detail.synonymsAntonyms' | translate }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          @if (v.synonyms && v.synonyms.length > 0) {
+            <div class="syn-ant-row">
+              <span class="syn-ant-label">{{ 'detail.synonyms' | translate }}:</span>
+              <div class="syn-ant-chips">
+                @for (s of v.synonyms; track s) {
+                  <ion-chip color="primary">{{ s }}</ion-chip>
+                }
+              </div>
+            </div>
+          }
+          @if (v.antonyms && v.antonyms.length > 0) {
+            <div class="syn-ant-row">
+              <span class="syn-ant-label">{{ 'detail.antonyms' | translate }}:</span>
+              <div class="syn-ant-chips">
+                @for (a of v.antonyms; track a) {
+                  <ion-chip color="danger">{{ a }}</ion-chip>
+                }
+              </div>
+            </div>
+          }
+        </ion-card-content>
+      </ion-card>
+    }
   }
 </ion-content>

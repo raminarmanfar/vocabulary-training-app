@@ -125,3 +125,30 @@
     font-style: italic;
   }
 }
+
+.syn-ant-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+
+  .syn-ant-label {
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    padding-top: 6px;
+    white-space: nowrap;
+  }
+
+  .syn-ant-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+
+    ion-chip {
+      height: 28px;
+      font-size: 0.85rem;
+      margin: 0;
+    }
+  }
+}

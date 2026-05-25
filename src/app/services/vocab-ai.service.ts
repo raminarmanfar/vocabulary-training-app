@@ -17,6 +17,8 @@ export interface AiVocabResponse {
   nounDetails?: NounDetails | null;
   verbDetails?: VerbDetails | null;
   adjectiveDetails?: AdjectiveDetails | null;
+  synonyms?: string[];
+  antonyms?: string[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -48,6 +50,8 @@ export class VocabAiService {
       nounDetails: response.nounDetails ?? undefined,
       verbDetails: response.verbDetails ?? undefined,
       adjectiveDetails: response.adjectiveDetails ?? undefined,
+      synonyms: response.synonyms?.length ? response.synonyms : undefined,
+      antonyms: response.antonyms?.length ? response.antonyms : undefined,
       createdAt: now,
       updatedAt: now,
     };

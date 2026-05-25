@@ -77,6 +77,8 @@ export interface Vocabulary {
   nounDetails?: NounDetails;
   verbDetails?: VerbDetails;
   adjectiveDetails?: AdjectiveDetails;
+  synonyms?: string[];
+  antonyms?: string[];
   createdAt: string;
   updatedAt: string;
 }

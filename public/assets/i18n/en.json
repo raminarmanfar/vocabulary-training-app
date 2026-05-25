@@ -41,6 +41,9 @@
   },
   "detail": {
     "exampleSentences": "Example Sentences",
+    "synonymsAntonyms": "Synonyms & Antonyms",
+    "synonyms": "Synonyms",
+    "antonyms": "Antonyms",
     "learned": "Learned ✓",    "pronounce": "Pronounce",
     "stammformen": "Principal Forms",    "delete": {
       "header":  "Delete Vocabulary",
