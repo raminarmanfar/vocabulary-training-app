@@ -2,16 +2,17 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
-  IonButton, IonIcon, IonBadge, IonChip, IonLabel
+  IonButton, IonIcon, IonBadge, IonChip, IonLabel, IonImg
 } from '@ionic/angular/standalone';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ViewWillEnter } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   checkmarkCircleOutline, ellipseOutline, informationCircleOutline,
-  refreshOutline, arrowForwardOutline, schoolOutline
+  refreshOutline, arrowForwardOutline, schoolOutline, volumeHighOutline
 } from 'ionicons/icons';
 import { VocabularyService } from '../../services/vocabulary.service';
+import { TtsService } from '../../services/tts.service';
 import { Vocabulary } from '../../models/vocabulary.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -20,7 +21,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   standalone: true,
   imports: [
     IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
-    IonButton, IonIcon, IonBadge, IonChip, IonLabel,
+    IonButton, IonIcon, IonBadge, IonChip, IonLabel, IonImg,
     TranslatePipe
   ],
   templateUrl: './train.page.html',
@@ -29,6 +30,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class TrainPage implements OnInit, ViewWillEnter {
   private router = inject(Router);
   private vocabService = inject(VocabularyService);
+  private tts = inject(TtsService);
   private translate = inject(TranslateService);
 
   private allVocabs = toSignal(this.vocabService.vocabs$, { initialValue: [] as Vocabulary[] });
@@ -40,7 +42,7 @@ export class TrainPage implements OnInit, ViewWillEnter {
   done = signal(false);
 
   constructor() {
-    addIcons({ checkmarkCircleOutline, ellipseOutline, informationCircleOutline, refreshOutline, arrowForwardOutline, schoolOutline });
+    addIcons({ checkmarkCircleOutline, ellipseOutline, informationCircleOutline, refreshOutline, arrowForwardOutline, schoolOutline, volumeHighOutline });
   }
 
   async ngOnInit() {
@@ -75,6 +77,11 @@ export class TrainPage implements OnInit, ViewWillEnter {
     this.current.set(next);
     this.flipped.set(false);
     this.done.set(false);
+  }
+
+  async speak(event: Event, text: string) {
+    event.stopPropagation();
+    await this.tts.speak(text);
   }
 
   flip() {

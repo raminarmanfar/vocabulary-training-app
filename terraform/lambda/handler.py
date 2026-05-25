@@ -38,16 +38,23 @@ def build_user_prompt(word: str, word_type: str | None) -> str:
     { "german": "<example in Präteritum (simple past)>",        "english": "<translation>" },
     { "german": "<example in Perfekt (present perfect tense)>", "english": "<translation>" }
   ]"""
+    elif word_type == "noun":
+        examples_schema = """[
+    { "german": "<example sentence using the singular form>",          "english": "<translation>" },
+    { "german": "<second example sentence using the singular form>",   "english": "<translation>" },
+    { "german": "<example sentence that uses the PLURAL form of the noun>", "english": "<translation>" }
+  ]"""
     elif is_auto:
         examples_schema = """[
     { "german": "<example sentence 1>", "english": "<translation>" },
     { "german": "<example sentence 2>", "english": "<translation>" },
-    <if word is a verb, add a third example: { "german": "<Perfekt example>", "english": "<translation>" }>
+    { "german": "<example sentence 3 (if verb: use Perfekt; if noun: use plural form)>", "english": "<translation>" }
   ]"""
     else:
         examples_schema = """[
-    { "german": "<example sentence>", "english": "<translation>" },
-    { "german": "<second example>",  "english": "<translation>" }
+    { "german": "<example sentence 1>", "english": "<translation>" },
+    { "german": "<example sentence 2>", "english": "<translation>" },
+    { "german": "<example sentence 3>", "english": "<translation>" }
   ]"""
 
     base = f"""Generate a complete vocabulary entry for the German word "{word}" ({type_instruction}).
@@ -172,7 +179,8 @@ Rules:
 - All string values must be properly escaped JSON strings.
 - "level" must be one of: A1, A2, B1, B2, C1, C2 — choose based on typical learner exposure.
 - For verbs, provide exactly 3 example sentences: one in Präsens, one in Präteritum, one in Perfekt.
-- For all other word types, provide exactly 2 natural example sentences.
+- For nouns, provide exactly 3 example sentences: at least one must use the plural form of the noun.
+- For all other word types, provide exactly 3 natural example sentences.
 - For nouns the "german" field should NOT include the article (just the noun), article goes in nounDetails.
 - "wordType" must be one of: noun, verb, adjective, adverb, preposition, conjunction, pronoun, other.
 - Fill nounDetails / verbDetails / adjectiveDetails according to the detected or given wordType; set the other two to null.

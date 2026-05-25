@@ -42,51 +42,126 @@
 
         <!-- BACK -->
         <div class="card-face card-back">
-          <div class="back-content">
+          <div class="back-scroll">
 
-            <!-- Badges row -->
-            <div class="badges-row">
-              <ion-chip [color]="wordTypeColor(v.wordType)" outline="false">
-                <ion-label>{{ 'wordType.' + v.wordType | translate }}</ion-label>
-              </ion-chip>
-              <ion-chip [color]="levelColor(v.level)" outline="false">
-                <ion-label>{{ v.level }}</ion-label>
-              </ion-chip>
+            <!-- Pronounce + badges row -->
+            <div class="back-top-row">
+              <div class="badges-row">
+                <ion-chip [color]="wordTypeColor(v.wordType)" class="small-chip">
+                  <ion-label>{{ 'wordType.' + v.wordType | translate }}</ion-label>
+                </ion-chip>
+                <ion-chip [color]="levelColor(v.level)" class="small-chip">
+                  <ion-label>{{ v.level }}</ion-label>
+                </ion-chip>
+              </div>
+              <ion-button fill="clear" size="small" (click)="speak($event, v.german)">
+                <ion-icon name="volume-high-outline" slot="icon-only" color="primary"></ion-icon>
+              </ion-button>
             </div>
 
             <!-- English translation -->
             <div class="back-translation">{{ v.english }}</div>
 
-            <!-- Noun plural -->
+            <!-- Image -->
+            @if (v.imagePath) {
+              <ion-img [src]="v.imagePath" class="back-image"></ion-img>
+            }
+
+            <!-- Noun: article + noun + plural -->
             @if (v.wordType === 'noun' && v.nounDetails) {
-              <div class="back-detail">
-                <span class="detail-label">{{ 'train.plural' | translate }}:</span>
-                <span>{{ v.nounDetails.plural }}</span>
+              <div class="back-forms">
+                <div class="form-row">
+                  <ion-badge [color]="v.nounDetails.article === 'der' ? 'primary' : v.nounDetails.article === 'die' ? 'danger' : 'success'" class="article-badge">
+                    {{ v.nounDetails.article }}
+                  </ion-badge>
+                  <span class="form-main">{{ v.german }}</span>
+                  <ion-button fill="clear" size="small" class="tts-btn" (click)="speak($event, v.nounDetails.article + ' ' + v.german)">
+                    <ion-icon name="volume-high-outline" slot="icon-only" color="medium"></ion-icon>
+                  </ion-button>
+                </div>
+                <div class="form-row">
+                  <span class="form-label">{{ 'train.plural' | translate }}:</span>
+                  <span class="form-value">{{ v.nounDetails.plural }}</span>
+                  <ion-button fill="clear" size="small" class="tts-btn" (click)="speak($event, v.nounDetails.plural)">
+                    <ion-icon name="volume-high-outline" slot="icon-only" color="medium"></ion-icon>
+                  </ion-button>
+                </div>
               </div>
             }
 
-            <!-- Adjective komparativ / superlativ -->
-            @if (v.wordType === 'adjective' && v.adjectiveDetails) {
-              <div class="back-detail">
-                <span class="detail-label">{{ 'train.komparativ' | translate }}:</span>
-                <span>{{ v.adjectiveDetails.komparativ }}</span>
-              </div>
-              <div class="back-detail">
-                <span class="detail-label">{{ 'train.superlativ' | translate }}:</span>
-                <span>{{ v.adjectiveDetails.superlativ }}</span>
+            <!-- Verb: Stammformen with individual pronounce buttons -->
+            @if (v.wordType === 'verb' && v.verbDetails) {
+              <div class="back-forms">
+                <div class="form-row">
+                  <span class="form-label">{{ 'train.inf' | translate }}:</span>
+                  <span class="form-main">{{ v.german }}</span>
+                  <ion-button fill="clear" size="small" class="tts-btn" (click)="speak($event, v.german)">
+                    <ion-icon name="volume-high-outline" slot="icon-only" color="medium"></ion-icon>
+                  </ion-button>
+                </div>
+                <div class="form-row">
+                  <span class="form-label">{{ 'train.present3' | translate }}:</span>
+                  <span class="form-value">{{ v.verbDetails.present.erSieEs }}</span>
+                  <ion-button fill="clear" size="small" class="tts-btn" (click)="speak($event, v.verbDetails.present.erSieEs)">
+                    <ion-icon name="volume-high-outline" slot="icon-only" color="medium"></ion-icon>
+                  </ion-button>
+                </div>
+                <div class="form-row">
+                  <span class="form-label">{{ 'train.past' | translate }}:</span>
+                  <span class="form-value">{{ v.verbDetails.simplePast.ich }}</span>
+                  <ion-button fill="clear" size="small" class="tts-btn" (click)="speak($event, v.verbDetails.simplePast.ich)">
+                    <ion-icon name="volume-high-outline" slot="icon-only" color="medium"></ion-icon>
+                  </ion-button>
+                </div>
+                <div class="form-row">
+                  <span class="form-label">{{ 'train.perfect' | translate }}:</span>
+                  <span class="form-value">{{ v.verbDetails.pastPerfect.ich }}</span>
+                  <ion-button fill="clear" size="small" class="tts-btn" (click)="speak($event, v.verbDetails.pastPerfect.ich)">
+                    <ion-icon name="volume-high-outline" slot="icon-only" color="medium"></ion-icon>
+                  </ion-button>
+                </div>
               </div>
             }
-          </div>
 
-          <!-- Action buttons (stop propagation so card doesn't flip back) -->
+            <!-- Adjective / Adverb: komparativ + superlativ -->
+            @if ((v.wordType === 'adjective' || v.wordType === 'adverb') && v.adjectiveDetails) {
+              <div class="back-forms">
+                <div class="form-row">
+                  <span class="form-main">{{ v.german }}</span>
+                  <ion-button fill="clear" size="small" class="tts-btn" (click)="speak($event, v.german)">
+                    <ion-icon name="volume-high-outline" slot="icon-only" color="medium"></ion-icon>
+                  </ion-button>
+                </div>
+                <div class="form-row">
+                  <span class="form-label">{{ 'train.komparativ' | translate }}:</span>
+                  <span class="form-value">{{ v.adjectiveDetails.komparativ }}</span>
+                  <ion-button fill="clear" size="small" class="tts-btn" (click)="speak($event, v.adjectiveDetails.komparativ)">
+                    <ion-icon name="volume-high-outline" slot="icon-only" color="medium"></ion-icon>
+                  </ion-button>
+                </div>
+                <div class="form-row">
+                  <span class="form-label">{{ 'train.superlativ' | translate }}:</span>
+                  <span class="form-value">{{ v.adjectiveDetails.superlativ }}</span>
+                  <ion-button fill="clear" size="small" class="tts-btn" (click)="speak($event, v.adjectiveDetails.superlativ)">
+                    <ion-icon name="volume-high-outline" slot="icon-only" color="medium"></ion-icon>
+                  </ion-button>
+                </div>
+              </div>
+            }
+
+          </div><!-- /.back-scroll -->
+
+          <!-- Action buttons -->
           <div class="back-actions" (click)="$event.stopPropagation()">
-            <ion-button fill="outline" color="primary" (click)="goToDetails()">
+            <ion-button fill="outline" color="primary" size="small" (click)="goToDetails()">
               <ion-icon name="information-circle-outline" slot="start"></ion-icon>
               {{ 'train.details' | translate }}
             </ion-button>
 
             <ion-button
               [color]="v.learned ? 'medium' : 'success'"
+              fill="outline"
+              size="small"
               (click)="toggleLearned()">
               <ion-icon [name]="v.learned ? 'ellipse-outline' : 'checkmark-circle-outline'" slot="start"></ion-icon>
               {{ (v.learned ? 'train.markUnlearned' : 'train.markLearned') | translate }}
@@ -97,15 +172,14 @@
       </div><!-- /.card -->
     </div><!-- /.scene -->
 
-    <!-- Next card button (outside card so always visible) -->
-    @if (flipped()) {
-      <div class="next-row">
-        <ion-button fill="clear" color="success" (click)="pickRandom()">
-          {{ 'train.next' | translate }}
-          <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
-        </ion-button>
-      </div>
-    }
+    <!-- Next card button — always visible below the card -->
+    <div class="next-row">
+      <ion-button color="success" (click)="pickRandom()">
+        {{ 'train.next' | translate }}
+        <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+      </ion-button>
+    </div>
+
   }
 
 </ion-content>

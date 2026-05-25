@@ -5,13 +5,13 @@
   margin: 16px auto 0;
   perspective: 1000px;
   cursor: pointer;
-  height: 380px;
+  // Height is set by the taller face (front has min-height, back is auto)
+  min-height: 200px;
 }
 
 .card {
   width: 100%;
-  height: 100%;
-  position: relative;
+  display: grid;
   transform-style: preserve-3d;
   transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 16px;
@@ -23,22 +23,23 @@
 }
 
 .card-face {
-  position: absolute;
-  inset: 0;
+  grid-area: 1 / 1;
+  width: 100%;
   border-radius: 16px;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
 }
 
 // ── Front ──────────────────────────────────────────────
 .card-front {
+  min-height: 220px;
   background: var(--ion-color-success);
   color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 12px;
   padding: 32px 24px;
 }
@@ -74,52 +75,104 @@
   transform: rotateY(180deg);
   background: var(--ion-background-color, #fff);
   border: 2px solid var(--ion-color-success);
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px 20px 16px;
-}
-
-.back-content {
   display: flex;
   flex-direction: column;
+}
+
+.back-scroll {
+  padding: 14px 16px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.back-top-row {
+  display: flex;
   align-items: center;
-  gap: 10px;
-  flex: 1;
-  width: 100%;
+  justify-content: space-between;
 }
 
 .badges-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  justify-content: center;
+  gap: 4px;
+}
+
+.small-chip {
+  height: 24px;
+  font-size: 0.75rem;
+  --padding-start: 8px;
+  --padding-end: 8px;
 }
 
 .back-translation {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 600;
   text-align: center;
   color: var(--ion-color-dark);
-  margin-top: 4px;
 }
 
-.back-detail {
-  font-size: 0.95rem;
-  color: var(--ion-color-medium);
+.back-image {
+  width: 100%;
+  max-height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+}
 
-  .detail-label {
+// ── Word-type specific forms ───────────────────────────
+.back-forms {
+  background: var(--ion-color-light);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+
+  .article-badge {
+    font-size: 0.75rem;
+    padding: 2px 6px;
+  }
+
+  .form-main {
     font-weight: 600;
+    font-size: 1rem;
     color: var(--ion-color-dark);
-    margin-right: 4px;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: var(--ion-color-medium-shade);
+    min-width: 72px;
+    flex-shrink: 0;
+  }
+
+  .form-value {
+    font-style: italic;
+    color: var(--ion-color-dark);
+    flex: 1;
+  }
+
+  .tts-btn {
+    margin-left: auto;
+    --padding-start: 2px;
+    --padding-end: 2px;
+    height: 28px;
   }
 }
 
+// ── Action buttons ─────────────────────────────────────
 .back-actions {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  width: 100%;
-  margin-top: 8px;
+  gap: 4px;
+  padding: 6px 12px 10px;
 
   ion-button {
     width: 100%;
@@ -138,7 +191,7 @@
 .next-row {
   display: flex;
   justify-content: center;
-  margin-top: 12px;
+  margin-top: 16px;
 }
 
 // ── Empty / done state ────────────────────────────────
