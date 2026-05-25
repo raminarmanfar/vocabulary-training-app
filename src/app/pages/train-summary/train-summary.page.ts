@@ -3,13 +3,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
   IonButton, IonIcon, IonCard, IonCardContent,
-  IonBadge, IonList, IonItem, IonLabel, IonDatetime
+  IonBadge, IonList, IonItem, IonLabel, IonDatetime,
+  IonSegment, IonSegmentButton
 } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import {
   checkmarkCircleOutline, closeCircleOutline, timeOutline,
-  refreshOutline, trophyOutline
+  refreshOutline, trophyOutline, calendarOutline, barChartOutline
 } from 'ionicons/icons';
 import { DatabaseService } from '../../services/database.service';
 import { TrainSession } from '../../models/train-session.model';
@@ -21,6 +22,7 @@ import { TrainSession } from '../../models/train-session.model';
     IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
     IonButton, IonIcon, IonCard, IonCardContent,
     IonBadge, IonList, IonItem, IonLabel, IonDatetime,
+    IonSegment, IonSegmentButton,
     TranslatePipe
   ],
   templateUrl: './train-summary.page.html',
@@ -38,6 +40,9 @@ export class TrainSummaryPage implements OnInit {
 
   readonly todayStr = new Date().toISOString().slice(0, 10);
   selectedDate = signal<string | null>(this.todayStr);
+  activeTab = signal<'calendar' | 'monthly'>('calendar');
+
+  readonly currentMonthLabel = new Date().toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
 
   sessionsByDate = computed(() => {
     const map = new Map<string, TrainSession[]>();
@@ -71,8 +76,32 @@ export class TrainSummaryPage implements OnInit {
     };
   });
 
+  monthlyReport = computed(() => {
+    const monthPrefix = this.todayStr.slice(0, 7); // "YYYY-MM"
+    const monthSessions = this.sessions().filter(s => s.startedAt.slice(0, 7) === monthPrefix);
+    const byDate = new Map<string, { learned: number; notLearned: number; timeMs: number }>();
+    for (const s of monthSessions) {
+      const d = s.startedAt.slice(0, 10);
+      if (!byDate.has(d)) byDate.set(d, { learned: 0, notLearned: 0, timeMs: 0 });
+      const entry = byDate.get(d)!;
+      entry.learned += s.learnedCount;
+      entry.notLearned += s.notLearnedCount;
+      entry.timeMs += s.totalTimeMs;
+    }
+    const days = Array.from(byDate.entries())
+      .map(([date, v]) => ({ date, ...v }))
+      .sort((a, b) => b.date.localeCompare(a.date));
+    return {
+      totalLearned: monthSessions.reduce((sum, s) => sum + s.learnedCount, 0),
+      totalNotLearned: monthSessions.reduce((sum, s) => sum + s.notLearnedCount, 0),
+      totalTimeMs: monthSessions.reduce((sum, s) => sum + s.totalTimeMs, 0),
+      sessionCount: monthSessions.length,
+      days,
+    };
+  });
+
   constructor() {
-    addIcons({ checkmarkCircleOutline, closeCircleOutline, timeOutline, refreshOutline, trophyOutline });
+    addIcons({ checkmarkCircleOutline, closeCircleOutline, timeOutline, refreshOutline, trophyOutline, calendarOutline, barChartOutline });
   }
 
   async ngOnInit() {
@@ -92,6 +121,12 @@ export class TrainSummaryPage implements OnInit {
   onDateChange(event: CustomEvent) {
     const val = event.detail.value as string | null;
     this.selectedDate.set(val ? val.slice(0, 10) : null);
+  }
+
+  formatDayLabel(dateStr: string): string {
+    return new Date(dateStr + 'T00:00:00').toLocaleDateString(undefined, {
+      weekday: 'short', month: 'short', day: 'numeric'
+    });
   }
 
   formatSelectedDate(): string {

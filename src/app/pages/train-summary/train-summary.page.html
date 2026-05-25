@@ -12,74 +12,150 @@
   <!-- ── CALENDAR / LIST MODE ───────────────────────── -->
   @if (mode() === 'list') {
 
-    @if (sessionsLoaded()) {
-      <ion-datetime
-        presentation="date"
-        [firstDayOfWeek]="1"
-        size="cover"
-        color="success"
-        [max]="todayStr"
-        [value]="todayStr"
-        [highlightedDates]="highlightedDates()"
-        (ionChange)="onDateChange($event)">
-      </ion-datetime>
+    <!-- Tab segment -->
+    <ion-segment [value]="activeTab()" (ionChange)="activeTab.set($any($event.detail.value))">
+      <ion-segment-button value="calendar">
+        <ion-icon name="calendar-outline"></ion-icon>
+        {{ 'trainSummary.tabs.calendar' | translate }}
+      </ion-segment-button>
+      <ion-segment-button value="monthly">
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        {{ 'trainSummary.tabs.monthly' | translate }}
+      </ion-segment-button>
+    </ion-segment>
+
+    <!-- ── TAB 1: CALENDAR ── -->
+    @if (activeTab() === 'calendar') {
+
+      @if (sessionsLoaded()) {
+        <ion-datetime
+          presentation="date"
+          [firstDayOfWeek]="1"
+          size="cover"
+          color="success"
+          [max]="todayStr"
+          [value]="todayStr"
+          [highlightedDates]="highlightedDates()"
+          (ionChange)="onDateChange($event)">
+        </ion-datetime>
+      }
+
+      <!-- Empty state -->
+      @if (sessions().length === 0) {
+        <div class="empty-state">
+          <ion-icon name="trophy-outline" class="empty-icon"></ion-icon>
+          <p>{{ 'trainSummary.noSessions' | translate }}</p>
+        </div>
+      }
+
+      <!-- Sessions for selected day -->
+      @if (selectedDate()) {
+        <h3 class="list-heading">{{ formatSelectedDate() }}</h3>
+
+        @if (selectedDaySessions().length === 0) {
+          <p class="ion-text-center ion-padding" style="color: var(--ion-color-medium)">
+            {{ 'trainSummary.noSessionsOnDay' | translate }}
+          </p>
+        } @else {
+          <!-- Day totals summary card -->
+          <ion-card class="day-summary-card">
+            <ion-card-content>
+              <div class="day-stats-row">
+                <div class="day-stat">
+                  <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+                  <span class="day-stat-number">{{ selectedDayTotals().learnedCount }}</span>
+                  <span class="day-stat-label">{{ 'trainSummary.learnedTotal' | translate }}</span>
+                </div>
+                <div class="day-stat-divider"></div>
+                <div class="day-stat">
+                  <ion-icon name="time-outline" color="primary"></ion-icon>
+                  <span class="day-stat-number">{{ formatTime(selectedDayTotals().totalTimeMs) }}</span>
+                  <span class="day-stat-label">{{ 'trainSummary.totalTime' | translate }}</span>
+                </div>
+                <div class="day-stat-divider"></div>
+                <div class="day-stat">
+                  <ion-icon name="refresh-outline" color="tertiary"></ion-icon>
+                  <span class="day-stat-number">{{ selectedDayTotals().sessionCount }}</span>
+                  <span class="day-stat-label">{{ 'trainSummary.sessions' | translate }}</span>
+                </div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+
+          <!-- Individual sessions -->
+          <ion-list class="item-list">
+            @for (s of selectedDaySessions(); track s._id) {
+              <ion-item button (click)="openSession(s._id)" detail>
+                <ion-icon name="time-outline" slot="start" color="success"></ion-icon>
+                <ion-label>
+                  <h3>{{ formatSessionTime(s.startedAt) }}</h3>
+                  <p>✓ {{ s.learnedCount }} &nbsp; ✗ {{ s.notLearnedCount }} &nbsp; {{ formatTime(s.totalTimeMs) }}</p>
+                </ion-label>
+              </ion-item>
+            }
+          </ion-list>
+        }
+      }
+
     }
 
-    <!-- Empty state -->
-    @if (sessions().length === 0) {
-      <div class="empty-state">
-        <ion-icon name="trophy-outline" class="empty-icon"></ion-icon>
-        <p>{{ 'trainSummary.noSessions' | translate }}</p>
-      </div>
-    }
+    <!-- ── TAB 2: MONTHLY REPORT ── -->
+    @if (activeTab() === 'monthly') {
 
-    <!-- Sessions for selected day -->
-    @if (selectedDate()) {
-      <h3 class="list-heading">{{ formatSelectedDate() }}</h3>
-
-      @if (selectedDaySessions().length === 0) {
-        <p class="ion-text-center ion-padding" style="color: var(--ion-color-medium)">
-          {{ 'trainSummary.noSessionsOnDay' | translate }}
-        </p>
+      @if (sessions().length === 0) {
+        <div class="empty-state">
+          <ion-icon name="trophy-outline" class="empty-icon"></ion-icon>
+          <p>{{ 'trainSummary.noSessions' | translate }}</p>
+        </div>
       } @else {
-        <!-- Day totals summary card -->
+        <h3 class="list-heading">{{ currentMonthLabel }}</h3>
+
+        <!-- Month totals card -->
         <ion-card class="day-summary-card">
           <ion-card-content>
             <div class="day-stats-row">
               <div class="day-stat">
                 <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
-                <span class="day-stat-number">{{ selectedDayTotals().learnedCount }}</span>
+                <span class="day-stat-number">{{ monthlyReport().totalLearned }}</span>
                 <span class="day-stat-label">{{ 'trainSummary.learnedTotal' | translate }}</span>
               </div>
               <div class="day-stat-divider"></div>
               <div class="day-stat">
-                <ion-icon name="time-outline" color="primary"></ion-icon>
-                <span class="day-stat-number">{{ formatTime(selectedDayTotals().totalTimeMs) }}</span>
-                <span class="day-stat-label">{{ 'trainSummary.totalTime' | translate }}</span>
+                <ion-icon name="close-circle-outline" color="danger"></ion-icon>
+                <span class="day-stat-number">{{ monthlyReport().totalNotLearned }}</span>
+                <span class="day-stat-label">{{ 'trainSummary.notLearned' | translate }}</span>
               </div>
               <div class="day-stat-divider"></div>
               <div class="day-stat">
-                <ion-icon name="refresh-outline" color="tertiary"></ion-icon>
-                <span class="day-stat-number">{{ selectedDayTotals().sessionCount }}</span>
-                <span class="day-stat-label">{{ 'trainSummary.sessions' | translate }}</span>
+                <ion-icon name="time-outline" color="primary"></ion-icon>
+                <span class="day-stat-number">{{ formatTime(monthlyReport().totalTimeMs) }}</span>
+                <span class="day-stat-label">{{ 'trainSummary.totalTime' | translate }}</span>
               </div>
             </div>
           </ion-card-content>
         </ion-card>
 
-        <!-- Individual sessions -->
-        <ion-list class="item-list">
-          @for (s of selectedDaySessions(); track s._id) {
-            <ion-item button (click)="openSession(s._id)" detail>
-              <ion-icon name="time-outline" slot="start" color="success"></ion-icon>
-              <ion-label>
-                <h3>{{ formatSessionTime(s.startedAt) }}</h3>
-                <p>✓ {{ s.learnedCount }} &nbsp; ✗ {{ s.notLearnedCount }} &nbsp; {{ formatTime(s.totalTimeMs) }}</p>
-              </ion-label>
-            </ion-item>
-          }
-        </ion-list>
+        <!-- Per-day breakdown -->
+        @if (monthlyReport().days.length === 0) {
+          <p class="ion-text-center ion-padding" style="color: var(--ion-color-medium)">
+            {{ 'trainSummary.noSessionsThisMonth' | translate }}
+          </p>
+        } @else {
+          <h3 class="list-heading">{{ 'trainSummary.dailyBreakdown' | translate }}</h3>
+          <ion-list class="item-list">
+            @for (day of monthlyReport().days; track day.date) {
+              <ion-item>
+                <ion-icon name="calendar-outline" slot="start" color="success"></ion-icon>
+                <ion-label>
+                  <h3>{{ formatDayLabel(day.date) }}</h3>
+                  <p>✓ {{ day.learned }} &nbsp; ✗ {{ day.notLearned }} &nbsp; {{ formatTime(day.timeMs) }}</p>
+                </ion-label>
+              </ion-item>
+            }
+          </ion-list>
+        }
       }
+
     }
 
   }

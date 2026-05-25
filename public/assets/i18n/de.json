@@ -201,10 +201,12 @@
     "trainAgain": "Nochmal trainieren",
     "noSessions": "Noch keine Trainingssitzungen. Starte das Training, um deinen Verlauf hier zu sehen.",
     "noSessionsOnDay": "Keine Trainingssitzungen an diesem Tag.",
+    "noSessionsThisMonth": "Keine Trainingssitzungen diesen Monat.",
     "learnedTotal": "Gelernt",
-    "totalTime": "Gesamtzeit",
     "sessions": "Sitzungen",
     "notFound": "Sitzung nicht gefunden.",
+    "dailyBreakdown": "Tagesübersicht",
+    "tabs": { "calendar": "Kalender", "monthly": "Monatsbericht" },
     "mon": "Mo", "tue": "Di", "wed": "Mi", "thu": "Do", "fri": "Fr", "sat": "Sa", "sun": "So"
   },
   "train": {
