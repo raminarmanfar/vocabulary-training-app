@@ -90,6 +90,11 @@ import { EnrichmentService } from '../../services/enrichment.service';
           <ion-button slot="end" fill="outline" color="secondary" [disabled]="enrichmentService.enriching()" (click)="enrichVocabs()">
             {{ 'settings.data.enrich' | translate }}
           </ion-button>
+          @if (enrichmentService.enriching()) {
+            <ion-button slot="end" fill="clear" color="danger" (click)="enrichmentService.cancel()">
+              {{ 'common.cancel' | translate }}
+            </ion-button>
+          }
         </ion-item>
         @if (enrichmentService.enriching()) {
           <ion-progress-bar

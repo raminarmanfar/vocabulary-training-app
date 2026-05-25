@@ -185,7 +185,8 @@
       "enrichMsg": "{{count}} vocabularies need enrichment (missing translations or synonyms). The AI will be called for each. Continue?",
       "enrichDone": "Enriched {{count}} vocabularies",
       "enrichNone": "All vocabularies are already enriched",
-      "enrichStarted": "Enrichment started — {{count}} vocabularies will be processed in the background"
+      "enrichStarted": "Enrichment started — {{count}} vocabularies will be processed in the background",
+      "enrichCancelled": "Enrichment cancelled — {{count}} vocabularies were enriched"
     },
     "comingSoon": "More settings coming soon."
   },

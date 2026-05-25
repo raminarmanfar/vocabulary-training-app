@@ -19,14 +19,22 @@ export class EnrichmentService {
   /** Toast notification to show — consumed by the settings page. */
   readonly pendingToast = signal<{ open: boolean; message: string; color: string } | null>(null);
 
+  private _cancelled = false;
+
+  cancel(): void {
+    this._cancelled = true;
+  }
+
   async start(toEnrich: Vocabulary[]): Promise<void> {
     if (this.enriching()) return; // already running
+    this._cancelled = false;
     this.enriching.set(true);
     this.enrichCount.set(0);
     this.enrichTotal.set(toEnrich.length);
     let enrichedCount = 0;
 
     for (let i = 0; i < toEnrich.length; i++) {
+      if (this._cancelled) break;
       const vocab = toEnrich[i];
       this.enrichCount.set(i + 1);
       try {
@@ -55,10 +63,14 @@ export class EnrichmentService {
     this.enriching.set(false);
     this.enrichCount.set(0);
     this.enrichTotal.set(0);
+    const wasCancelled = this._cancelled;
+    this._cancelled = false;
     this.pendingToast.set({
       open: true,
-      message: this.translate.instant('settings.data.enrichDone', { count: enrichedCount }),
-      color: 'success'
+      message: wasCancelled
+        ? this.translate.instant('settings.data.enrichCancelled', { count: enrichedCount })
+        : this.translate.instant('settings.data.enrichDone', { count: enrichedCount }),
+      color: wasCancelled ? 'warning' : 'success'
     });
   }
 }
