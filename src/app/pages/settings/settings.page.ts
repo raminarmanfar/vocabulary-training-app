@@ -7,11 +7,12 @@ import {
 import { AlertController } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline } from 'ionicons/icons';
+import { languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline } from 'ionicons/icons';
 import { LanguageService, AppLanguage } from '../../services/language.service';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { QuizSetService } from '../../services/quiz-set.service';
 import { ThemeService } from '../../services/theme.service';
+import { DatabaseService } from '../../services/database.service';
 
 @Component({
   selector: 'app-settings',
@@ -80,6 +81,13 @@ import { ThemeService } from '../../services/theme.service';
       <!-- Danger zone -->
       <ion-list inset="true">
         <ion-item>
+          <ion-icon name="stats-chart-outline" slot="start" color="danger"></ion-icon>
+          <ion-label>{{ 'settings.data.eraseSummary' | translate }}</ion-label>
+          <ion-button slot="end" fill="outline" color="danger" (click)="confirmEraseSummary()">
+            {{ 'settings.data.erase' | translate }}
+          </ion-button>
+        </ion-item>
+        <ion-item>
           <ion-icon name="trash-outline" slot="start" color="danger"></ion-icon>
           <ion-label>{{ 'settings.data.eraseVocabs' | translate }}</ion-label>
           <ion-button slot="end" fill="outline" color="danger" (click)="confirmEraseVocabs()">
@@ -115,15 +123,33 @@ export class SettingsPage {
   themeService = inject(ThemeService);
   private vocabService = inject(VocabularyService);
   private quizSetService = inject(QuizSetService);
+  private dbService = inject(DatabaseService);
   private translate = inject(TranslateService);
   private alertCtrl = inject(AlertController);
 
   toast = signal<{ open: boolean; message: string; color: string }>({ open: false, message: '', color: 'success' });
 
-  constructor() { addIcons({ languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline }); }
+  constructor() { addIcons({ languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline }); }
 
   onLangChange(lang: AppLanguage) {
     this.langService.setLanguage(lang);
+  }
+
+  async confirmEraseSummary() {
+    const alert = await this.alertCtrl.create({
+      header: this.translate.instant('settings.data.eraseSummaryTitle'),
+      message: this.translate.instant('settings.data.eraseSummaryMsg'),
+      buttons: [
+        { text: this.translate.instant('common.cancel'), role: 'cancel' },
+        { text: this.translate.instant('settings.data.erase'), role: 'confirm' }
+      ]
+    });
+    await alert.present();
+    const { role } = await alert.onDidDismiss();
+    if (role === 'confirm') {
+      await this.dbService.clearAllTrainSessions();
+      this.toast.set({ open: true, message: this.translate.instant('settings.data.eraseSummaryDone'), color: 'success' });
+    }
   }
 
   async confirmEraseVocabs() {

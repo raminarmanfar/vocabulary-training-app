@@ -152,7 +152,7 @@
               <span class="syn-ant-label">{{ 'detail.synonyms' | translate }}:</span>
               <div class="syn-ant-chips">
                 @for (s of v.synonyms; track s) {
-                  <ion-chip color="primary">{{ s }}</ion-chip>
+                  <ion-chip color="primary" button (click)="onWordChipClick(s)">{{ s }}</ion-chip>
                 }
               </div>
             </div>
@@ -162,7 +162,7 @@
               <span class="syn-ant-label">{{ 'detail.antonyms' | translate }}:</span>
               <div class="syn-ant-chips">
                 @for (a of v.antonyms; track a) {
-                  <ion-chip color="danger">{{ a }}</ion-chip>
+                  <ion-chip color="danger" button (click)="onWordChipClick(a)">{{ a }}</ion-chip>
                 }
               </div>
             </div>

@@ -39,7 +39,7 @@ export class TrainSummaryPage implements OnInit {
   sessions = signal<TrainSession[]>([]);
   sessionsLoaded = signal(false);
 
-  readonly todayStr = new Date().toISOString().slice(0, 10);
+  readonly todayStr = (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })();
   selectedDate = signal<string | null>(this.todayStr);
   activeTab = signal<'calendar' | 'monthly'>('calendar');
   selectedMonth = signal<string | null>(this.todayStr.slice(0, 7));
@@ -58,7 +58,7 @@ export class TrainSummaryPage implements OnInit {
   sessionsByDate = computed(() => {
     const map = new Map<string, TrainSession[]>();
     for (const s of this.sessions()) {
-      const dateStr = s.startedAt.slice(0, 10);
+      const dateStr = this.isoToLocalDate(s.startedAt);
       if (!map.has(dateStr)) map.set(dateStr, []);
       map.get(dateStr)!.push(s);
     }
@@ -92,7 +92,7 @@ export class TrainSummaryPage implements OnInit {
     const currentYearMonth = this.todayStr.slice(0, 7); // "YYYY-MM"
     const byMonth = new Map<string, { learned: number; notLearned: number; timeMs: number; sessions: number }>();
     for (const s of this.sessions()) {
-      const m = s.startedAt.slice(0, 7);
+      const m = this.isoToLocalDate(s.startedAt).slice(0, 7);
       if (m.startsWith(String(year))) {
         if (!byMonth.has(m)) byMonth.set(m, { learned: 0, notLearned: 0, timeMs: 0, sessions: 0 });
         const e = byMonth.get(m)!;
@@ -127,10 +127,10 @@ export class TrainSummaryPage implements OnInit {
 
   monthlyReport = computed(() => {
     const monthPrefix = this.selectedMonth() ?? this.todayStr.slice(0, 7);
-    const monthSessions = this.sessions().filter(s => s.startedAt.slice(0, 7) === monthPrefix);
+    const monthSessions = this.sessions().filter(s => this.isoToLocalDate(s.startedAt).slice(0, 7) === monthPrefix);
     const byDate = new Map<string, { learned: number; notLearned: number; timeMs: number }>();
     for (const s of monthSessions) {
-      const d = s.startedAt.slice(0, 10);
+      const d = this.isoToLocalDate(s.startedAt);
       if (!byDate.has(d)) byDate.set(d, { learned: 0, notLearned: 0, timeMs: 0 });
       const entry = byDate.get(d)!;
       entry.learned += s.learnedCount;
@@ -204,11 +204,19 @@ export class TrainSummaryPage implements OnInit {
   }
 
   formatSessionTime(iso: string): string {
-    return new Date(iso).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+    return new Date(iso).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false });
   }
 
   formatDate(iso: string): string {
-    return new Date(iso).toLocaleString();
+    return new Date(iso).toLocaleString(undefined, {
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+    });
+  }
+
+  private isoToLocalDate(iso: string): string {
+    const d = new Date(iso);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   }
 
   trainAgain() {

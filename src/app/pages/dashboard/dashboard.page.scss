@@ -25,10 +25,12 @@
 
   ion-row {
     align-items: stretch;
+    justify-content: center;
   }
 
   ion-col {
     display: flex;
+    max-width: 50%;
   }
 }
 

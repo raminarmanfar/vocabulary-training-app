@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel,
@@ -30,13 +30,15 @@ type ModalStep = 'input' | 'loading' | 'preview' | 'saving';
     TranslatePipe
   ]
 })
-export class AiVocabModalComponent {
+export class AiVocabModalComponent implements OnInit {
   private modalCtrl   = inject(ModalController);
   private toastCtrl   = inject(ToastController);
   private alertCtrl   = inject(AlertController);
   private translate   = inject(TranslateService);
   private aiService   = inject(VocabAiService);
   private vocabService = inject(VocabularyService);
+
+  @Input() initialWord?: string;
 
   step = signal<ModalStep>('input');
   word = signal('');
@@ -65,6 +67,13 @@ export class AiVocabModalComponent {
 
   constructor() {
     addIcons({ sparkles, save, close, refreshOutline, checkmarkCircle });
+  }
+
+  ngOnInit() {
+    if (this.initialWord) {
+      this.word.set(this.initialWord);
+      this.generate();
+    }
   }
 
   dismiss() {

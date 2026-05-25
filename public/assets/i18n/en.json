@@ -172,7 +172,11 @@
       "eraseQuizzes": "Erase all quizzes",
       "eraseQuizzesTitle": "Erase all quizzes?",
       "eraseQuizzesMsg": "This will permanently delete all quiz history. This cannot be undone.",
-      "eraseQuizzesDone": "All quizzes deleted"
+      "eraseQuizzesDone": "All quizzes deleted",
+      "eraseSummary": "Erase all training history",
+      "eraseSummaryTitle": "Erase training history?",
+      "eraseSummaryMsg": "This will permanently delete all training session data. This cannot be undone.",
+      "eraseSummaryDone": "Training history deleted"
     },
     "comingSoon": "More settings coming soon."
   },

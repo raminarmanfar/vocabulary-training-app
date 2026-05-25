@@ -115,4 +115,8 @@ export class DatabaseService {
   async deleteTrainSession(id: string): Promise<void> {
     await this.db.trainSessions.delete(id);
   }
+
+  async clearAllTrainSessions(): Promise<void> {
+    await this.db.trainSessions.clear();
+  }
 }

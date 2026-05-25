@@ -1,10 +1,11 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
   IonButton, IonIcon, IonChip, IonLabel, IonBadge, IonCard, IonCardHeader,
   IonCardTitle, IonCardContent, IonItem, IonAccordionGroup, IonAccordion,
-  IonImg, IonSpinner
+  IonImg, IonSpinner, ModalController
 } from '@ionic/angular/standalone';
 import { AlertController, ToastController, ViewWillEnter } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -18,6 +19,7 @@ import { Vocabulary, WordType } from '../../models/vocabulary.model';
 import { NounDetailComponent } from '../../components/noun-detail/noun-detail.component';
 import { VerbDetailComponent } from '../../components/verb-detail/verb-detail.component';
 import { AdjectiveDetailComponent } from '../../components/adjective-detail/adjective-detail.component';
+import { AiVocabModalComponent } from '../../components/ai-vocab-modal/ai-vocab-modal.component';
 
 @Component({
   selector: 'app-vocabulary-details',
@@ -33,7 +35,7 @@ import { AdjectiveDetailComponent } from '../../components/adjective-detail/adje
     TranslatePipe
   ]
 })
-export class VocabularyDetailsPage implements OnInit, ViewWillEnter {
+export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private vocabService = inject(VocabularyService);
@@ -42,6 +44,11 @@ export class VocabularyDetailsPage implements OnInit, ViewWillEnter {
   private alertCtrl = inject(AlertController);
   private toastCtrl = inject(ToastController);
   private translate = inject(TranslateService);
+  private modalCtrl = inject(ModalController);
+
+  @ViewChild(IonContent) private content!: IonContent;
+
+  private paramSub?: Subscription;
 
   vocab = signal<Vocabulary | null>(null);
   regenerating = signal(false);
@@ -51,7 +58,16 @@ export class VocabularyDetailsPage implements OnInit, ViewWillEnter {
   }
 
   async ngOnInit() {
-    await this.loadVocab();
+    this.paramSub = this.route.paramMap.subscribe(async params => {
+      const id = params.get('id')!;
+      const v = await this.vocabService.getById(id);
+      this.vocab.set(v);
+      this.content?.scrollToTop(0);
+    });
+  }
+
+  ngOnDestroy() {
+    this.paramSub?.unsubscribe();
   }
 
   async ionViewWillEnter() {
@@ -115,15 +131,17 @@ export class VocabularyDetailsPage implements OnInit, ViewWillEnter {
       next: async (response) => {
         const updated: Vocabulary = {
           ...v,
-          english:        response.english,
-          wordType:       response.wordType,
-          level:          response.level as Vocabulary['level'],
-          description:    response.description ?? undefined,
-          examples:       response.examples ?? [],
-          nounDetails:    response.nounDetails ?? undefined,
-          verbDetails:    response.verbDetails ?? undefined,
+          english:          response.english,
+          wordType:         response.wordType,
+          level:            response.level as Vocabulary['level'],
+          description:      response.description ?? undefined,
+          examples:         response.examples ?? [],
+          nounDetails:      response.nounDetails ?? undefined,
+          verbDetails:      response.verbDetails ?? undefined,
           adjectiveDetails: response.adjectiveDetails ?? undefined,
-          updatedAt:      new Date().toISOString(),
+          synonyms:         response.synonyms ?? [],
+          antonyms:         response.antonyms ?? [],
+          updatedAt:        new Date().toISOString(),
         };
         await this.vocabService.save(updated);
         this.vocab.set(updated);
@@ -183,5 +201,26 @@ export class VocabularyDetailsPage implements OnInit, ViewWillEnter {
       pronoun: 'secondary', other: 'light'
     };
     return map[type] || 'medium';
+  }
+
+  async onWordChipClick(word: string) {
+    const vocabs = this.vocabService.vocabsSubject.value;
+    const found = vocabs.find(v => v.german.trim().toLowerCase() === word.trim().toLowerCase());
+    if (found) {
+      this.router.navigate(['/vocabulary-details', found._id]);
+      return;
+    }
+    const modal = await this.modalCtrl.create({
+      component: AiVocabModalComponent,
+      componentProps: { initialWord: word },
+      breakpoints: [0, 0.75, 1],
+      initialBreakpoint: 0.75,
+      handleBehavior: 'cycle',
+    });
+    await modal.present();
+    const { data, role } = await modal.onWillDismiss();
+    if (role === 'saved' && data?._id) {
+      this.router.navigate(['/vocabulary-details', data._id]);
+    }
   }
 }

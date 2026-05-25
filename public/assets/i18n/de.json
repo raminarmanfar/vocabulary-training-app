@@ -172,7 +172,11 @@
       "eraseQuizzes": "Alle Quizze löschen",
       "eraseQuizzesTitle": "Alle Quizze löschen?",
       "eraseQuizzesMsg": "Der gesamte Quiz-Verlauf wird dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden.",
-      "eraseQuizzesDone": "Alle Quizze gelöscht"
+      "eraseQuizzesDone": "Alle Quizze gelöscht",
+      "eraseSummary": "Trainingshistorie löschen",
+      "eraseSummaryTitle": "Trainingshistorie löschen?",
+      "eraseSummaryMsg": "Alle Trainingssitzungsdaten werden dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden.",
+      "eraseSummaryDone": "Trainingshistorie gelöscht"
     },
     "comingSoon": "Weitere Einstellungen folgen bald."
   },
