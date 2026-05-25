@@ -1,0 +1,372 @@
+{
+  "app": {
+    "title": "Vocab Trainer"
+  },
+  "dashboard": {
+    "welcome": "خوش آمدید!",
+    "subtitle": "برنامه تمرین لغات آلمانی شما",
+    "tiles": {
+      "vocabularies": {
+        "label": "لغات",
+        "description": "مرور و مدیریت لیست لغات آلمانی"
+      },
+      "train": {
+        "label": "تمرین",
+        "description": "با فلش‌کارت لغات را حفظ کنید"
+      },
+      "quiz": {
+        "label": "آزمون",
+        "description": "دانش خود را با سوالات چندگزینه‌ای بسنجید"
+      },
+      "about": {
+        "label": "درباره",
+        "description": "درباره این برنامه"
+      },
+      "settings": {
+        "label": "تنظیمات",
+        "description": "تنظیمات برنامه و مدیریت داده"
+      }
+    }
+  },
+  "home": {
+    "title": "لغات",
+    "search": {
+      "placeholder": "جستجو به آلمانی یا انگلیسی..."
+    },
+    "filter": {
+      "typePlaceholder": "نوع کلمه",
+      "levelPlaceholder": "سطح",
+      "allTypes": "همه انواع",
+      "allLevels": "همه سطوح",
+      "all": "همه",
+      "learned": "یاد گرفته شده",
+      "unlearned": "یاد نگرفته شده"
+    },
+    "empty": "لغتی یافت نشد.",
+    "footer": {
+      "count": "{{count}} از {{total}} لغت"
+    }
+  },
+  "wordType": {
+    "unknown": "نمی‌دانم",
+    "noun": "اسم",
+    "verb": "فعل",
+    "adjective": "صفت",
+    "adverb": "قید",
+    "preposition": "حرف اضافه",
+    "conjunction": "接続詞",
+    "pronoun": "ضمیر",
+    "other": "سایر"
+  },
+  "detail": {
+    "exampleSentences": "جملات مثال",
+    "synonymsAntonyms": "مترادف‌ها و متضادها",
+    "synonyms": "مترادف‌ها",
+    "antonyms": "متضادها",
+    "learned": "یاد گرفته شد ✓",
+    "pronounce": "تلفظ",
+    "stammformen": "صورت‌های اصلی",
+    "delete": {
+      "header": "حذف لغت",
+      "message": "آیا مطمئن هستید که می‌خواهید این لغت را حذف کنید؟",
+      "cancel": "انصراف",
+      "confirm": "حذف"
+    },
+    "regenerate": {
+      "header": "بازسازی با هوش مصنوعی",
+      "message": "این محتوای فعلی را با یک ورودی جدید تولیدشده توسط هوش مصنوعی جایگزین می‌کند. ادامه داده شود؟",
+      "cancel": "انصراف",
+      "confirm": "بازسازی",
+      "success": "لغت به‌روز شد!",
+      "error": "بازسازی ناموفق بود. لطفاً دوباره امتحان کنید."
+    }
+  },
+  "edit": {
+    "titleNew": "افزودن لغت",
+    "titleEdit": "ویرایش لغت",
+    "section": {
+      "basic": "اطلاعات پایه",
+      "examples": "جملات مثال (حداکثر ۵)",
+      "noun": "جزئیات اسم",
+      "verb": "جزئیات فعل",
+      "adjective": "جزئیات صفت"
+    },
+    "field": {
+      "german": "کلمه آلمانی *",
+      "germanPh": "مثال: der Hund",
+      "english": "ترجمه انگلیسی *",
+      "englishPh": "مثال: dog",
+      "wordType": "نوع کلمه *",
+      "level": "سطح CEFR *",
+      "description": "توضیحات",
+      "descriptionPh": "توضیحات اختیاری...",
+      "learned": "قبلاً یاد گرفته شده",
+      "image": "تصویر",
+      "imagePick": "برای انتخاب تصویر لمس کنید",
+      "article": "حرف تعریف",
+      "plural": "جمع",
+      "separable": "جداپذیر",
+      "regular": "منظم",
+      "hilfsverb": "فعل کمکی",
+      "komparativ": "تفضیلی",
+      "superlativ": "عالی"
+    },
+    "duplicate": {
+      "title": "لغت از قبل وجود دارد",
+      "message": "لغتی با این کلمه و همان نوع از قبل وجود دارد. می‌خواهید جایگزین کنید یا نادیده بگیرید؟",
+      "replace": "جایگزینی",
+      "ignore": "نادیده گرفتن"
+    },
+    "example": {
+      "germanLabel": "آلمانی",
+      "germanPh": "جمله آلمانی",
+      "englishLabel": "انگلیسی",
+      "englishPh": "ترجمه انگلیسی",
+      "remove": "حذف",
+      "add": "افزودن مثال"
+    }
+  },
+  "grammar": {
+    "nominativ": "فاعلی",
+    "akkusativ": "مفعولی",
+    "genitiv": "ملکی",
+    "dativ": "غیرمستقیم",
+    "bestimmt": "صرف با حرف تعریف معین",
+    "unbestimmt": "صرف با حرف تعریف نکره",
+    "maskulin": "مذکر (der)",
+    "feminin": "مؤنث (die)",
+    "neutral": "خنثی (das)",
+    "plural": "جمع (die)"
+  },
+  "noun": {
+    "title": "جزئیات اسم",
+    "article": "حرف تعریف",
+    "plural": "جمع"
+  },
+  "verb": {
+    "title": "جزئیات فعل",
+    "conjugations": "صرف فعل",
+    "separable": "جداپذیر",
+    "inseparable": "جدانشدنی",
+    "regular": "منظم",
+    "irregular": "نامنظم",
+    "present": "Präsens (حال)",
+    "simplePast": "Präteritum (گذشته ساده)",
+    "pastPerfect": "Perfekt (گذشته کامل)",
+    "future": "Futur I (آینده)",
+    "imperative": "Imperativ (امری)"
+  },
+  "adjective": {
+    "title": "جزئیات صفت",
+    "komparativ": "تفضیلی",
+    "superlativ": "عالی"
+  },
+  "settings": {
+    "title": "تنظیمات",
+    "language": {
+      "label": "زبان برنامه",
+      "en": "English",
+      "de": "Deutsch",
+      "tr": "Türkçe",
+      "fa": "فارسی"
+    },
+    "theme": {
+      "label": "حالت تاریک",
+      "on": "روشن",
+      "off": "خاموش"
+    },
+    "data": {
+      "label": "داده",
+      "export": "خروجی گرفتن از داده",
+      "import": "وارد کردن داده",
+      "exportSuccess": "{{count}} لغت خروجی گرفته شد",
+      "importSuccess": "{{count}} لغت وارد شد",
+      "importError": "فرمت فایل نامعتبر است",
+      "importModeTitle": "حالت وارد کردن",
+      "importModeMsg": "{{count}} لغت یافت شد. چگونه می‌خواهید آن‌ها را وارد کنید؟",
+      "importMerge": "ادغام",
+      "importReplace": "جایگزینی همه",
+      "clear": "پاک کردن همه داده‌ها",
+      "erase": "حذف",
+      "eraseVocabs": "حذف همه لغات",
+      "eraseVocabsTitle": "حذف همه لغات؟",
+      "eraseVocabsMsg": "این عملیات همه لغات را به طور دائمی حذف می‌کند. این قابل بازگشت نیست.",
+      "eraseVocabsDone": "همه لغات حذف شدند",
+      "eraseQuizzes": "حذف همه آزمون‌ها",
+      "eraseQuizzesTitle": "حذف همه آزمون‌ها؟",
+      "eraseQuizzesMsg": "این عملیات تمام تاریخچه آزمون را به طور دائمی حذف می‌کند. این قابل بازگشت نیست.",
+      "eraseQuizzesDone": "همه آزمون‌ها حذف شدند",
+      "eraseSummary": "حذف همه تاریخچه تمرین",
+      "eraseSummaryTitle": "حذف تاریخچه تمرین؟",
+      "eraseSummaryMsg": "این عملیات تمام داده‌های جلسه تمرین را به طور دائمی حذف می‌کند. این قابل بازگشت نیست.",
+      "eraseSummaryDone": "تاریخچه تمرین حذف شد"
+    },
+    "comingSoon": "تنظیمات بیشتر به زودی."
+  },
+  "about": {
+    "title": "درباره",
+    "subtitle": "لغات آلمانی یاد بگیرید — آفلاین، همیشه.",
+    "bio": "توسعه‌یافته توسط رامین آرمانفر، یک توسعه‌دهنده ارشد نرم‌افزار Full-Stack با علاقه به ساختن برنامه‌های مدرن و کاربرپسند.",
+    "linkedin": "اتصال در LinkedIn",
+    "github": "پروفایل GitHub",
+    "email": "ارسال ایمیل",
+    "features": {
+      "title": "ویژگی‌ها",
+      "grammar": "جزئیات دستوری کامل برای اسم‌ها، فعل‌ها و صفات",
+      "offline": "کاملاً آفلاین کار می‌کند — داده‌ها به صورت محلی ذخیره می‌شوند",
+      "cefr": "سطوح CEFR از A1 تا C2",
+      "tts": "تلفظ متن به گفتار"
+    },
+    "tech": {
+      "title": "ساخته شده با",
+      "stack": "Ionic · Angular · Dexie (IndexedDB)"
+    }
+  },
+  "trainSummary": {
+    "title": "خلاصه تمرین",
+    "learned": "یاد گرفته شده",
+    "notLearned": "یاد نگرفته شده",
+    "totalTime": "زمان کل",
+    "cards": "کارت‌های مرور شده",
+    "trainAgain": "دوباره تمرین",
+    "noSessions": "هنوز جلسه تمرینی وجود ندارد. برای مشاهده تاریخچه، تمرین را شروع کنید.",
+    "noSessionsOnDay": "در این روز جلسه تمرینی وجود ندارد.",
+    "noSessionsThisMonth": "در این ماه جلسه تمرینی وجود ندارد.",
+    "learnedTotal": "یاد گرفته شده",
+    "sessions": "جلسات",
+    "notFound": "جلسه پیدا نشد.",
+    "dailyBreakdown": "تفکیک روزانه",
+    "tabs": {
+      "calendar": "گزارش روزانه",
+      "monthly": "ماهانه"
+    },
+    "mon": "دو",
+    "tue": "سه",
+    "wed": "چهار",
+    "thu": "پنج",
+    "fri": "جمعه",
+    "sat": "شنبه",
+    "sun": "یک"
+  },
+  "train": {
+    "title": "تمرین",
+    "tapToReveal": "لمس کنید تا نشان داده شود",
+    "remaining": "{{count}} کارت باقی مانده",
+    "plural": "جمع",
+    "komparativ": "تفضیلی",
+    "superlativ": "عالی",
+    "inf": "مصدر",
+    "present3": "er/sie/es",
+    "past": "گذشته",
+    "perfect": "کامل",
+    "learned": "یاد گرفته شد",
+    "notLearned": "یاد نگرفته شد",
+    "details": "جزئیات",
+    "markLearned": "علامت‌گذاری به عنوان یاد گرفته شده",
+    "markUnlearned": "علامت‌گذاری به عنوان یاد نگرفته شده",
+    "next": "کارت بعدی",
+    "restart": "شروع مجدد",
+    "allLearned": {
+      "heading": "تمام شد!",
+      "message": "شما همه لغات را یاد گرفتید. آفرین!"
+    }
+  },
+  "quiz": {
+    "title": "آزمون",
+    "start": {
+      "heading": "آزمون لغات",
+      "subtitle": "دانش آلمانی خود را با سوالات چندگزینه‌ای بسنجید.",
+      "settings": "تنظیمات آزمون",
+      "quizType": "نوع آزمون",
+      "direction": "جهت",
+      "deToEn": "آلمانی ← انگلیسی",
+      "enToDe": "انگلیسی ← آلمانی",
+      "questionCount": "سوالات",
+      "begin": "شروع آزمون"
+    },
+    "type": {
+      "multipleChoice": "چندگزینه‌ای",
+      "fillBlank": "جای خالی را پر کنید",
+      "matching": "تطبیق کلمات"
+    },
+    "question": {
+      "counter": "سوال {{current}} از {{total}}",
+      "translateToEn": "به انگلیسی ترجمه کنید",
+      "translateToDe": "به آلمانی ترجمه کنید",
+      "correct": "درست!",
+      "wrong": "اشتباه! جواب درست:",
+      "next": "بعدی",
+      "finish": "مشاهده نتایج"
+    },
+    "fill": {
+      "instruction": "کلمه آلمانی گمشده را پر کنید",
+      "placeholder": "کلمه گمشده را تایپ کنید...",
+      "check": "بررسی"
+    },
+    "match": {
+      "instruction": "هر کلمه آلمانی را با ترجمه انگلیسی آن تطبیق دهید",
+      "allMatched": "همه تطبیق داده شدند! آفرین!"
+    },
+    "result": {
+      "heading": "آزمون تمام شد!",
+      "backToList": "بازگشت به لیست آزمون",
+      "playAgain": "دوباره بازی",
+      "goHome": "رفتن به داشبورد"
+    },
+    "grade": {
+      "excellent": "عالی! همین‌طور ادامه دهید!",
+      "good": "کار خوبی!",
+      "fair": "بد نبود، به تمرین ادامه دهید!",
+      "keepPracticing": "به تمرین ادامه دهید، موفق می‌شوید!"
+    },
+    "list": {
+      "heading": "آزمون‌های من",
+      "new": "آزمون جدید",
+      "random": "آزمون تصادفی",
+      "empty": "هنوز آزمونی وجود ندارد. اولین آزمون خود را شروع کنید!",
+      "in-progress": "در حال انجام",
+      "completed": "تکمیل شده"
+    },
+    "delete": {
+      "title": "حذف آزمون",
+      "message": "آیا مطمئن هستید که می‌خواهید این آزمون را حذف کنید؟"
+    }
+  },
+  "common": {
+    "cancel": "انصراف",
+    "delete": "حذف"
+  },
+  "ai": {
+    "fab": {
+      "tooltip": "افزودن با هوش مصنوعی"
+    },
+    "modal": {
+      "title": "لغت هوش مصنوعی",
+      "hint": "یک کلمه آلمانی وارد کنید. اگر نوع آن را می‌دانید انتخاب کنید — در غیر این صورت «نمی‌دانم» را انتخاب کنید تا هوش مصنوعی آن را تشخیص دهد.",
+      "wordLabel": "کلمه آلمانی",
+      "wordPlaceholder": "مثال: laufen",
+      "typeLabel": "نوع کلمه",
+      "generate": "تولید",
+      "generating": "در حال تولید لغت…",
+      "retry": "دوباره امتحان",
+      "save": "ذخیره در کتابخانه",
+      "saving": "در حال ذخیره…",
+      "examples": "جملات مثال",
+      "bestimmt": "صرف حرف تعریف معین",
+      "unbestimmt": "صرف حرف تعریف نکره",
+      "present": "Präsens (حال)"
+    },
+    "error": {
+      "unknown": "یک خطای غیرمنتظره رخ داد. لطفاً دوباره امتحان کنید.",
+      "saveFailed": "ذخیره لغت ناموفق بود. لطفاً دوباره امتحان کنید.",
+      "notGermanWord": "به نظر می‌رسد این یک کلمه آلمانی نیست. لطفاً یک لغت آلمانی معتبر وارد کنید.",
+      "misspelled": "«{{correction}}» — آیا منظورتان این بود؟ لطفاً املا را تصحیح کرده و دوباره امتحان کنید."
+    },
+    "duplicate": {
+      "header": "کلمه از قبل وجود دارد",
+      "message": "«{{word}}» از قبل در کتابخانه شماست. می‌خواهید با ورودی جدید هوش مصنوعی جایگزین شود؟",
+      "cancel": "نگه داشتن موجود",
+      "replace": "جایگزینی"
+    }
+  }
+}

@@ -48,6 +48,7 @@ import { DatabaseService } from '../../services/database.service';
             <ion-select-option value="en">{{ 'settings.language.en' | translate }}</ion-select-option>
             <ion-select-option value="de">{{ 'settings.language.de' | translate }}</ion-select-option>
             <ion-select-option value="tr">{{ 'settings.language.tr' | translate }}</ion-select-option>
+            <ion-select-option value="fa">{{ 'settings.language.fa' | translate }}</ion-select-option>
           </ion-select>
         </ion-item>
         <ion-item>
