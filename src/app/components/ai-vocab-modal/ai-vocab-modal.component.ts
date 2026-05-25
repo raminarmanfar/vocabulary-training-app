@@ -51,7 +51,6 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
   errorMsg = signal('');
   recording = signal(false);
   speechSupported = signal(false);
-  private partialListener: any = null;
   // Web Speech API fallback for browser
   private webRecognition: any = null;
 
@@ -127,24 +126,18 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
       const { speechRecognition } = await SpeechRecognition.requestPermissions();
       if (speechRecognition !== 'granted') return;
 
-      // Listen for partial results to update the input live
-      this.partialListener = await SpeechRecognition.addListener('partialResults', (data) => {
-        if (data.matches?.length) this.word.set(data.matches[0]);
-      });
-
       this.recording.set(true);
       try {
+        // popup:true uses the native Android voice dialog — most reliable approach
         const result = await SpeechRecognition.start({
           language: 'de-DE',
           maxResults: 1,
-          partialResults: true,
-          popup: false,
+          partialResults: false,
+          popup: true,
         });
         if (result.matches?.length) this.word.set(result.matches[0]);
       } catch { /* user cancelled or error */ }
       this.recording.set(false);
-      this.partialListener?.remove();
-      this.partialListener = null;
     } else {
       this.webRecognition?.start();
       this.recording.set(true);
@@ -154,8 +147,6 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
   private async stopRecording() {
     if (Capacitor.isNativePlatform()) {
       await SpeechRecognition.stop().catch(() => {});
-      this.partialListener?.remove();
-      this.partialListener = null;
     } else {
       this.webRecognition?.stop();
     }
