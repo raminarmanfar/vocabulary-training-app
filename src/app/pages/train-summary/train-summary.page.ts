@@ -48,11 +48,12 @@ export class TrainSummaryPage implements OnInit {
   selectedYear = signal<number>(new Date().getFullYear());
 
   availableYears = computed(() => {
-    const yearSet = new Set<number>();
-    for (const s of this.sessions()) {
-      yearSet.add(Number(s.startedAt.slice(0, 4)));
-    }
-    return Array.from(yearSet).sort((a, b) => b - a);
+    const all = this.sessions();
+    if (all.length === 0) return [this.currentYear];
+    const minYear = Math.min(...all.map(s => Number(s.startedAt.slice(0, 4))));
+    const years: number[] = [];
+    for (let y = this.currentYear; y >= minYear; y--) years.push(y);
+    return years;
   });
 
   sessionsByDate = computed(() => {
@@ -163,9 +164,6 @@ export class TrainSummaryPage implements OnInit {
       this.mode.set('list');
       const all = await this.db.getAllTrainSessions();
       this.sessions.set(all);
-      // default to the most recent year with data, fallback to current year
-      const years = Array.from(new Set(all.map(s => Number(s.startedAt.slice(0, 4))))).sort((a, b) => b - a);
-      if (years.length > 0) this.selectedYear.set(years[0]);
       this.sessionsLoaded.set(true);
     }
   }
