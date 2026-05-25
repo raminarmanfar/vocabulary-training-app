@@ -206,7 +206,7 @@
     "sessions": "Sessions",
     "notFound": "Session not found.",
     "dailyBreakdown": "Daily Breakdown",
-    "tabs": { "calendar": "Calendar", "monthly": "Monthly" },
+    "tabs": { "calendar": "Daily Report", "monthly": "Monthly" },
     "mon": "Mo", "tue": "Tu", "wed": "We", "thu": "Th", "fri": "Fr", "sat": "Sa", "sun": "Su"
   },
   "train": {

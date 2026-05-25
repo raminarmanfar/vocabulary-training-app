@@ -206,7 +206,7 @@
     "sessions": "Sitzungen",
     "notFound": "Sitzung nicht gefunden.",
     "dailyBreakdown": "Tagesübersicht",
-    "tabs": { "calendar": "Kalender", "monthly": "Monatsbericht" },
+    "tabs": { "calendar": "Tagesbericht", "monthly": "Monatsbericht" },
     "mon": "Mo", "tue": "Di", "wed": "Mi", "thu": "Do", "fri": "Fr", "sat": "Sa", "sun": "So"
   },
   "train": {
