@@ -200,6 +200,7 @@
     "cards": "Cards Reviewed",
     "trainAgain": "Train Again",
     "noSessions": "No training sessions yet. Start training to see your history here.",
+    "noSessionsOnDay": "No training sessions on this day.",
     "notFound": "Session not found.",
     "mon": "Mo", "tue": "Tu", "wed": "We", "thu": "Th", "fri": "Fr", "sat": "Sa", "sun": "Su"
   },

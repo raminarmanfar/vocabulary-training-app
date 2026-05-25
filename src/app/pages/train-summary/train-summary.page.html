@@ -20,7 +20,6 @@
         color="success"
         [max]="todayStr"
         [highlightedDates]="highlightedDates()"
-        [isDateEnabled]="isDateEnabledFn()"
         (ionChange)="onDateChange($event)">
       </ion-datetime>
     }
@@ -37,18 +36,24 @@
     @if (selectedDate()) {
       <h3 class="list-heading">{{ formatSelectedDate() }}</h3>
 
-      <ion-list class="item-list">
-        @for (s of selectedDaySessions(); track s._id) {
-          <ion-item button (click)="openSession(s._id)" detail>
-            <ion-icon name="time-outline" slot="start" color="success"></ion-icon>
-            <ion-label>
-              <h3>{{ formatSessionTime(s.startedAt) }}</h3>
-              <p>✓ {{ s.learnedCount }} &nbsp; ✗ {{ s.notLearnedCount }}</p>
-            </ion-label>
-            <ion-badge slot="end" color="primary">{{ formatTime(s.totalTimeMs) }}</ion-badge>
-          </ion-item>
-        }
-      </ion-list>
+      @if (selectedDaySessions().length === 0) {
+        <p class="ion-text-center ion-padding" style="color: var(--ion-color-medium)">
+          {{ 'trainSummary.noSessionsOnDay' | translate }}
+        </p>
+      } @else {
+        <ion-list class="item-list">
+          @for (s of selectedDaySessions(); track s._id) {
+            <ion-item button (click)="openSession(s._id)" detail>
+              <ion-icon name="time-outline" slot="start" color="success"></ion-icon>
+              <ion-label>
+                <h3>{{ formatSessionTime(s.startedAt) }}</h3>
+                <p>✓ {{ s.learnedCount }} &nbsp; ✗ {{ s.notLearnedCount }}</p>
+              </ion-label>
+              <ion-badge slot="end" color="primary">{{ formatTime(s.totalTimeMs) }}</ion-badge>
+            </ion-item>
+          }
+        </ion-list>
+      }
     }
 
   }
