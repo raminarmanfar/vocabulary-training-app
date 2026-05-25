@@ -6,13 +6,16 @@ import {
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
 import { addIcons } from 'ionicons';
-import { languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline } from 'ionicons/icons';
+import { languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline } from 'ionicons/icons';
 import { LanguageService, AppLanguage } from '../../services/language.service';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { QuizSetService } from '../../services/quiz-set.service';
 import { ThemeService } from '../../services/theme.service';
 import { DatabaseService } from '../../services/database.service';
+import { VocabAiService } from '../../services/vocab-ai.service';
+import { Vocabulary } from '../../models/vocabulary.model';
 
 @Component({
   selector: 'app-settings',
@@ -78,6 +81,17 @@ import { DatabaseService } from '../../services/database.service';
             {{ 'settings.data.import' | translate }}
           </ion-button>
         </ion-item>
+        <ion-item>
+          <ion-icon name="sparkles-outline" slot="start" color="secondary"></ion-icon>
+          <ion-label>{{ 'settings.data.enrichVocabs' | translate }}</ion-label>
+          <ion-button slot="end" fill="outline" color="secondary" [disabled]="enriching()" (click)="enrichVocabs()">
+            @if (enriching()) {
+              {{ enrichProgress() }}
+            } @else {
+              {{ 'settings.data.enrich' | translate }}
+            }
+          </ion-button>
+        </ion-item>
       </ion-list>
 
       <!-- Danger zone -->
@@ -126,12 +140,15 @@ export class SettingsPage {
   private vocabService = inject(VocabularyService);
   private quizSetService = inject(QuizSetService);
   private dbService = inject(DatabaseService);
+  private aiService = inject(VocabAiService);
   private translate = inject(TranslateService);
   private alertCtrl = inject(AlertController);
 
   toast = signal<{ open: boolean; message: string; color: string }>({ open: false, message: '', color: 'success' });
+  enriching = signal(false);
+  enrichProgress = signal('');
 
-  constructor() { addIcons({ languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline }); }
+  constructor() { addIcons({ languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline }); }
 
   onLangChange(lang: AppLanguage) {
     this.langService.setLanguage(lang);
@@ -240,5 +257,70 @@ export class SettingsPage {
     }
 
     input.value = '';
+  }
+
+  async enrichVocabs() {
+    const vocabs = await this.vocabService.exportAll();
+    const toEnrich = vocabs.filter(v =>
+      !v.turkish || !v.persian || !v.synonyms?.length || !v.antonyms?.length ||
+      v.examples?.some(ex => !ex.turkish || !ex.persian)
+    );
+
+    if (!toEnrich.length) {
+      this.toast.set({ open: true, message: this.translate.instant('settings.data.enrichNone'), color: 'primary' });
+      return;
+    }
+
+    const alert = await this.alertCtrl.create({
+      header: this.translate.instant('settings.data.enrichTitle'),
+      message: this.translate.instant('settings.data.enrichMsg', { count: toEnrich.length }),
+      buttons: [
+        { text: this.translate.instant('common.cancel'), role: 'cancel' },
+        { text: this.translate.instant('settings.data.enrich'), role: 'confirm' }
+      ]
+    });
+    await alert.present();
+    const { role } = await alert.onDidDismiss();
+    if (role !== 'confirm') return;
+
+    this.enriching.set(true);
+    const enriched: Vocabulary[] = [];
+    const total = toEnrich.length;
+
+    for (let i = 0; i < total; i++) {
+      const vocab = toEnrich[i];
+      this.enrichProgress.set(`${i + 1} / ${total}`);
+      try {
+        const response = await firstValueFrom(
+          this.aiService.generate(vocab.german, vocab.wordType !== 'unknown' ? vocab.wordType : undefined)
+        );
+        const updated: Vocabulary = { ...vocab };
+        if (!updated.turkish && response.turkish) updated.turkish = response.turkish;
+        if (!updated.persian && response.persian) updated.persian = response.persian;
+        if (!updated.synonyms?.length && response.synonyms?.length) updated.synonyms = response.synonyms;
+        if (!updated.antonyms?.length && response.antonyms?.length) updated.antonyms = response.antonyms;
+        if (updated.examples?.length && response.examples?.length) {
+          updated.examples = updated.examples.map((ex, idx) => {
+            const aiEx = response.examples[idx];
+            if (!aiEx) return ex;
+            return { ...ex, turkish: ex.turkish ?? aiEx.turkish, persian: ex.persian ?? aiEx.persian };
+          });
+        }
+        enriched.push(updated);
+      } catch { /* skip failed */ }
+      await new Promise(r => setTimeout(r, 100));
+    }
+
+    if (enriched.length) {
+      await this.dbService.bulkSave(enriched);
+      await this.vocabService.load();
+    }
+    this.enriching.set(false);
+    this.enrichProgress.set('');
+    this.toast.set({
+      open: true,
+      message: this.translate.instant('settings.data.enrichDone', { count: enriched.length }),
+      color: 'success'
+    });
   }
 }

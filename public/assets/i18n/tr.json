@@ -199,7 +199,13 @@
       "eraseSummary": "Tüm antrenman geçmişini sil",
       "eraseSummaryTitle": "Antrenman geçmişi silinsin mi?",
       "eraseSummaryMsg": "Bu işlem tüm antrenman oturumu verilerini kalıcı olarak silecektir. Bu geri alınamaz.",
-      "eraseSummaryDone": "Antrenman geçmişi silindi"
+      "eraseSummaryDone": "Antrenman geçmişi silindi",
+      "enrichVocabs": "Yapay zeka ile zenginleştir",
+      "enrich": "Zenginleştir",
+      "enrichTitle": "Kelimeleri zenginleştir",
+      "enrichMsg": "{{count}} kelime zenginleştirme gerektiriyor (eksik çeviriler veya eş anlamlılar). Her biri için yapay zeka çağrılacak. Devam edilsin mi?",
+      "enrichDone": "{{count}} kelime zenginleştirildi",
+      "enrichNone": "Tüm kelimeler zaten tam olarak zenginleştirilmiş"
     },
     "comingSoon": "Daha fazla ayar yakında."
   },

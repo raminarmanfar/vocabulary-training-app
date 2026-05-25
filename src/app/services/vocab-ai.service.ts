@@ -15,7 +15,7 @@ export interface AiVocabResponse {
   wordType: WordType;
   level: string;
   description?: string | null;
-  examples: Array<{ german: string; english: string }>;
+  examples: Array<{ german: string; english: string; turkish?: string; persian?: string }>;
   nounDetails?: NounDetails | null;
   verbDetails?: VerbDetails | null;
   adjectiveDetails?: AdjectiveDetails | null;

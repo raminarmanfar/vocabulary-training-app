@@ -178,7 +178,13 @@
       "eraseSummary": "Erase all training history",
       "eraseSummaryTitle": "Erase training history?",
       "eraseSummaryMsg": "This will permanently delete all training session data. This cannot be undone.",
-      "eraseSummaryDone": "Training history deleted"
+      "eraseSummaryDone": "Training history deleted",
+      "enrichVocabs": "Enrich with AI",
+      "enrich": "Enrich",
+      "enrichTitle": "Enrich vocabularies",
+      "enrichMsg": "{{count}} vocabularies need enrichment (missing translations or synonyms). The AI will be called for each. Continue?",
+      "enrichDone": "Enriched {{count}} vocabularies",
+      "enrichNone": "All vocabularies are already enriched"
     },
     "comingSoon": "More settings coming soon."
   },
