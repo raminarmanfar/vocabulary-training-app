@@ -201,6 +201,9 @@
     "trainAgain": "Nochmal trainieren",
     "noSessions": "Noch keine Trainingssitzungen. Starte das Training, um deinen Verlauf hier zu sehen.",
     "noSessionsOnDay": "Keine Trainingssitzungen an diesem Tag.",
+    "learnedTotal": "Gelernt",
+    "totalTime": "Gesamtzeit",
+    "sessions": "Sitzungen",
     "notFound": "Sitzung nicht gefunden.",
     "mon": "Mo", "tue": "Di", "wed": "Mi", "thu": "Do", "fri": "Fr", "sat": "Sa", "sun": "So"
   },

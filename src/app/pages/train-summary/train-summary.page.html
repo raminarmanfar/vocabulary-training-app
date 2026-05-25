@@ -41,15 +41,40 @@
           {{ 'trainSummary.noSessionsOnDay' | translate }}
         </p>
       } @else {
+        <!-- Day totals summary card -->
+        <ion-card class="day-summary-card">
+          <ion-card-content>
+            <div class="day-stats-row">
+              <div class="day-stat">
+                <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+                <span class="day-stat-number">{{ selectedDayTotals().learnedCount }}</span>
+                <span class="day-stat-label">{{ 'trainSummary.learnedTotal' | translate }}</span>
+              </div>
+              <div class="day-stat-divider"></div>
+              <div class="day-stat">
+                <ion-icon name="time-outline" color="primary"></ion-icon>
+                <span class="day-stat-number">{{ formatTime(selectedDayTotals().totalTimeMs) }}</span>
+                <span class="day-stat-label">{{ 'trainSummary.totalTime' | translate }}</span>
+              </div>
+              <div class="day-stat-divider"></div>
+              <div class="day-stat">
+                <ion-icon name="refresh-outline" color="tertiary"></ion-icon>
+                <span class="day-stat-number">{{ selectedDayTotals().sessionCount }}</span>
+                <span class="day-stat-label">{{ 'trainSummary.sessions' | translate }}</span>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Individual sessions -->
         <ion-list class="item-list">
           @for (s of selectedDaySessions(); track s._id) {
             <ion-item button (click)="openSession(s._id)" detail>
               <ion-icon name="time-outline" slot="start" color="success"></ion-icon>
               <ion-label>
                 <h3>{{ formatSessionTime(s.startedAt) }}</h3>
-                <p>✓ {{ s.learnedCount }} &nbsp; ✗ {{ s.notLearnedCount }}</p>
+                <p>✓ {{ s.learnedCount }} &nbsp; ✗ {{ s.notLearnedCount }} &nbsp; {{ formatTime(s.totalTimeMs) }}</p>
               </ion-label>
-              <ion-badge slot="end" color="primary">{{ formatTime(s.totalTimeMs) }}</ion-badge>
             </ion-item>
           }
         </ion-list>

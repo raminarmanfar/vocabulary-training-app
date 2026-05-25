@@ -62,6 +62,15 @@ export class TrainSummaryPage implements OnInit {
     return d ? (this.sessionsByDate().get(d) ?? []) : [];
   });
 
+  selectedDayTotals = computed(() => {
+    const list = this.selectedDaySessions();
+    return {
+      learnedCount: list.reduce((sum, s) => sum + s.learnedCount, 0),
+      totalTimeMs: list.reduce((sum, s) => sum + s.totalTimeMs, 0),
+      sessionCount: list.length,
+    };
+  });
+
   constructor() {
     addIcons({ checkmarkCircleOutline, closeCircleOutline, timeOutline, refreshOutline, trophyOutline });
   }
