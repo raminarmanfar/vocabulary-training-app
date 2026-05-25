@@ -193,7 +193,7 @@
     }
   },
   "trainSummary": {
-    "title": "Sitzungsverlauf",
+    "title": "Trainingsübersicht",
     "learned": "Gelernt",
     "notLearned": "Nicht gelernt",
     "totalTime": "Gesamtzeit",

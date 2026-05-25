@@ -193,7 +193,7 @@
     }
   },
   "trainSummary": {
-    "title": "Session History",
+    "title": "Train Summary",
     "learned": "Learned",
     "notLearned": "Not Learned",
     "totalTime": "Total Time",
