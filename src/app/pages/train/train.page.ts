@@ -50,7 +50,15 @@ export class TrainPage implements OnInit, ViewWillEnter {
 
   async ionViewWillEnter() {
     await this.vocabService.load();
-    this.pickRandom();
+    // Refresh the current card so learned-state changes from the detail page are reflected,
+    // but do NOT pick a new random card — the user should stay on the same flashcard.
+    const v = this.current();
+    if (v) {
+      const refreshed = await this.vocabService.getById(v._id);
+      this.current.set(refreshed);
+    } else {
+      this.pickRandom();
+    }
   }
 
   pickRandom() {
