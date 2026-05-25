@@ -88,7 +88,7 @@ import { EnrichmentService } from '../../services/enrichment.service';
             }
           </ion-label>
           @if (enrichmentService.enriching()) {
-            <ion-button slot="end" fill="clear" color="danger" (click)="enrichmentService.cancel()">
+            <ion-button slot="end" fill="outline" color="danger" (click)="enrichmentService.cancel()">
               {{ 'common.cancel' | translate }}
             </ion-button>
           } @else {
