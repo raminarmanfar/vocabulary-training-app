@@ -29,6 +29,7 @@
     "footer": { "count": "{{count}} von {{total}} Vokabeln" }
   },
   "wordType": {
+    "unknown":     "Weiß ich nicht",
     "noun":        "Nomen",
     "verb":        "Verb",
     "adjective":   "Adjektiv",
@@ -251,7 +252,7 @@
     "fab": { "tooltip": "Mit KI hinzufügen" },
     "modal": {
       "title":          "KI-Vokabel",
-      "hint":           "Gib ein deutsches Wort ein und wähle die Wortart. Die KI erstellt den vollständigen Vokabeleintrag.",
+      "hint":           "Gib ein deutsches Wort ein. Wähle eine Wortart, falls du sie kennst – sonst wähle \"Weiß ich nicht\" und die KI erkennt sie automatisch.",
       "wordLabel":      "Deutsches Wort",
       "wordPlaceholder":"z.B. laufen",
       "typeLabel":      "Wortart",

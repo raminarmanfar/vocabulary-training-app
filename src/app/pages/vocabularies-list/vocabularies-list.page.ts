@@ -157,7 +157,7 @@ export class VocabulariesListPage implements OnInit {
     const map: Record<WordType, string> = {
       noun: 'primary', verb: 'success', adjective: 'warning',
       adverb: 'tertiary', preposition: 'medium', conjunction: 'dark',
-      pronoun: 'secondary', other: 'light'
+      pronoun: 'secondary', other: 'light', unknown: 'medium'
     };
     return map[type] || 'medium';
   }

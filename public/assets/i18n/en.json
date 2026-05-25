@@ -29,6 +29,7 @@
     "footer": { "count": "{{count}} of {{total}} vocabularies" }
   },
   "wordType": {
+    "unknown":     "I don't know",
     "noun":        "Noun",
     "verb":        "Verb",
     "adjective":   "Adjective",
@@ -251,7 +252,7 @@
     "fab": { "tooltip": "Add with AI" },
     "modal": {
       "title":          "AI Vocabulary",
-      "hint":           "Enter a German word and select its type. AI will generate the full vocabulary entry.",
+      "hint":           "Enter a German word. Select a type if you know it — otherwise choose \"I don't know\" and the AI will detect it.",
       "wordLabel":      "German Word",
       "wordPlaceholder":"e.g. laufen",
       "typeLabel":      "Word Type",

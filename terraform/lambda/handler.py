@@ -13,19 +13,26 @@ MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "eu.anthropic.claude-3-haiku-20240
 WORD_TYPES = {"noun", "verb", "adjective", "adverb", "preposition", "conjunction", "pronoun", "other"}
 CEFR_LEVELS = {"A1", "A2", "B1", "B2", "C1", "C2"}
 
-SYSTEM_PROMPT = """You are a German language expert. When given a German word and its word type,
+SYSTEM_PROMPT = """You are a German language expert. When given a German word,
 you respond ONLY with a single valid JSON object — no markdown, no explanation, just raw JSON.
 The JSON must conform exactly to the schema described in the user message."""
 
-def build_user_prompt(word: str, word_type: str) -> str:
-    base = f"""Generate a complete vocabulary entry for the German word "{word}" (word type: {word_type}).
+def build_user_prompt(word: str, word_type: str | None) -> str:
+    if word_type:
+        type_instruction = f'word type: {word_type}'
+        type_field_note = f'"wordType": "{word_type}"'
+    else:
+        type_instruction = 'word type: auto-detect from the word itself'
+        type_field_note = '"wordType": "<detect the correct type: noun | verb | adjective | adverb | preposition | conjunction | pronoun | other>"'
+
+    base = f"""Generate a complete vocabulary entry for the German word "{word}" ({type_instruction}).
 
 Return a JSON object with exactly these fields:
 
 {{
   "german": "<the German word, capitalised if noun>",
   "english": "<English translation(s), comma-separated if multiple>",
-  "wordType": "<one of: noun | verb | adjective | adverb | preposition | conjunction | pronoun | other>",
+  {type_field_note},
   "level": "<CEFR level: A1 | A2 | B1 | B2 | C1 | C2>",
   "description": "<optional short grammar note or usage tip, or null>",
   "examples": [
@@ -109,7 +116,28 @@ Return a JSON object with exactly these fields:
   }"""
 
     else:
-        base += """,
+        if word_type is None:
+            # Auto-detect: ask Claude to fill in the correct details block
+            base += """,
+  "nounDetails": <if the word is a noun, fill in full noun object as shown below; otherwise use null.
+    Noun object shape: {"article": "der|die|das", "plural": "<form>",
+    "deklinationBestimmt": {"nominative":"<>","akkusativ":"<>","genitiv":"<>","dativ":"<>"},
+    "deklinationUnbestimmt": {"nominative":"<>","akkusativ":"<>","genitiv":"<>","dativ":"<>"}}>,
+  "verbDetails": <if the word is a verb, fill in full conjugation object; otherwise null.
+    Verb object shape: {"isSeparable": true|false, "isRegular": true|false, "hilfsverb": "haben|sein",
+    "present": {"ich":"<>","du":"<>","erSieEs":"<>","wir":"<>","ihr":"<>","sie":"<>"},
+    "simplePast": {"ich":"<>","du":"<>","erSieEs":"<>","wir":"<>","ihr":"<>","sie":"<>"},
+    "pastPerfect": {"ich":"<>","du":"<>","erSieEs":"<>","wir":"<>","ihr":"<>","sie":"<>"},
+    "future": {"ich":"<>","du":"<>","erSieEs":"<>","wir":"<>","ihr":"<>","sie":"<>"},
+    "imperative": {"du":"<>","wir":"<>","ihr":"<>","Sie":"<>"}}>,
+  "adjectiveDetails": <if the word is an adjective, fill in full declension object; otherwise null.
+    Adjective object shape: {"komparativ":"<>","superlativ":"<>",
+    "deklinationMaskulin":{"nominative":"<>","akkusativ":"<>","genitiv":"<>","dativ":"<>"},
+    "deklinationFeminin":{"nominative":"<>","akkusativ":"<>","genitiv":"<>","dativ":"<>"},
+    "deklinationNeutral":{"nominative":"<>","akkusativ":"<>","genitiv":"<>","dativ":"<>"},
+    "deklinationPlurar":{"nominative":"<>","akkusativ":"<>","genitiv":"<>","dativ":"<>"}}>"""
+        else:
+            base += """,
   "nounDetails": null,
   "verbDetails": null,
   "adjectiveDetails": null"""
@@ -123,6 +151,8 @@ Rules:
 - "level" must be one of: A1, A2, B1, B2, C1, C2 — choose based on typical learner exposure.
 - Provide exactly 2 natural example sentences.
 - For nouns the "german" field should NOT include the article (just the noun), article goes in nounDetails.
+- "wordType" must be one of: noun, verb, adjective, adverb, preposition, conjunction, pronoun, other.
+- Fill nounDetails / verbDetails / adjectiveDetails according to the detected or given wordType; set the other two to null.
 """
     return base
 
@@ -175,22 +205,14 @@ def handler(event, context):
         }
 
     word = (body.get("word") or "").strip()
-    word_type = (body.get("wordType") or "").strip().lower()
+    raw_type = (body.get("wordType") or "").strip().lower()
+    word_type = raw_type if raw_type in WORD_TYPES else None  # None → auto-detect
 
     if not word:
         return {
             "statusCode": 400,
             "headers": cors_headers(),
             "body": json.dumps({"error": "Missing required field: word"})
-        }
-
-    if word_type not in WORD_TYPES:
-        return {
-            "statusCode": 400,
-            "headers": cors_headers(),
-            "body": json.dumps({
-                "error": f"Invalid wordType '{word_type}'. Must be one of: {', '.join(sorted(WORD_TYPES))}"
-            })
         }
 
     try:

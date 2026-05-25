@@ -23,13 +23,11 @@ export interface AiVocabResponse {
 export class VocabAiService {
   private http = inject(HttpClient);
 
-  generate(word: string, wordType: WordType): Observable<AiVocabResponse> {
+  generate(word: string, wordType?: WordType): Observable<AiVocabResponse> {
     const headers = new HttpHeaders({ 'x-api-key': environment.bedrockApiKey });
-    return this.http.post<AiVocabResponse>(
-      environment.bedrockApiUrl,
-      { word: word.trim(), wordType },
-      { headers }
-    );
+    const body: Record<string, string> = { word: word.trim() };
+    if (wordType) body['wordType'] = wordType;
+    return this.http.post<AiVocabResponse>(environment.bedrockApiUrl, body, { headers });
   }
 
   /**

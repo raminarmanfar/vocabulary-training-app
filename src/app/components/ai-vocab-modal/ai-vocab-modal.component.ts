@@ -38,11 +38,12 @@ export class AiVocabModalComponent {
 
   step = signal<ModalStep>('input');
   word = signal('');
-  wordType = signal<WordType>('noun');
+  wordType = signal<WordType | 'unknown'>('unknown');
   result = signal<AiVocabResponse | null>(null);
   errorMsg = signal('');
 
-  readonly wordTypes: Array<{ value: WordType; labelKey: string }> = [
+  readonly wordTypes: Array<{ value: WordType | 'unknown'; labelKey: string }> = [
+    { value: 'unknown',     labelKey: 'wordType.unknown' },
     { value: 'noun',        labelKey: 'wordType.noun' },
     { value: 'verb',        labelKey: 'wordType.verb' },
     { value: 'adjective',   labelKey: 'wordType.adjective' },
@@ -73,7 +74,8 @@ export class AiVocabModalComponent {
     this.step.set('loading');
     this.errorMsg.set('');
 
-    this.aiService.generate(this.word(), this.wordType()).subscribe({
+    const wt = this.wordType() === 'unknown' ? undefined : this.wordType() as WordType;
+    this.aiService.generate(this.word(), wt).subscribe({
       next: (res) => {
         this.result.set(res);
         this.step.set('preview');
@@ -118,7 +120,7 @@ export class AiVocabModalComponent {
     const map: Record<WordType, string> = {
       noun: 'primary', verb: 'success', adjective: 'warning',
       adverb: 'tertiary', preposition: 'medium', conjunction: 'dark',
-      pronoun: 'secondary', other: 'light'
+      pronoun: 'secondary', other: 'light', unknown: 'medium'
     };
     return map[type] ?? 'medium';
   }
