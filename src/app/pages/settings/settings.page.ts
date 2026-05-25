@@ -307,7 +307,7 @@ export class SettingsPage {
     this.enriching.set(true);
     this.enrichCount.set(0);
     this.enrichTotal.set(toEnrich.length);
-    const enriched: Vocabulary[] = [];
+    let enrichedCount = 0;
     const total = toEnrich.length;
 
     for (let i = 0; i < total; i++) {
@@ -317,6 +317,7 @@ export class SettingsPage {
         const response = await firstValueFrom(
           this.aiService.generate(vocab.german, vocab.wordType !== 'unknown' ? vocab.wordType : undefined)
         );
+        // Spread from original vocab — preserves `learned` and all other fields unchanged
         const updated: Vocabulary = { ...vocab };
         if (!updated.turkish && response.turkish) updated.turkish = response.turkish;
         if (!updated.persian && response.persian) updated.persian = response.persian;
@@ -329,21 +330,20 @@ export class SettingsPage {
             return { ...ex, turkish: ex.turkish ?? aiEx.turkish, persian: ex.persian ?? aiEx.persian };
           });
         }
-        enriched.push({ ...updated, aiEnriched: true });
+        // Save immediately with aiEnriched flag so interruption won't re-process this vocab
+        await this.dbService.bulkSave([{ ...updated, aiEnriched: true }]);
+        enrichedCount++;
       } catch { /* skip failed */ }
       await new Promise(r => setTimeout(r, 100));
     }
 
-    if (enriched.length) {
-      await this.dbService.bulkSave(enriched);
-      await this.vocabService.load();
-    }
+    await this.vocabService.load();
     this.enriching.set(false);
     this.enrichCount.set(0);
     this.enrichTotal.set(0);
     this.toast.set({
       open: true,
-      message: this.translate.instant('settings.data.enrichDone', { count: enriched.length }),
+      message: this.translate.instant('settings.data.enrichDone', { count: enrichedCount }),
       color: 'success'
     });
   }
