@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
@@ -10,7 +10,7 @@ import { addIcons } from 'ionicons';
 import {
   checkmarkCircleOutline, ellipseOutline, informationCircleOutline,
   refreshOutline, arrowForwardOutline, schoolOutline, volumeHighOutline, closeCircleOutline,
-  statsChartOutline
+  statsChartOutline, timeOutline
 } from 'ionicons/icons';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { TtsService } from '../../services/tts.service';
@@ -30,7 +30,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   templateUrl: './train.page.html',
   styleUrls: ['./train.page.scss']
 })
-export class TrainPage implements OnInit, ViewWillEnter {
+export class TrainPage implements OnInit, OnDestroy, ViewWillEnter {
   private router = inject(Router);
   private vocabService = inject(VocabularyService);
   private tts = inject(TtsService);
@@ -44,6 +44,9 @@ export class TrainPage implements OnInit, ViewWillEnter {
   current = signal<Vocabulary | null>(null);
   flipped = signal(false);
   done = signal(false);
+  elapsedSec = signal(0);
+
+  private timerInterval: ReturnType<typeof setInterval> | null = null;
 
   // Session tracking
   private sessionStartedAt = 0;
@@ -51,15 +54,41 @@ export class TrainPage implements OnInit, ViewWillEnter {
   private sessionItems: TrainSessionItem[] = [];
 
   constructor() {
-    addIcons({ checkmarkCircleOutline, ellipseOutline, informationCircleOutline, refreshOutline, arrowForwardOutline, schoolOutline, volumeHighOutline, closeCircleOutline, statsChartOutline });
+    addIcons({ checkmarkCircleOutline, ellipseOutline, informationCircleOutline, refreshOutline, arrowForwardOutline, schoolOutline, volumeHighOutline, closeCircleOutline, statsChartOutline, timeOutline });
   }
 
   async ngOnInit() {
     this.sessionStartedAt = Date.now();
     this.cardShownAt = Date.now();
     this.sessionItems = [];
+    this.elapsedSec.set(0);
+    this.startTimer();
     await this.vocabService.load();
     await this.pickRandom();
+  }
+
+  ngOnDestroy() {
+    this.stopTimer();
+  }
+
+  private startTimer() {
+    this.stopTimer();
+    this.timerInterval = setInterval(() => {
+      this.elapsedSec.set(Math.floor((Date.now() - this.sessionStartedAt) / 1000));
+    }, 1000);
+  }
+
+  private stopTimer() {
+    if (this.timerInterval !== null) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+  }
+
+  formatElapsed(sec: number): string {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   }
 
   async ionViewWillEnter() {
@@ -97,6 +126,7 @@ export class TrainPage implements OnInit, ViewWillEnter {
   }
 
   private async saveSession() {
+    this.stopTimer();
     const now = Date.now();
     const session: TrainSession = {
       _id: `session_${now}_${Math.random().toString(36).slice(2)}`,

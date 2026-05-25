@@ -32,6 +32,10 @@
     <div class="flashcard-counter">
       {{ 'train.remaining' | translate : { count: unlearned().length } }}
     </div>
+    <div class="session-timer">
+      <ion-icon name="time-outline"></ion-icon>
+      {{ formatElapsed(elapsedSec()) }}
+    </div>
 
     <div class="scene" (click)="flip()">
       <div class="card" [class.is-flipped]="flipped()">

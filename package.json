@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve --port 5200",
     "build": "ng build",
+    "build:sync": "npm run build && npx cap sync android && npx cap sync @capacitor-community/text-to-speech",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
