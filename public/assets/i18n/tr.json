@@ -357,6 +357,8 @@
       "retry": "Tekrar Dene",
       "save": "Kütüphaneye Kaydet",
       "saving": "Kaydediliyor…",
+      "voiceHint": "Almanca kelimeyi söylemek için mik. dokunun",
+      "listening": "Dinleniyor… şimdi konuşun",
       "examples": "Örnek Cümleler",
       "bestimmt": "Belirli artikel çekimi",
       "unbestimmt": "Belirsiz artikel çekimi",

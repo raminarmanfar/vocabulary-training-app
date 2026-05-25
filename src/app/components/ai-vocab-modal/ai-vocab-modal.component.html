@@ -19,6 +19,13 @@
     <div class="step-input">
       <p class="hint">{{ 'ai.modal.hint' | translate }}</p>
 
+      @if (speechSupported()) {
+        <div class="voice-hint" [class.voice-recording]="recording()">
+          <ion-icon [name]="recording() ? 'mic' : 'mic-outline'"></ion-icon>
+          {{ (recording() ? 'ai.modal.listening' : 'ai.modal.voiceHint') | translate }}
+        </div>
+      }
+
       <ion-list lines="full" class="input-list">
         <ion-item>
           <ion-label position="stacked">{{ 'ai.modal.wordLabel' | translate }}</ion-label>
@@ -29,6 +36,16 @@
             clearInput="true"
             (keyup.enter)="generate()">
           </ion-input>
+          @if (speechSupported()) {
+            <ion-button
+              slot="end"
+              fill="clear"
+              [color]="recording() ? 'danger' : 'medium'"
+              (click)="toggleRecording()"
+              class="mic-btn">
+              <ion-icon [name]="recording() ? 'mic' : 'mic-outline'" slot="icon-only" [class.mic-pulse]="recording()"></ion-icon>
+            </ion-button>
+          }
         </ion-item>
 
         <ion-item>

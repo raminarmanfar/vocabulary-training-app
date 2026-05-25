@@ -325,6 +325,8 @@
       "retry":          "Try Again",
       "save":           "Save to Library",
       "saving":         "Saving…",
+      "voiceHint":      "Tap the mic to say the German word",
+      "listening":      "Listening… speak now",
       "examples":       "Example Sentences",
       "bestimmt":       "Definite article declension",
       "unbestimmt":     "Indefinite article declension",

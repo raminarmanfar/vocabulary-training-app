@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, Input, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel,
@@ -9,7 +9,7 @@ import {
 } from '@ionic/angular/standalone';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { sparkles, save, close, refreshOutline, checkmarkCircle } from 'ionicons/icons';
+import { sparkles, save, close, refreshOutline, checkmarkCircle, micOutline, mic } from 'ionicons/icons';
 import { VocabAiService, AiVocabResponse } from '../../services/vocab-ai.service';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { LanguageService } from '../../services/language.service';
@@ -31,7 +31,7 @@ type ModalStep = 'input' | 'loading' | 'preview' | 'saving';
     TranslatePipe
   ]
 })
-export class AiVocabModalComponent implements OnInit {
+export class AiVocabModalComponent implements OnInit, OnDestroy {
   private modalCtrl   = inject(ModalController);
   private toastCtrl   = inject(ToastController);
   private alertCtrl   = inject(AlertController);
@@ -47,6 +47,9 @@ export class AiVocabModalComponent implements OnInit {
   wordType = signal<WordType | 'unknown'>('unknown');
   result = signal<AiVocabResponse | null>(null);
   errorMsg = signal('');
+  recording = signal(false);
+  speechSupported = signal(false);
+  private recognition: any = null;
 
   readonly wordTypes: Array<{ value: WordType | 'unknown'; labelKey: string }> = [
     { value: 'unknown',     labelKey: 'wordType.unknown' },
@@ -68,13 +71,43 @@ export class AiVocabModalComponent implements OnInit {
   canGenerate = computed(() => this.word().trim().length > 0);
 
   constructor() {
-    addIcons({ sparkles, save, close, refreshOutline, checkmarkCircle });
+    addIcons({ sparkles, save, close, refreshOutline, checkmarkCircle, micOutline, mic });
   }
 
   ngOnInit() {
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (SR) {
+      this.speechSupported.set(true);
+      this.recognition = new SR();
+      this.recognition.lang = 'de-DE';
+      this.recognition.interimResults = false;
+      this.recognition.maxAlternatives = 1;
+      this.recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript.trim();
+        this.word.set(transcript);
+        this.recording.set(false);
+      };
+      this.recognition.onerror = () => this.recording.set(false);
+      this.recognition.onend = () => this.recording.set(false);
+    }
     if (this.initialWord) {
       this.word.set(this.initialWord);
       this.generate();
+    }
+  }
+
+  ngOnDestroy() {
+    this.recognition?.abort();
+  }
+
+  toggleRecording() {
+    if (this.recording()) {
+      this.recognition?.stop();
+      this.recording.set(false);
+    } else {
+      this.word.set('');
+      this.recognition?.start();
+      this.recording.set(true);
     }
   }
 

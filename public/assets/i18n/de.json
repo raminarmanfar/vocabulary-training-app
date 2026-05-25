@@ -325,6 +325,8 @@
       "retry":          "Erneut versuchen",
       "save":           "In Bibliothek speichern",
       "saving":         "Wird gespeichert…",
+      "voiceHint":      "Mikrofon antippen und das deutsche Wort sprechen",
+      "listening":      "Höre zu… jetzt sprechen",
       "examples":       "Beispielsätze",
       "bestimmt":       "Deklination mit bestimmtem Artikel",
       "unbestimmt":     "Deklination mit unbestimmtem Artikel",
