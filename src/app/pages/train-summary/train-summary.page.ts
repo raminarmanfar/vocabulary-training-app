@@ -34,6 +34,7 @@ export class TrainSummaryPage implements OnInit {
   mode = signal<'list' | 'detail'>('list');
   session = signal<TrainSession | null>(null);
   sessions = signal<TrainSession[]>([]);
+  sessionsLoaded = signal(false);
 
   selectedDate = signal<string | null>(null);
   readonly todayStr = new Date().toISOString().slice(0, 10);
@@ -80,6 +81,7 @@ export class TrainSummaryPage implements OnInit {
       this.mode.set('list');
       const all = await this.db.getAllTrainSessions();
       this.sessions.set(all);
+      this.sessionsLoaded.set(true);
     }
   }
 

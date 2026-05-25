@@ -12,16 +12,18 @@
   <!-- ── CALENDAR / LIST MODE ───────────────────────── -->
   @if (mode() === 'list') {
 
-    <ion-datetime
-      presentation="date"
-      [firstDayOfWeek]="1"
-      size="cover"
-      color="success"
-      [max]="todayStr"
-      [highlightedDates]="highlightedDates()"
-      [isDateEnabled]="isDateEnabledFn()"
-      (ionChange)="onDateChange($event)">
-    </ion-datetime>
+    @if (sessionsLoaded()) {
+      <ion-datetime
+        presentation="date"
+        [firstDayOfWeek]="1"
+        size="cover"
+        color="success"
+        [max]="todayStr"
+        [highlightedDates]="highlightedDates()"
+        [isDateEnabled]="isDateEnabledFn()"
+        (ionChange)="onDateChange($event)">
+      </ion-datetime>
+    }
 
     <!-- Empty state -->
     @if (sessions().length === 0) {
