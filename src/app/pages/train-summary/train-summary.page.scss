@@ -138,11 +138,14 @@
   min-height: 42px;
   border-radius: 8px;
   transition: background 0.15s;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
-  .cal-day-num,
-  .cal-dot {
-    pointer-events: none;
-  }
+  span { pointer-events: none; }
 
   &.has-sessions {
     cursor: pointer;

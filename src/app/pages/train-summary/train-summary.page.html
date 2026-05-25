@@ -35,16 +35,20 @@
           <!-- Day cells -->
           @for (cell of calendarCells(); track cell.dateStr || $index) {
             @if (cell.date) {
-              <div class="cal-day"
-                   [class.has-sessions]="cell.sessions.length > 0"
-                   [class.selected]="selectedDate() === cell.dateStr"
-                   [class.today]="isToday(cell.dateStr)"
-                   (click)="selectDate(cell.dateStr)">
-                <span class="cal-day-num">{{ cell.date.getDate() }}</span>
-                @if (cell.sessions.length > 0) {
+              @if (cell.sessions.length > 0) {
+                <button class="cal-day has-sessions"
+                        [class.selected]="selectedDate() === cell.dateStr"
+                        [class.today]="isToday(cell.dateStr)"
+                        (click)="selectDate(cell.dateStr)">
+                  <span class="cal-day-num">{{ cell.date.getDate() }}</span>
                   <span class="cal-dot"></span>
-                }
-              </div>
+                </button>
+              } @else {
+                <div class="cal-day"
+                     [class.today]="isToday(cell.dateStr)">
+                  <span class="cal-day-num">{{ cell.date.getDate() }}</span>
+                </div>
+              }
             } @else {
               <div class="cal-day cal-day-empty"></div>
             }
