@@ -135,7 +135,7 @@
                  (click)="m.isSelectable ? selectedMonth.set(m.monthStr) : null">
               <span class="month-name">{{ m.label }}</span>
               @if (m.hasData) {
-                <span class="month-stat">✓ {{ m.learned }} &nbsp; ✗ {{ m.notLearned }}</span>
+                <span class="month-stat">✓ {{ m.learned }} &nbsp; <span style="color: var(--ion-color-danger)">✗ {{ m.notLearned }}</span></span>
                 <span class="month-time">{{ formatTime(m.timeMs) }}</span>
               } @else {
                 <span class="month-empty">—</span>
