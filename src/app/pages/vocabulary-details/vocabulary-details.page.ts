@@ -65,6 +65,11 @@ export class VocabularyDetailsPage implements OnInit, ViewWillEnter {
     if (v) await this.tts.speak(v.german);
   }
 
+  async speakExample(event: Event, text: string) {
+    event.stopPropagation();
+    await this.tts.speak(text);
+  }
+
   async toggleLearned() {
     const v = this.vocab();
     if (!v) return;

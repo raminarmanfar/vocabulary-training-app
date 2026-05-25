@@ -76,6 +76,9 @@
               <ion-accordion [value]="'ex' + $index">
                 <ion-item slot="header">
                   <ion-label>{{ ex.german }}</ion-label>
+                  <ion-button fill="clear" slot="end" (click)="speakExample($event, ex.german)">
+                    <ion-icon name="volume-high" slot="icon-only" color="primary"></ion-icon>
+                  </ion-button>
                 </ion-item>
                 <div slot="content" class="example-translation">
                   <p>{{ ex.english }}</p>
