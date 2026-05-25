@@ -143,6 +143,63 @@ ion-segment {
   margin-bottom: 12px;
 }
 
+// ── Year grid ─────────────────────────────────────
+.year-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.month-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 12px 6px;
+  border-radius: 12px;
+  min-height: 80px;
+  background: var(--ion-color-light);
+  text-align: center;
+
+  &.has-data {
+    background: rgba(var(--ion-color-success-rgb), 0.15);
+    cursor: pointer;
+
+    &:active {
+      background: rgba(var(--ion-color-success-rgb), 0.28);
+    }
+  }
+
+  .month-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+
+  .month-stat {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ion-color-success);
+  }
+
+  .month-time {
+    font-size: 0.68rem;
+    color: var(--ion-color-medium);
+  }
+
+  .month-empty {
+    font-size: 0.75rem;
+    color: var(--ion-color-medium);
+  }
+}
+
+// ── Month detail nav ───────────────────────────────
+.monthly-nav {
+  margin: -8px 0 4px -8px;
+}
+
 // ── ion-datetime calendar ──────────────────────────
 ion-datetime {
   margin-bottom: 8px;

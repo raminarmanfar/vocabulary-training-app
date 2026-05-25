@@ -10,7 +10,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import {
   checkmarkCircleOutline, closeCircleOutline, timeOutline,
-  refreshOutline, trophyOutline, calendarOutline, barChartOutline
+  refreshOutline, trophyOutline, calendarOutline, barChartOutline,
+  chevronBackOutline
 } from 'ionicons/icons';
 import { DatabaseService } from '../../services/database.service';
 import { TrainSession } from '../../models/train-session.model';
@@ -41,8 +42,9 @@ export class TrainSummaryPage implements OnInit {
   readonly todayStr = new Date().toISOString().slice(0, 10);
   selectedDate = signal<string | null>(this.todayStr);
   activeTab = signal<'calendar' | 'monthly'>('calendar');
+  selectedMonth = signal<string | null>(null);
 
-  readonly currentMonthLabel = new Date().toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+  readonly currentYear = new Date().getFullYear();
 
   sessionsByDate = computed(() => {
     const map = new Map<string, TrainSession[]>();
@@ -76,8 +78,43 @@ export class TrainSummaryPage implements OnInit {
     };
   });
 
+  yearSummary = computed(() => {
+    const byMonth = new Map<string, { learned: number; notLearned: number; timeMs: number; sessions: number }>();
+    for (const s of this.sessions()) {
+      const m = s.startedAt.slice(0, 7);
+      if (m.startsWith(String(this.currentYear))) {
+        if (!byMonth.has(m)) byMonth.set(m, { learned: 0, notLearned: 0, timeMs: 0, sessions: 0 });
+        const e = byMonth.get(m)!;
+        e.learned += s.learnedCount;
+        e.notLearned += s.notLearnedCount;
+        e.timeMs += s.totalTimeMs;
+        e.sessions++;
+      }
+    }
+    return Array.from({ length: 12 }, (_, i) => {
+      const monthStr = `${this.currentYear}-${String(i + 1).padStart(2, '0')}`;
+      const data = byMonth.get(monthStr);
+      return {
+        monthStr,
+        label: new Date(this.currentYear, i, 1).toLocaleDateString(undefined, { month: 'long' }),
+        hasData: !!data,
+        learned: data?.learned ?? 0,
+        notLearned: data?.notLearned ?? 0,
+        timeMs: data?.timeMs ?? 0,
+        sessions: data?.sessions ?? 0,
+      };
+    });
+  });
+
+  selectedMonthLabel = computed(() => {
+    const m = this.selectedMonth();
+    if (!m) return '';
+    const [year, month] = m.split('-').map(Number);
+    return new Date(year, month - 1, 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+  });
+
   monthlyReport = computed(() => {
-    const monthPrefix = this.todayStr.slice(0, 7); // "YYYY-MM"
+    const monthPrefix = this.selectedMonth() ?? this.todayStr.slice(0, 7);
     const monthSessions = this.sessions().filter(s => s.startedAt.slice(0, 7) === monthPrefix);
     const byDate = new Map<string, { learned: number; notLearned: number; timeMs: number }>();
     for (const s of monthSessions) {
@@ -101,7 +138,7 @@ export class TrainSummaryPage implements OnInit {
   });
 
   constructor() {
-    addIcons({ checkmarkCircleOutline, closeCircleOutline, timeOutline, refreshOutline, trophyOutline, calendarOutline, barChartOutline });
+    addIcons({ checkmarkCircleOutline, closeCircleOutline, timeOutline, refreshOutline, trophyOutline, calendarOutline, barChartOutline, chevronBackOutline });
   }
 
   async ngOnInit() {
