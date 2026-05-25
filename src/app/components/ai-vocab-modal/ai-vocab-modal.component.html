@@ -101,7 +101,7 @@
             @for (ex of result()!.examples; track $index) {
               <div class="example-row">
                 <p class="example-de">{{ ex.german }}</p>
-                <p class="example-en">{{ ex.english }}</p>
+                <p class="example-en">{{ exampleTranslation(ex) }}</p>
               </div>
             }
           </ion-card-content>

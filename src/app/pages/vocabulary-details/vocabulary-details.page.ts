@@ -64,6 +64,13 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
     return null;
   });
 
+  exampleTranslation(ex: { english: string; turkish?: string; persian?: string }): string {
+    const lang = this.langService.currentLang();
+    if (lang === 'tr') return ex.turkish ?? ex.english;
+    if (lang === 'fa') return ex.persian ?? ex.english;
+    return ex.english;
+  }
+
   constructor() {
     addIcons({ create, trash, volumeHigh, checkmarkCircle, ellipseOutline, imageOutline, sparkles });
   }

@@ -12,6 +12,7 @@ import { addIcons } from 'ionicons';
 import { sparkles, save, close, refreshOutline, checkmarkCircle } from 'ionicons/icons';
 import { VocabAiService, AiVocabResponse } from '../../services/vocab-ai.service';
 import { VocabularyService } from '../../services/vocabulary.service';
+import { LanguageService } from '../../services/language.service';
 import { WordType, CefrLevel, Vocabulary } from '../../models/vocabulary.model';
 
 type ModalStep = 'input' | 'loading' | 'preview' | 'saving';
@@ -37,6 +38,7 @@ export class AiVocabModalComponent implements OnInit {
   private translate   = inject(TranslateService);
   private aiService   = inject(VocabAiService);
   private vocabService = inject(VocabularyService);
+  private langService  = inject(LanguageService);
 
   @Input() initialWord?: string;
 
@@ -173,5 +175,12 @@ export class AiVocabModalComponent implements OnInit {
 
   objectKeys(obj: object | null | undefined): string[] {
     return obj ? Object.keys(obj) : [];
+  }
+
+  exampleTranslation(ex: { english: string; turkish?: string; persian?: string }): string {
+    const lang = this.langService.currentLang();
+    if (lang === 'tr') return ex.turkish ?? ex.english;
+    if (lang === 'fa') return ex.persian ?? ex.english;
+    return ex.english;
   }
 }

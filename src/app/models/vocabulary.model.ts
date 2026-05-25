@@ -5,6 +5,8 @@ export type GrammaticalCase = 'nominative' | 'akkusativ' | 'genitiv' | 'dativ';
 export interface ExampleSentence {
   german: string;
   english: string;
+  turkish?: string;
+  persian?: string;
 }
 
 export interface NounDeklination {

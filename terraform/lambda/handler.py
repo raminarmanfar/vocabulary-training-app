@@ -34,27 +34,27 @@ def build_user_prompt(word: str, word_type: str | None) -> str:
 
     if is_verb:
         examples_schema = """[
-    { "german": "<example in Präsens (present tense)>",         "english": "<translation>" },
-    { "german": "<example in Präteritum (simple past)>",        "english": "<translation>" },
-    { "german": "<example in Perfekt (present perfect tense)>", "english": "<translation>" }
+    { "german": "<example in Präsens (present tense)>",         "english": "<English translation>", "turkish": "<Turkish translation>", "persian": "<Persian/Farsi translation>" },
+    { "german": "<example in Präteritum (simple past)>",        "english": "<English translation>", "turkish": "<Turkish translation>", "persian": "<Persian/Farsi translation>" },
+    { "german": "<example in Perfekt (present perfect tense)>", "english": "<English translation>", "turkish": "<Turkish translation>", "persian": "<Persian/Farsi translation>" }
   ]"""
     elif word_type == "noun":
         examples_schema = """[
-    { "german": "<example sentence using the singular form>",          "english": "<translation>" },
-    { "german": "<second example sentence using the singular form>",   "english": "<translation>" },
-    { "german": "<example sentence that uses the PLURAL form of the noun>", "english": "<translation>" }
+    { "german": "<example sentence using the singular form>",          "english": "<English translation>", "turkish": "<Turkish translation>", "persian": "<Persian/Farsi translation>" },
+    { "german": "<second example sentence using the singular form>",   "english": "<English translation>", "turkish": "<Turkish translation>", "persian": "<Persian/Farsi translation>" },
+    { "german": "<example sentence that uses the PLURAL form of the noun>", "english": "<English translation>", "turkish": "<Turkish translation>", "persian": "<Persian/Farsi translation>" }
   ]"""
     elif is_auto:
         examples_schema = """[
-    { "german": "<example sentence 1>", "english": "<translation>" },
-    { "german": "<example sentence 2>", "english": "<translation>" },
-    { "german": "<example sentence 3 (if verb: use Perfekt; if noun: use plural form)>", "english": "<translation>" }
+    { "german": "<example sentence 1>", "english": "<English translation>", "turkish": "<Turkish translation>", "persian": "<Persian/Farsi translation>" },
+    { "german": "<example sentence 2>", "english": "<English translation>", "turkish": "<Turkish translation>", "persian": "<Persian/Farsi translation>" },
+    { "german": "<example sentence 3 (if verb: use Perfekt; if noun: use plural form)>", "english": "<English translation>", "turkish": "<Turkish translation>", "persian": "<Persian/Farsi translation>" }
   ]"""
     else:
         examples_schema = """[
-    { "german": "<example sentence 1>", "english": "<translation>" },
-    { "german": "<example sentence 2>", "english": "<translation>" },
-    { "german": "<example sentence 3>", "english": "<translation>" }
+    { "german": "<example sentence 1>", "english": "<English translation>", "turkish": "<Turkish translation>", "persian": "<Persian/Farsi translation>" },
+    { "german": "<example sentence 2>", "english": "<English translation>", "turkish": "<Turkish translation>", "persian": "<Persian/Farsi translation>" },
+    { "german": "<example sentence 3>", "english": "<English translation>", "turkish": "<Turkish translation>", "persian": "<Persian/Farsi translation>" }
   ]"""
 
     base = f"""Generate a complete vocabulary entry for the German word "{word}" ({type_instruction}).
