@@ -36,7 +36,7 @@ export class TrainSummaryPage implements OnInit {
   sessions = signal<TrainSession[]>([]);
   sessionsLoaded = signal(false);
 
-  selectedDate = signal<string | null>(null);
+  selectedDate = signal<string | null>(this.todayStr);
   readonly todayStr = new Date().toISOString().slice(0, 10);
 
   sessionsByDate = computed(() => {

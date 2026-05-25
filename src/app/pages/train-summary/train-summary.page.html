@@ -19,6 +19,7 @@
         size="cover"
         color="success"
         [max]="todayStr"
+        [value]="todayStr"
         [highlightedDates]="highlightedDates()"
         (ionChange)="onDateChange($event)">
       </ion-datetime>
