@@ -198,10 +198,10 @@ export class TrainSummaryPage implements OnInit {
 
   formatTime(ms: number): string {
     const totalSec = Math.floor(ms / 1000);
-    if (totalSec < 60) return `${totalSec}s`;
-    const m = Math.floor(totalSec / 60);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
     const s = totalSec % 60;
-    return s > 0 ? `${m}m ${s}s` : `${m}m`;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   }
 
   formatSessionTime(iso: string): string {
