@@ -5,7 +5,7 @@ import {
 } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { personCircleOutline, logoGithub, schoolOutline } from 'ionicons/icons';
+import { personCircleOutline, logoGithub, schoolOutline, logoLinkedin, codeSlashOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-about',
@@ -37,6 +37,18 @@ import { personCircleOutline, logoGithub, schoolOutline } from 'ionicons/icons';
         </ion-card-content>
       </ion-card>
 
+      <!-- Developer bio -->
+      <ion-card>
+        <ion-card-content style="text-align:center;padding-top:16px">
+          <p style="font-size:1rem;line-height:1.6;margin-bottom:12px">{{ 'about.bio' | translate }}</p>
+          <a href="https://www.linkedin.com/in/ramin-armanfar/" target="_blank"
+             style="display:inline-flex;align-items:center;gap:6px;color:var(--ion-color-primary);font-weight:600;text-decoration:none">
+            <ion-icon name="logo-linkedin" style="font-size:20px;color:#0A66C2"></ion-icon>
+            {{ 'about.linkedin' | translate }}
+          </a>
+        </ion-card-content>
+      </ion-card>
+
       <ion-card>
         <ion-card-header><ion-card-title>{{ 'about.features.title' | translate }}</ion-card-title></ion-card-header>
         <ion-card-content>
@@ -62,5 +74,5 @@ import { personCircleOutline, logoGithub, schoolOutline } from 'ionicons/icons';
   `
 })
 export class AboutPage {
-  constructor() { addIcons({ personCircleOutline, logoGithub, schoolOutline }); }
+  constructor() { addIcons({ personCircleOutline, logoGithub, schoolOutline, logoLinkedin, codeSlashOutline }); }
 }

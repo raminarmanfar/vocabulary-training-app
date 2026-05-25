@@ -175,6 +175,8 @@
   "about": {
     "title":    "About",
     "subtitle": "Learn German vocabulary — offline, always.",
+    "bio":      "Developed by Ramin Armanfar, a Senior Full-Stack Software Developer with a passion for building modern, user-friendly applications.",
+    "linkedin": "Connect on LinkedIn",
     "features": {
       "title": "Features",
       "grammar":  "Full grammatical details for nouns, verbs & adjectives",
