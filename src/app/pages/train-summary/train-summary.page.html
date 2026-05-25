@@ -112,35 +112,38 @@
         </div>
       } @else {
 
-        <!-- ── Year grid ── -->
-        @if (!selectedMonth()) {
-          <h3 class="list-heading">{{ currentYear }}</h3>
-          <div class="year-grid">
-            @for (m of yearSummary(); track m.monthStr) {
-              @if (m.hasData) {
-                <div class="month-cell has-data" (click)="selectedMonth.set(m.monthStr)">
-                  <span class="month-name">{{ m.label }}</span>
-                  <span class="month-stat">✓ {{ m.learned }}</span>
-                  <span class="month-time">{{ formatTime(m.timeMs) }}</span>
-                </div>
-              } @else {
-                <div class="month-cell">
-                  <span class="month-name">{{ m.label }}</span>
-                  <span class="month-empty">—</span>
-                </div>
-              }
+        <!-- Year dropdown -->
+        <div class="year-selector-row">
+          <ion-select
+            [value]="selectedYear()"
+            interface="popover"
+            (ionChange)="onYearChange($any($event.detail.value))">
+            @for (y of availableYears(); track y) {
+              <ion-select-option [value]="y">{{ y }}</ion-select-option>
             }
-          </div>
-        }
+          </ion-select>
+        </div>
 
-        <!-- ── Month detail ── -->
+        <!-- 12-month grid (always visible) -->
+        <div class="year-grid">
+          @for (m of yearSummary(); track m.monthStr) {
+            <div class="month-cell"
+                 [class.has-data]="m.hasData"
+                 [class.selected]="selectedMonth() === m.monthStr"
+                 (click)="m.hasData ? selectedMonth.set(m.monthStr) : null">
+              <span class="month-name">{{ m.label }}</span>
+              @if (m.hasData) {
+                <span class="month-stat">✓ {{ m.learned }}</span>
+                <span class="month-time">{{ formatTime(m.timeMs) }}</span>
+              } @else {
+                <span class="month-empty">—</span>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Month detail (inline below grid) -->
         @if (selectedMonth()) {
-          <div class="monthly-nav">
-            <ion-button fill="clear" size="small" (click)="selectedMonth.set(null)">
-              <ion-icon name="chevron-back-outline" slot="start"></ion-icon>
-              {{ currentYear }}
-            </ion-button>
-          </div>
           <h3 class="list-heading">{{ selectedMonthLabel() }}</h3>
 
           <!-- Month totals card -->

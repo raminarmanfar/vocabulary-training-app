@@ -140,6 +140,24 @@
 }
 
 // ── Year grid ─────────────────────────────────────
+
+// Year dropdown
+.year-selector-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+
+  ion-select {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    border: 2px solid var(--ion-color-success);
+    border-radius: 10px;
+    padding: 4px 16px;
+    min-width: 120px;
+    text-align: center;
+  }
+}
 .year-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -168,6 +186,12 @@
     }
   }
 
+  &.selected {
+    background: rgba(var(--ion-color-success-rgb), 0.30);
+    outline: 2px solid var(--ion-color-success);
+    outline-offset: -2px;
+  }
+
   .month-name {
     font-size: 0.8rem;
     font-weight: 600;
@@ -189,11 +213,6 @@
     font-size: 0.75rem;
     color: var(--ion-color-medium);
   }
-}
-
-// ── Month detail nav ───────────────────────────────
-.monthly-nav {
-  margin: -8px 0 4px -8px;
 }
 
 // ── ion-datetime calendar ──────────────────────────

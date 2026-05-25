@@ -4,7 +4,7 @@ import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
   IonButton, IonIcon, IonCard, IonCardContent,
   IonBadge, IonList, IonItem, IonLabel, IonDatetime,
-  IonSegment, IonSegmentButton
+  IonSegment, IonSegmentButton, IonSelect, IonSelectOption
 } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
@@ -23,7 +23,7 @@ import { TrainSession } from '../../models/train-session.model';
     IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
     IonButton, IonIcon, IonCard, IonCardContent,
     IonBadge, IonList, IonItem, IonLabel, IonDatetime,
-    IonSegment, IonSegmentButton,
+    IonSegment, IonSegmentButton, IonSelect, IonSelectOption,
     TranslatePipe
   ],
   templateUrl: './train-summary.page.html',
@@ -45,6 +45,15 @@ export class TrainSummaryPage implements OnInit {
   selectedMonth = signal<string | null>(null);
 
   readonly currentYear = new Date().getFullYear();
+  selectedYear = signal<number>(new Date().getFullYear());
+
+  availableYears = computed(() => {
+    const yearSet = new Set<number>([this.currentYear]);
+    for (const s of this.sessions()) {
+      yearSet.add(Number(s.startedAt.slice(0, 4)));
+    }
+    return Array.from(yearSet).sort((a, b) => b - a);
+  });
 
   sessionsByDate = computed(() => {
     const map = new Map<string, TrainSession[]>();
@@ -79,10 +88,11 @@ export class TrainSummaryPage implements OnInit {
   });
 
   yearSummary = computed(() => {
+    const year = this.selectedYear();
     const byMonth = new Map<string, { learned: number; notLearned: number; timeMs: number; sessions: number }>();
     for (const s of this.sessions()) {
       const m = s.startedAt.slice(0, 7);
-      if (m.startsWith(String(this.currentYear))) {
+      if (m.startsWith(String(year))) {
         if (!byMonth.has(m)) byMonth.set(m, { learned: 0, notLearned: 0, timeMs: 0, sessions: 0 });
         const e = byMonth.get(m)!;
         e.learned += s.learnedCount;
@@ -92,11 +102,11 @@ export class TrainSummaryPage implements OnInit {
       }
     }
     return Array.from({ length: 12 }, (_, i) => {
-      const monthStr = `${this.currentYear}-${String(i + 1).padStart(2, '0')}`;
+      const monthStr = `${year}-${String(i + 1).padStart(2, '0')}`;
       const data = byMonth.get(monthStr);
       return {
         monthStr,
-        label: new Date(this.currentYear, i, 1).toLocaleDateString(undefined, { month: 'long' }),
+        label: new Date(year, i, 1).toLocaleDateString(undefined, { month: 'long' }),
         hasData: !!data,
         learned: data?.learned ?? 0,
         notLearned: data?.notLearned ?? 0,
@@ -158,6 +168,11 @@ export class TrainSummaryPage implements OnInit {
   onDateChange(event: CustomEvent) {
     const val = event.detail.value as string | null;
     this.selectedDate.set(val ? val.slice(0, 10) : null);
+  }
+
+  onYearChange(year: number) {
+    this.selectedYear.set(year);
+    this.selectedMonth.set(null);
   }
 
   formatDayLabel(dateStr: string): string {
