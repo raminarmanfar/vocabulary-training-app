@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
   IonList, IonItem, IonLabel, IonIcon, IonSelect, IonSelectOption,
-  IonButton, IonToast, IonToggle
+  IonButton, IonToast, IonToggle, IonProgressBar
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -23,7 +23,7 @@ import { Vocabulary } from '../../models/vocabulary.model';
   imports: [
     IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
     IonList, IonItem, IonLabel, IonIcon, IonSelect, IonSelectOption,
-    IonButton, IonToast, IonToggle,
+    IonButton, IonToast, IonToggle, IonProgressBar,
     TranslatePipe
   ],
   template: `
@@ -83,15 +83,23 @@ import { Vocabulary } from '../../models/vocabulary.model';
         </ion-item>
         <ion-item>
           <ion-icon name="sparkles-outline" slot="start" color="secondary"></ion-icon>
-          <ion-label>{{ 'settings.data.enrichVocabs' | translate }}</ion-label>
-          <ion-button slot="end" fill="outline" color="secondary" [disabled]="enriching()" (click)="enrichVocabs()">
+          <ion-label>
+            {{ 'settings.data.enrichVocabs' | translate }}
             @if (enriching()) {
-              {{ enrichProgress() }}
-            } @else {
-              {{ 'settings.data.enrich' | translate }}
+              <p style="font-size:0.78rem;margin-top:2px">{{ enrichCount() }} / {{ enrichTotal() }}</p>
             }
+          </ion-label>
+          <ion-button slot="end" fill="outline" color="secondary" [disabled]="enriching()" (click)="enrichVocabs()">
+            {{ 'settings.data.enrich' | translate }}
           </ion-button>
         </ion-item>
+        @if (enriching()) {
+          <ion-progress-bar
+            [value]="enrichTotal() ? enrichCount() / enrichTotal() : 0"
+            color="secondary"
+            style="height:3px">
+          </ion-progress-bar>
+        }
       </ion-list>
 
       <!-- Danger zone -->
@@ -146,7 +154,8 @@ export class SettingsPage {
 
   toast = signal<{ open: boolean; message: string; color: string }>({ open: false, message: '', color: 'success' });
   enriching = signal(false);
-  enrichProgress = signal('');
+  enrichCount = signal(0);
+  enrichTotal = signal(0);
 
   constructor() { addIcons({ languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline }); }
 
@@ -284,12 +293,14 @@ export class SettingsPage {
     if (role !== 'confirm') return;
 
     this.enriching.set(true);
+    this.enrichCount.set(0);
+    this.enrichTotal.set(toEnrich.length);
     const enriched: Vocabulary[] = [];
     const total = toEnrich.length;
 
     for (let i = 0; i < total; i++) {
       const vocab = toEnrich[i];
-      this.enrichProgress.set(`${i + 1} / ${total}`);
+      this.enrichCount.set(i + 1);
       try {
         const response = await firstValueFrom(
           this.aiService.generate(vocab.german, vocab.wordType !== 'unknown' ? vocab.wordType : undefined)
@@ -316,7 +327,8 @@ export class SettingsPage {
       await this.vocabService.load();
     }
     this.enriching.set(false);
-    this.enrichProgress.set('');
+    this.enrichCount.set(0);
+    this.enrichTotal.set(0);
     this.toast.set({
       open: true,
       message: this.translate.instant('settings.data.enrichDone', { count: enriched.length }),
