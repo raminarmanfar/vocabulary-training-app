@@ -5,7 +5,8 @@ import {
   IonButton, IonIcon, IonBadge, IonImg
 } from '@ionic/angular/standalone';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ViewWillEnter } from '@ionic/angular';
+import { ViewWillEnter, ViewWillLeave } from '@ionic/angular';
+import { App } from '@capacitor/app';
 import { addIcons } from 'ionicons';
 import {
   checkmarkCircleOutline, ellipseOutline, informationCircleOutline,
@@ -30,7 +31,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   templateUrl: './train.page.html',
   styleUrls: ['./train.page.scss']
 })
-export class TrainPage implements OnInit, OnDestroy, ViewWillEnter {
+export class TrainPage implements OnInit, OnDestroy, ViewWillEnter, ViewWillLeave {
   private router = inject(Router);
   private vocabService = inject(VocabularyService);
   private tts = inject(TtsService);
@@ -47,28 +48,73 @@ export class TrainPage implements OnInit, OnDestroy, ViewWillEnter {
   elapsedSec = signal(0);
 
   private timerInterval: ReturnType<typeof setInterval> | null = null;
+  private appStateHandle: { remove: () => Promise<void> } | null = null;
 
   // Session tracking
+  private sessionId = '';
   private sessionStartedAt = 0;
   private cardShownAt = 0;
   private sessionItems: TrainSessionItem[] = [];
+  private sessionSaved = false;
+  private isNavigatingToDetails = false;
 
   constructor() {
     addIcons({ checkmarkCircleOutline, ellipseOutline, informationCircleOutline, refreshOutline, arrowForwardOutline, schoolOutline, volumeHighOutline, closeCircleOutline, statsChartOutline, timeOutline });
   }
 
   async ngOnInit() {
-    this.sessionStartedAt = Date.now();
-    this.cardShownAt = Date.now();
-    this.sessionItems = [];
-    this.elapsedSec.set(0);
-    this.startTimer();
+    this.initSession();
     await this.vocabService.load();
     await this.pickRandom();
+    this.setupAppStateListener();
   }
 
   ngOnDestroy() {
     this.stopTimer();
+    this.appStateHandle?.remove();
+  }
+
+  private initSession() {
+    const now = Date.now();
+    this.sessionId = `session_${now}_${Math.random().toString(36).slice(2)}`;
+    this.sessionStartedAt = now;
+    this.cardShownAt = now;
+    this.sessionItems = [];
+    this.sessionSaved = false;
+    this.elapsedSec.set(0);
+    this.startTimer();
+  }
+
+  private async setupAppStateListener() {
+    this.appStateHandle = await App.addListener('appStateChange', ({ isActive }) => {
+      if (!isActive) {
+        void this.autoSaveSession();
+      }
+    });
+  }
+
+  ionViewWillLeave() {
+    if (!this.isNavigatingToDetails) {
+      void this.autoSaveSession();
+    }
+    this.isNavigatingToDetails = false;
+  }
+
+  private async autoSaveSession() {
+    if (this.sessionSaved || this.sessionItems.length === 0) return;
+    this.sessionSaved = true;
+    this.stopTimer();
+    const now = Date.now();
+    const session: TrainSession = {
+      _id: this.sessionId,
+      startedAt: new Date(this.sessionStartedAt).toISOString(),
+      finishedAt: new Date(now).toISOString(),
+      totalTimeMs: now - this.sessionStartedAt,
+      learnedCount: this.sessionItems.filter(i => i.learnedInSession).length,
+      notLearnedCount: this.sessionItems.filter(i => !i.learnedInSession).length,
+      items: [...this.sessionItems]
+    };
+    await this.db.saveTrainSession(session);
   }
 
   private startTimer() {
@@ -126,10 +172,11 @@ export class TrainPage implements OnInit, OnDestroy, ViewWillEnter {
   }
 
   private async saveSession() {
+    this.sessionSaved = true;
     this.stopTimer();
     const now = Date.now();
     const session: TrainSession = {
-      _id: `session_${now}_${Math.random().toString(36).slice(2)}`,
+      _id: this.sessionId,
       startedAt: new Date(this.sessionStartedAt).toISOString(),
       finishedAt: new Date(now).toISOString(),
       totalTimeMs: now - this.sessionStartedAt,
@@ -180,7 +227,10 @@ export class TrainPage implements OnInit, OnDestroy, ViewWillEnter {
 
   goToDetails() {
     const v = this.current();
-    if (v) this.router.navigate(['/vocabulary-details', v._id]);
+    if (v) {
+      this.isNavigatingToDetails = true;
+      this.router.navigate(['/vocabulary-details', v._id]);
+    }
   }
 
   goToHistory() {
@@ -188,9 +238,7 @@ export class TrainPage implements OnInit, OnDestroy, ViewWillEnter {
   }
 
   async restart() {
-    this.sessionStartedAt = Date.now();
-    this.cardShownAt = Date.now();
-    this.sessionItems = [];
+    this.initSession();
     this.done.set(false);
     await this.pickRandom();
   }
