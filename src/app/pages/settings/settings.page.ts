@@ -271,8 +271,10 @@ export class SettingsPage {
   async enrichVocabs() {
     const vocabs = await this.vocabService.exportAll();
     const toEnrich = vocabs.filter(v =>
-      !v.turkish || !v.persian || !v.synonyms?.length || !v.antonyms?.length ||
-      v.examples?.some(ex => !ex.turkish || !ex.persian)
+      !v.aiGenerated && !v.aiEnriched && (
+        !v.turkish || !v.persian || !v.synonyms?.length || !v.antonyms?.length ||
+        v.examples?.some(ex => !ex.turkish || !ex.persian)
+      )
     );
 
     if (!toEnrich.length) {
@@ -317,7 +319,7 @@ export class SettingsPage {
             return { ...ex, turkish: ex.turkish ?? aiEx.turkish, persian: ex.persian ?? aiEx.persian };
           });
         }
-        enriched.push(updated);
+        enriched.push({ ...updated, aiEnriched: true });
       } catch { /* skip failed */ }
       await new Promise(r => setTimeout(r, 100));
     }

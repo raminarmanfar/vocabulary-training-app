@@ -161,6 +161,7 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
           persian:          response.persian ?? undefined,
           synonyms:         response.synonyms ?? [],
           antonyms:         response.antonyms ?? [],
+          aiGenerated:      true,
           updatedAt:        new Date().toISOString(),
         };
         await this.vocabService.save(updated);

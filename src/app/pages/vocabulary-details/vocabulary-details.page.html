@@ -3,7 +3,12 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/vocabularies"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ vocab()?.german }}</ion-title>
+    <ion-title>
+      {{ vocab()?.german }}
+      @if (vocab()?.aiGenerated || vocab()?.aiEnriched) {
+        <ion-icon name="sparkles" style="font-size:14px;vertical-align:middle;margin-left:4px;color:var(--ion-color-secondary)"></ion-icon>
+      }
+    </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="confirmRegenerate()" [disabled]="regenerating()" title="Regenerate with AI">
         @if (regenerating()) {

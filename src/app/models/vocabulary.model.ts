@@ -83,6 +83,8 @@ export interface Vocabulary {
   persian?: string;
   synonyms?: string[];
   antonyms?: string[];
+  aiGenerated?: boolean;
+  aiEnriched?: boolean;
   createdAt: string;
   updatedAt: string;
 }

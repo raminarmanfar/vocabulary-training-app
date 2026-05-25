@@ -119,6 +119,9 @@
           {{ ('wordType.' + vocab.wordType) | translate }}
         </ion-badge>
         <ion-badge slot="end" color="medium" style="margin-right:6px">{{ vocab.level }}</ion-badge>
+        @if (vocab.aiGenerated || vocab.aiEnriched) {
+          <ion-icon name="sparkles" slot="end" color="secondary" style="font-size:16px;margin-right:4px" title="AI"></ion-icon>
+        }
         <ion-icon
           slot="end"
           [name]="vocab.learned ? 'checkmark-circle' : 'ellipse-outline'"

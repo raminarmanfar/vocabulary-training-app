@@ -56,6 +56,7 @@ export class VocabAiService {
       adjectiveDetails: response.adjectiveDetails ?? undefined,
       synonyms: response.synonyms?.length ? response.synonyms : undefined,
       antonyms: response.antonyms?.length ? response.antonyms : undefined,
+      aiGenerated: true,
       createdAt: now,
       updatedAt: now,
     };
