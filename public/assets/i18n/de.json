@@ -8,7 +8,6 @@
     "tiles": {
       "vocabularies": { "label": "Vokabeln",      "description": "Wortliste durchsuchen & verwalten" },
       "train":        { "label": "Trainieren",    "description": "Karteikarten üben, um Wörter zu lernen" },
-      "trainHistory": { "label": "Trainingshistorie", "description": "Vergangene Trainingssitzungen ansehen" },
       "quiz":         { "label": "Quiz",          "description": "Wissen mit Multiple-Choice testen" },
       "about":        { "label": "Über mich",      "description": "Über diese App" },
       "settings":     { "label": "Einstellungen", "description": "App-Einstellungen & Datenverwaltung" }

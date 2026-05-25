@@ -1,6 +1,11 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>🇩🇪 {{ 'app.title' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToTrainHistory()">
+        <ion-icon name="stats-chart-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

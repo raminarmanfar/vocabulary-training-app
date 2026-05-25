@@ -8,7 +8,6 @@
     "tiles": {
       "vocabularies": { "label": "Vocabularies", "description": "Browse & manage your German word list" },
       "train":        { "label": "Train",         "description": "Practice flashcards to memorize words" },
-      "trainHistory": { "label": "Train History",  "description": "View your past training sessions" },
       "quiz":         { "label": "Quiz",          "description": "Test your knowledge with multiple choice" },
       "about":        { "label": "About",         "description": "About this app" },
       "settings":     { "label": "Settings",      "description": "App preferences & data management" }
