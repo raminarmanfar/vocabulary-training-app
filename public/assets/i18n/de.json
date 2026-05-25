@@ -120,7 +120,8 @@
     "plural":    "Plural"
   },
   "verb": {
-    "title":       "Verbdetails",
+    "title":        "Verbdetails",
+    "conjugations": "Konjugationen",
     "separable":   "Trennbar",
     "inseparable": "Untrennbar",
     "regular":     "Regelmäßig",

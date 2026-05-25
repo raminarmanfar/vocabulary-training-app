@@ -3,7 +3,6 @@
     <ion-card-title>{{ 'verb.title' | translate }}</ion-card-title>
   </ion-card-header>
   <ion-card-content>
-    <!-- Chips -->
     <div class="chips-row">
       <ion-chip [color]="details.isSeparable ? 'warning' : 'medium'">
         {{ (details.isSeparable ? 'verb.separable' : 'verb.inseparable') | translate }}
@@ -15,8 +14,14 @@
         {{ 'edit.field.hilfsverb' | translate }}: {{ details.hilfsverb }}
       </ion-chip>
     </div>
+  </ion-card-content>
+</ion-card>
 
-    <!-- Conjugation tables -->
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>{{ 'verb.conjugations' | translate }}</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
     <ion-accordion-group>
       <!-- Present -->
       <ion-accordion value="present">

@@ -23,6 +23,13 @@
   .word-meta-sep {
     color: var(--ion-color-medium);
   }
+
+  .inline-tts-btn {
+    --padding-start: 2px;
+    --padding-end: 2px;
+    height: 28px;
+    margin-left: 2px;
+  }
 }
 
 .stammformen-row {
@@ -67,6 +74,28 @@
 .german-word {
   font-size: 1.8rem;
   font-weight: 700;
+}
+
+.german-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chips-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+
+  ion-chip {
+    height: 24px;
+    font-size: 0.75rem;
+    --padding-start: 8px;
+    --padding-end: 8px;
+    margin: 0;
+  }
 }
 
 .english-word {

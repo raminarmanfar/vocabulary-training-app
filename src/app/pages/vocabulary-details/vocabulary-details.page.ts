@@ -69,6 +69,10 @@ export class VocabularyDetailsPage implements OnInit, ViewWillEnter {
     if (v) await this.tts.speak(v.german);
   }
 
+  async speakText(text: string) {
+    await this.tts.speak(text);
+  }
+
   async speakExample(event: Event, text: string) {
     event.stopPropagation();
     await this.tts.speak(text);

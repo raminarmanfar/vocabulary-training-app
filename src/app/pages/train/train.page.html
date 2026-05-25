@@ -153,6 +153,11 @@
 
           <!-- Action buttons -->
           <div class="back-actions" (click)="$event.stopPropagation()">
+            <ion-button color="primary" size="small" (click)="goToDetails()">
+              <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+              {{ 'train.details' | translate }}
+            </ion-button>
+
             <ion-button color="success" (click)="markLearned()">
               <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
               {{ 'train.learned' | translate }}
@@ -161,11 +166,6 @@
             <ion-button color="danger" (click)="markNotLearned()">
               <ion-icon name="close-circle-outline" slot="start"></ion-icon>
               {{ 'train.notLearned' | translate }}
-            </ion-button>
-
-            <ion-button fill="clear" color="primary" size="small" (click)="goToDetails()">
-              <ion-icon name="information-circle-outline" slot="start"></ion-icon>
-              {{ 'train.details' | translate }}
             </ion-button>
           </div>
         </div>

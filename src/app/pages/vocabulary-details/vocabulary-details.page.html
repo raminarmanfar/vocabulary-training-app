@@ -29,7 +29,16 @@
       <ion-card-header>
         <div class="vocab-title-row">
           <div>
-            <ion-card-title class="german-word">{{ v.german }}</ion-card-title>
+            <div class="german-title-row">
+              <ion-card-title class="german-word">{{ v.german }}</ion-card-title>
+              <div class="chips-row chips-inline">
+                <ion-chip [color]="wordTypeColor(v.wordType)">{{ ('wordType.' + v.wordType) | translate }}</ion-chip>
+                <ion-chip color="secondary">{{ v.level }}</ion-chip>
+                @if (v.learned) {
+                  <ion-chip color="success">{{ 'detail.learned' | translate }}</ion-chip>
+                }
+              </div>
+            </div>
             <p class="english-word">{{ v.english }}</p>
 
             @if (v.wordType === 'noun' && v.nounDetails) {
@@ -38,9 +47,16 @@
                   {{ v.nounDetails.article }}
                 </ion-badge>
                 <span class="word-meta-item">{{ v.german }}</span>
-                <span class="word-meta-sep">·</span>
+                <ion-button fill="clear" size="small" class="inline-tts-btn" (click)="speakText(v.nounDetails.article + ' ' + v.german)">
+                  <ion-icon name="volume-high-outline" slot="icon-only" color="medium"></ion-icon>
+                </ion-button>
+              </div>
+              <div class="word-meta-row">
                 <span class="word-meta-label">{{ 'noun.plural' | translate }}:</span>
                 <span class="word-meta-item">{{ v.nounDetails.plural }}</span>
+                <ion-button fill="clear" size="small" class="inline-tts-btn" (click)="speakText(v.nounDetails.plural)">
+                  <ion-icon name="volume-high-outline" slot="icon-only" color="medium"></ion-icon>
+                </ion-button>
               </div>
             }
 
@@ -71,13 +87,6 @@
           </div>
         </div>
 
-        <div class="chips-row">
-          <ion-chip [color]="wordTypeColor(v.wordType)">{{ ('wordType.' + v.wordType) | translate }}</ion-chip>
-          <ion-chip color="secondary">{{ v.level }}</ion-chip>
-          @if (v.learned) {
-            <ion-chip color="success">{{ 'detail.learned' | translate }}</ion-chip>
-          }
-        </div>
       </ion-card-header>
 
       @if (v.description) {
@@ -92,6 +101,17 @@
       <ion-card>
         <ion-img [src]="v.imagePath" alt="{{ v.german }}"></ion-img>
       </ion-card>
+    }
+
+    <!-- Word-type specific details -->
+    @if (v.wordType === 'noun' && v.nounDetails) {
+      <app-noun-detail [details]="v.nounDetails"></app-noun-detail>
+    }
+    @if (v.wordType === 'verb' && v.verbDetails) {
+      <app-verb-detail [details]="v.verbDetails"></app-verb-detail>
+    }
+    @if (v.wordType === 'adjective' && v.adjectiveDetails) {
+      <app-adjective-detail [details]="v.adjectiveDetails"></app-adjective-detail>
     }
 
     <!-- Examples -->
@@ -118,17 +138,6 @@
           </ion-accordion-group>
         </ion-card-content>
       </ion-card>
-    }
-
-    <!-- Word-type specific details -->
-    @if (v.wordType === 'noun' && v.nounDetails) {
-      <app-noun-detail [details]="v.nounDetails"></app-noun-detail>
-    }
-    @if (v.wordType === 'verb' && v.verbDetails) {
-      <app-verb-detail [details]="v.verbDetails"></app-verb-detail>
-    }
-    @if (v.wordType === 'adjective' && v.adjectiveDetails) {
-      <app-adjective-detail [details]="v.adjectiveDetails"></app-adjective-detail>
     }
   }
 </ion-content>

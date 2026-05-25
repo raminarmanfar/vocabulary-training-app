@@ -207,6 +207,10 @@
   ion-button {
     width: 100%;
   }
+
+  ion-button[color="primary"] {
+    --color: #000;
+  }
 }
 
 // ── Counter ──────────────────────────────────────────
