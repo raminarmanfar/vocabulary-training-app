@@ -6,7 +6,9 @@
     <ion-title>
       {{ vocab()?.german }}
       @if (vocab()?.aiGenerated || vocab()?.aiEnriched) {
-        <ion-icon name="sparkles" style="font-size:14px;vertical-align:middle;margin-left:4px;color:var(--ion-color-secondary)"></ion-icon>
+        <ion-badge color="secondary" style="font-size:10px;vertical-align:middle;margin-left:6px;padding:2px 5px;border-radius:8px">
+          <ion-icon name="sparkles" style="font-size:11px;vertical-align:middle;margin-right:2px"></ion-icon>AI
+        </ion-badge>
       }
     </ion-title>
     <ion-buttons slot="end">
