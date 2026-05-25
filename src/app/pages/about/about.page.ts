@@ -41,11 +41,18 @@ import { personCircleOutline, logoGithub, schoolOutline, logoLinkedin, codeSlash
       <ion-card>
         <ion-card-content style="text-align:center;padding-top:16px">
           <p style="font-size:1rem;line-height:1.6;margin-bottom:12px">{{ 'about.bio' | translate }}</p>
-          <a href="https://www.linkedin.com/in/ramin-armanfar/" target="_blank"
-             style="display:inline-flex;align-items:center;gap:6px;color:var(--ion-color-primary);font-weight:600;text-decoration:none">
-            <ion-icon name="logo-linkedin" style="font-size:20px;color:#0A66C2"></ion-icon>
-            {{ 'about.linkedin' | translate }}
-          </a>
+          <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap">
+            <a href="https://www.linkedin.com/in/ramin-armanfar/" target="_blank"
+               style="display:inline-flex;align-items:center;gap:6px;color:var(--ion-color-primary);font-weight:600;text-decoration:none">
+              <ion-icon name="logo-linkedin" style="font-size:20px;color:#0A66C2"></ion-icon>
+              {{ 'about.linkedin' | translate }}
+            </a>
+            <a href="https://github.com/raminarmanfar" target="_blank"
+               style="display:inline-flex;align-items:center;gap:6px;color:var(--ion-color-primary);font-weight:600;text-decoration:none">
+              <ion-icon name="logo-github" style="font-size:20px"></ion-icon>
+              {{ 'about.github' | translate }}
+            </a>
+          </div>
         </ion-card-content>
       </ion-card>
 
