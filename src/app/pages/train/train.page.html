@@ -33,7 +33,10 @@
       {{ 'train.remaining' | translate : { count: unlearned().length } }}
     </div>
 
-    <div class="scene" (click)="flip()">
+    <div class="scene"
+         [class.slide-out]="sliding() === 'out'"
+         [class.slide-in]="sliding() === 'in'"
+         (click)="flip()">
       <div class="card" [class.is-flipped]="flipped()">
 
         <!-- FRONT -->

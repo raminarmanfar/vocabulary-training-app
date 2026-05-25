@@ -44,6 +44,7 @@ export class TrainPage implements OnInit, ViewWillEnter {
   current = signal<Vocabulary | null>(null);
   flipped = signal(false);
   done = signal(false);
+  sliding = signal<'out' | 'in' | null>(null);
 
   // Session tracking
   private sessionStartedAt = 0;
@@ -75,7 +76,7 @@ export class TrainPage implements OnInit, ViewWillEnter {
     }
   }
 
-  async pickRandom() {
+  async pickRandom(animate = false) {
     const pool = this.unlearned();
     if (!pool.length) {
       this.current.set(null);
@@ -90,10 +91,26 @@ export class TrainPage implements OnInit, ViewWillEnter {
     const currentId = this.current()?._id;
     const candidates = pool.length > 1 ? pool.filter(v => v._id !== currentId) : pool;
     const next = candidates[Math.floor(Math.random() * candidates.length)];
-    this.current.set(next);
-    this.flipped.set(false);
-    this.done.set(false);
-    this.cardShownAt = Date.now();
+
+    if (animate && this.current()) {
+      // 1. Slide out
+      this.sliding.set('out');
+      await new Promise(r => setTimeout(r, 280));
+      // 2. Swap card while hidden
+      this.current.set(next);
+      this.flipped.set(false);
+      this.done.set(false);
+      this.cardShownAt = Date.now();
+      this.sliding.set('in');
+      // 3. Slide in, then clear
+      await new Promise(r => setTimeout(r, 280));
+      this.sliding.set(null);
+    } else {
+      this.current.set(next);
+      this.flipped.set(false);
+      this.done.set(false);
+      this.cardShownAt = Date.now();
+    }
   }
 
   private async saveSession() {
@@ -131,7 +148,7 @@ export class TrainPage implements OnInit, ViewWillEnter {
       timeSpentMs: Date.now() - this.cardShownAt
     });
     if (!v.learned) await this.vocabService.toggleLearned(v);
-    await this.pickRandom();
+    await this.pickRandom(true);
   }
 
   async markNotLearned() {
@@ -145,7 +162,7 @@ export class TrainPage implements OnInit, ViewWillEnter {
       timeSpentMs: Date.now() - this.cardShownAt
     });
     if (v.learned) await this.vocabService.toggleLearned(v);
-    await this.pickRandom();
+    await this.pickRandom(true);
   }
 
   goToDetails() {
