@@ -5,7 +5,7 @@ import {
 } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { personCircleOutline, logoGithub, schoolOutline, logoLinkedin, codeSlashOutline } from 'ionicons/icons';
+import { personCircleOutline, logoGithub, schoolOutline, logoLinkedin, codeSlashOutline, mailOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-about',
@@ -52,6 +52,11 @@ import { personCircleOutline, logoGithub, schoolOutline, logoLinkedin, codeSlash
               <ion-icon name="logo-github" style="font-size:20px"></ion-icon>
               {{ 'about.github' | translate }}
             </a>
+            <a href="mailto:ramin.armanfar@gmail.com"
+               style="display:inline-flex;align-items:center;gap:6px;color:var(--ion-color-primary);font-weight:600;text-decoration:none">
+              <ion-icon name="mail-outline" style="font-size:20px;color:#EA4335"></ion-icon>
+              {{ 'about.email' | translate }}
+            </a>
           </div>
         </ion-card-content>
       </ion-card>
@@ -81,5 +86,5 @@ import { personCircleOutline, logoGithub, schoolOutline, logoLinkedin, codeSlash
   `
 })
 export class AboutPage {
-  constructor() { addIcons({ personCircleOutline, logoGithub, schoolOutline, logoLinkedin, codeSlashOutline }); }
+  constructor() { addIcons({ personCircleOutline, logoGithub, schoolOutline, logoLinkedin, codeSlashOutline, mailOutline }); }
 }
