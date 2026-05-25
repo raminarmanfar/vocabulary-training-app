@@ -186,6 +186,20 @@
     }
   }
 
+  &.selectable {
+    cursor: pointer;
+    border: 1px dashed var(--ion-color-medium);
+
+    &:active {
+      background: rgba(var(--ion-color-medium-rgb), 0.12);
+    }
+  }
+
+  &.future {
+    opacity: 0.35;
+    cursor: default;
+  }
+
   &.selected {
     background: rgba(var(--ion-color-success-rgb), 0.30);
     outline: 2px solid var(--ion-color-success);

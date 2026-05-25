@@ -89,6 +89,7 @@ export class TrainSummaryPage implements OnInit {
 
   yearSummary = computed(() => {
     const year = this.selectedYear();
+    const currentYearMonth = this.todayStr.slice(0, 7); // "YYYY-MM"
     const byMonth = new Map<string, { learned: number; notLearned: number; timeMs: number; sessions: number }>();
     for (const s of this.sessions()) {
       const m = s.startedAt.slice(0, 7);
@@ -108,6 +109,7 @@ export class TrainSummaryPage implements OnInit {
         monthStr,
         label: new Date(year, i, 1).toLocaleDateString(undefined, { month: 'long' }),
         hasData: !!data,
+        isSelectable: monthStr <= currentYearMonth,
         learned: data?.learned ?? 0,
         notLearned: data?.notLearned ?? 0,
         timeMs: data?.timeMs ?? 0,

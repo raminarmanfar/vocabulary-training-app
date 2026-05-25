@@ -129,8 +129,10 @@
           @for (m of yearSummary(); track m.monthStr) {
             <div class="month-cell"
                  [class.has-data]="m.hasData"
+                 [class.selectable]="m.isSelectable && !m.hasData"
+                 [class.future]="!m.isSelectable"
                  [class.selected]="selectedMonth() === m.monthStr"
-                 (click)="m.hasData ? selectedMonth.set(m.monthStr) : null">
+                 (click)="m.isSelectable ? selectedMonth.set(m.monthStr) : null">
               <span class="month-name">{{ m.label }}</span>
               @if (m.hasData) {
                 <span class="month-stat">✓ {{ m.learned }}</span>
@@ -146,37 +148,37 @@
         @if (selectedMonth()) {
           <h3 class="list-heading">{{ selectedMonthLabel() }}</h3>
 
-          <!-- Month totals card -->
-          <ion-card class="day-summary-card">
-            <ion-card-content>
-              <div class="day-stats-row">
-                <div class="day-stat">
-                  <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
-                  <span class="day-stat-number">{{ monthlyReport().totalLearned }}</span>
-                  <span class="day-stat-label">{{ 'trainSummary.learnedTotal' | translate }}</span>
-                </div>
-                <div class="day-stat-divider"></div>
-                <div class="day-stat">
-                  <ion-icon name="close-circle-outline" color="danger"></ion-icon>
-                  <span class="day-stat-number">{{ monthlyReport().totalNotLearned }}</span>
-                  <span class="day-stat-label">{{ 'trainSummary.notLearned' | translate }}</span>
-                </div>
-                <div class="day-stat-divider"></div>
-                <div class="day-stat">
-                  <ion-icon name="time-outline" color="primary"></ion-icon>
-                  <span class="day-stat-number">{{ formatTime(monthlyReport().totalTimeMs) }}</span>
-                  <span class="day-stat-label">{{ 'trainSummary.totalTime' | translate }}</span>
-                </div>
-              </div>
-            </ion-card-content>
-          </ion-card>
-
-          <!-- Per-day breakdown -->
-          @if (monthlyReport().days.length === 0) {
+          @if (monthlyReport().sessionCount === 0) {
             <p class="ion-text-center ion-padding" style="color: var(--ion-color-medium)">
               {{ 'trainSummary.noSessionsThisMonth' | translate }}
             </p>
           } @else {
+            <!-- Month totals card -->
+            <ion-card class="day-summary-card">
+              <ion-card-content>
+                <div class="day-stats-row">
+                  <div class="day-stat">
+                    <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+                    <span class="day-stat-number">{{ monthlyReport().totalLearned }}</span>
+                    <span class="day-stat-label">{{ 'trainSummary.learnedTotal' | translate }}</span>
+                  </div>
+                  <div class="day-stat-divider"></div>
+                  <div class="day-stat">
+                    <ion-icon name="close-circle-outline" color="danger"></ion-icon>
+                    <span class="day-stat-number">{{ monthlyReport().totalNotLearned }}</span>
+                    <span class="day-stat-label">{{ 'trainSummary.notLearned' | translate }}</span>
+                  </div>
+                  <div class="day-stat-divider"></div>
+                  <div class="day-stat">
+                    <ion-icon name="time-outline" color="primary"></ion-icon>
+                    <span class="day-stat-number">{{ formatTime(monthlyReport().totalTimeMs) }}</span>
+                    <span class="day-stat-label">{{ 'trainSummary.totalTime' | translate }}</span>
+                  </div>
+                </div>
+              </ion-card-content>
+            </ion-card>
+
+            <!-- Per-day breakdown -->
             <h3 class="list-heading">{{ 'trainSummary.dailyBreakdown' | translate }}</h3>
             <ion-list class="item-list">
               @for (day of monthlyReport().days; track day.date) {
