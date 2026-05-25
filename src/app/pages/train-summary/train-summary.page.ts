@@ -45,14 +45,13 @@ export class TrainSummaryPage implements OnInit {
   selectedMonth = signal<string | null>(this.todayStr.slice(0, 7));
 
   readonly currentYear = new Date().getFullYear();
+  readonly minYear = this.currentYear - 4;          // 5-year range, same as ion-datetime [min]
+  readonly minDateStr = `${this.minYear}-01-01`;
   selectedYear = signal<number>(new Date().getFullYear());
 
   availableYears = computed(() => {
-    const all = this.sessions();
-    if (all.length === 0) return [this.currentYear];
-    const minYear = Math.min(...all.map(s => Number(s.startedAt.slice(0, 4))));
     const years: number[] = [];
-    for (let y = this.currentYear; y >= minYear; y--) years.push(y);
+    for (let y = this.currentYear; y >= this.minYear; y--) years.push(y);
     return years;
   });
 
