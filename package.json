@@ -24,6 +24,8 @@
     "@capacitor/app": "^8.1.0",
     "@capacitor/cli": "^8.3.4",
     "@capacitor/core": "^8.3.4",
+    "@capacitor/filesystem": "^8.1.2",
+    "@capacitor/share": "^8.0.1",
     "@ionic/angular": "^8.8.7",
     "@ionic/angular-toolkit": "^12.3.0",
     "@ngx-translate/core": "^17.0.0",

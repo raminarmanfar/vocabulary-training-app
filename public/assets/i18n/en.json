@@ -159,6 +159,7 @@
       "export": "Export Data",
       "import": "Import Data",
       "exportSuccess": "Exported {{count}} vocabularies",
+      "exportShareTitle": "Save backup file",
       "importSuccess": "Imported {{count}} vocabularies",
       "importError": "Invalid file format",
       "importModeTitle": "Import mode",

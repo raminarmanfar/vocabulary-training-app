@@ -180,6 +180,7 @@
       "export": "خروجی گرفتن از داده",
       "import": "وارد کردن داده",
       "exportSuccess": "{{count}} لغت خروجی گرفته شد",
+      "exportShareTitle": "ذخیره فایل پشتیبان",
       "importSuccess": "{{count}} لغت وارد شد",
       "importError": "فرمت فایل نامعتبر است",
       "importModeTitle": "حالت وارد کردن",

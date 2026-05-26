@@ -180,6 +180,7 @@
       "export": "Veriyi Dışa Aktar",
       "import": "Veriyi İçe Aktar",
       "exportSuccess": "{{count}} kelime dışa aktarıldı",
+      "exportShareTitle": "Yedek dosyayı kaydet",
       "importSuccess": "{{count}} kelime içe aktarıldı",
       "importError": "Geçersiz dosya formatı",
       "importModeTitle": "İçe aktarma modu",

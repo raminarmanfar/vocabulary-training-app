@@ -159,6 +159,7 @@
       "export": "Daten exportieren",
       "import": "Daten importieren",
       "exportSuccess": "{{count}} Vokabeln exportiert",
+      "exportShareTitle": "Sicherungsdatei speichern",
       "importSuccess": "{{count}} Vokabeln importiert",
       "importError": "Ungültiges Dateiformat",
       "importModeTitle": "Importmodus",

@@ -6,6 +6,9 @@ import {
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
 import { addIcons } from 'ionicons';
 import { languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline, alertCircleOutline } from 'ionicons/icons';
 import { LanguageService, AppLanguage } from '../../services/language.service';
@@ -258,13 +261,32 @@ export class SettingsPage {
   async exportData() {
     const vocabs = await this.vocabService.exportAll();
     const json = JSON.stringify(vocabs, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `vocab-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+    const fileName = `vocab-backup-${new Date().toISOString().slice(0, 10)}.json`;
+
+    if (Capacitor.isNativePlatform()) {
+      // Write to cache dir then open native share sheet
+      await Filesystem.writeFile({
+        path: fileName,
+        data: json,
+        directory: Directory.Cache,
+        encoding: 'utf8' as any,
+      });
+      const { uri } = await Filesystem.getUri({ path: fileName, directory: Directory.Cache });
+      await Share.share({
+        title: fileName,
+        url: uri,
+        dialogTitle: this.translate.instant('settings.data.exportShareTitle'),
+      });
+    } else {
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
     const msg = this.translate.instant('settings.data.exportSuccess', { count: vocabs.length });
     this.toast.set({ open: true, message: msg, color: 'success' });
   }
