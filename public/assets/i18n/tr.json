@@ -359,6 +359,28 @@
       "message": "Bu quiz'i silmek istediğinizden emin misiniz?"
     }
   },
+  "qr": {
+    "title":           "QR Kod ile Paylaş",
+    "tabShare":        "Paylaş",
+    "tabScan":         "Tara",
+    "fabTooltip":      "QR ile paylaş",
+    "preparing":       "QR kodlar hazırlanıyor…",
+    "noVocabs":        "Paylaşılacak kelime yok.",
+    "shareSubtitle":   "{{count}} kelime paylaşıma hazır",
+    "chunkOf":         "Kod {{current}} / {{total}}",
+    "autoAdvanceHint": "Her 3 sn'de otomatik geçer — veya düğmeleri kullanın",
+    "shareHint":       "Bu QR kodu diğer cihaza gösterin",
+    "scanPrompt":      "Kamerayı açıp diğer cihazdaki QR kodları tarayın.",
+    "startCamera":     "Kamerayı Aç",
+    "scanHint":        "Kamerayı QR koda doğrultun",
+    "chunksOf":        "{{scanned}} / {{total}} kod tarandı",
+    "allChunksScanned":"Tüm kodlar tarandı! İçe aktarmak için dokunun.",
+    "import":          "Kelimeleri İçe Aktar",
+    "importSuccess":   "{{count}} kelime içe aktarıldı",
+    "importError":     "İçe aktarma başarısız — geçersiz QR verisi",
+    "cameraError":     "Kamera erişimi reddedildi veya kullanılamıyor",
+    "tryAgain":        "Tekrar Dene"
+  },
   "common": {
     "cancel": "İptal",
     "delete": "Sil"

@@ -329,6 +329,28 @@
       "message": "Are you sure you want to delete this quiz?"
     }
   },
+  "qr": {
+    "title":           "Share via QR Code",
+    "tabShare":        "Share",
+    "tabScan":         "Scan",
+    "fabTooltip":      "Share via QR",
+    "preparing":       "Preparing QR codes…",
+    "noVocabs":        "No vocabularies to share.",
+    "shareSubtitle":   "{{count}} vocabularies ready to share",
+    "chunkOf":         "Code {{current}} of {{total}}",
+    "autoAdvanceHint": "Auto-advances every 3 s — or use the buttons",
+    "shareHint":       "Show this QR code to the other device to scan",
+    "scanPrompt":      "Tap to open camera and scan the QR codes from the other device.",
+    "startCamera":     "Open Camera",
+    "scanHint":        "Point the camera at the QR code",
+    "chunksOf":        "{{scanned}} / {{total}} codes scanned",
+    "allChunksScanned":"All codes scanned! Tap Import to save.",
+    "import":          "Import Vocabularies",
+    "importSuccess":   "Imported {{count}} vocabularies",
+    "importError":     "Import failed — invalid QR data",
+    "cameraError":     "Camera access denied or unavailable",
+    "tryAgain":        "Try Again"
+  },
   "common": {
     "cancel": "Cancel",
     "delete": "Delete"

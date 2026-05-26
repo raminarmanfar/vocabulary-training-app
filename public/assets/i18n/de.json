@@ -329,6 +329,28 @@
       "message": "Bist du sicher, dass du dieses Quiz löschen möchtest?"
     }
   },
+  "qr": {
+    "title":           "Per QR-Code teilen",
+    "tabShare":        "Teilen",
+    "tabScan":         "Scannen",
+    "fabTooltip":      "Per QR teilen",
+    "preparing":       "QR-Codes werden vorbereitet…",
+    "noVocabs":        "Keine Vokabeln zum Teilen.",
+    "shareSubtitle":   "{{count}} Vokabeln bereit zum Teilen",
+    "chunkOf":         "Code {{current}} von {{total}}",
+    "autoAdvanceHint": "Wechselt alle 3 Sek. automatisch — oder Schaltflächen nutzen",
+    "shareHint":       "Zeige diesen QR-Code dem anderen Gerät zum Scannen",
+    "scanPrompt":      "Kamera öffnen und QR-Codes vom anderen Gerät scannen.",
+    "startCamera":     "Kamera öffnen",
+    "scanHint":        "Kamera auf den QR-Code richten",
+    "chunksOf":        "{{scanned}} / {{total}} Codes gescannt",
+    "allChunksScanned":"Alle Codes gescannt! Tippe auf Importieren.",
+    "import":          "Vokabeln importieren",
+    "importSuccess":   "{{count}} Vokabeln importiert",
+    "importError":     "Import fehlgeschlagen – ungültige QR-Daten",
+    "cameraError":     "Kamerazugriff verweigert oder nicht verfügbar",
+    "tryAgain":        "Erneut versuchen"
+  },
   "common": {
     "cancel": "Abbrechen",
     "delete": "Löschen"
