@@ -25,6 +25,12 @@
       "learned": "Learned",
       "unlearned": "Unlearned"
     },
+    "sort": {
+      "date":    "Date Added",
+      "alpha":   "Alphabetical",
+      "type":    "Word Type",
+      "learned": "Learned Status"
+    },
     "empty": "No vocabularies found.",
     "footer": { "count": "{{count}} of {{total}} vocabularies" }
   },

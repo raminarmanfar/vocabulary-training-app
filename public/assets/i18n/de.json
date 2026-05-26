@@ -25,6 +25,12 @@
       "learned": "Gelernt",
       "unlearned": "Ungelernt"
     },
+    "sort": {
+      "date":    "Hinzugefügt",
+      "alpha":   "Alphabetisch",
+      "type":    "Worttyp",
+      "learned": "Lernstatus"
+    },
     "empty": "Keine Vokabeln gefunden.",
     "footer": { "count": "{{count}} von {{total}} Vokabeln" }
   },

@@ -112,6 +112,33 @@
         </ion-popover>
       </div>
 
+      <!-- Sort popover -->
+      <div class="filter-dropdown">
+        <ion-button id="sort-trigger" fill="outline" size="small" class="filter-btn" expand="block">
+          <ion-icon [name]="sortDir() === 'asc' ? 'arrow-up-outline' : 'arrow-down-outline'" slot="start" style="font-size:14px;margin-right:2px"></ion-icon>
+          {{ ('home.sort.' + sortField()) | translate }}
+        </ion-button>
+        <ion-popover trigger="sort-trigger" triggerAction="click" [dismissOnSelect]="false" size="auto">
+          <ng-template>
+            <ion-list lines="full">
+              @for (s of sortFieldValues; track s.value) {
+                <ion-item button detail="false" (click)="selectSort(s.value)">
+                  <ion-icon
+                    slot="start"
+                    [name]="sortField() === s.value ? (sortDir() === 'asc' ? 'arrow-up-outline' : 'arrow-down-outline') : ''"
+                    [color]="sortField() === s.value ? 'primary' : ''"
+                    style="font-size:16px;min-width:16px">
+                  </ion-icon>
+                  <ion-label [color]="sortField() === s.value ? 'primary' : ''">
+                    {{ s.labelKey | translate }}
+                  </ion-label>
+                </ion-item>
+              }
+            </ion-list>
+          </ng-template>
+        </ion-popover>
+      </div>
+
     </div>
   </ion-toolbar>
 </ion-header>

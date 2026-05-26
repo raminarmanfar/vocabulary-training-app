@@ -11,12 +11,14 @@ import {
 } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline } from 'ionicons/icons';
+import { add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline } from 'ionicons/icons';
 import { SpeechRecognition } from '@capacitor-community/speech-recognition';
 import { Capacitor } from '@capacitor/core';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { Vocabulary, WordType, CefrLevel } from '../../models/vocabulary.model';
 import { AiVocabModalComponent } from '../../components/ai-vocab-modal/ai-vocab-modal.component';
+
+type SortField = 'date' | 'alpha' | 'type' | 'learned';
 
 @Component({
   selector: 'app-vocabularies-list',
@@ -61,6 +63,14 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
     return (localStorage.getItem('filter_learned') as 'all' | 'learned' | 'unlearned') || 'all';
   }
 
+  private loadSortField(): SortField {
+    return (localStorage.getItem('sort_field') as SortField) || 'date';
+  }
+
+  private loadSortDir(): 'asc' | 'desc' {
+    return (localStorage.getItem('sort_dir') as 'asc' | 'desc') || 'desc';
+  }
+
   searchTerm = signal('');
   recording = signal(false);
   speechSupported = signal(false);
@@ -68,6 +78,16 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
   filterTypes = signal<WordType[]>(this.loadTypes());
   filterLevels = signal<CefrLevel[]>(this.loadLevels());
   filterLearned = signal<'all' | 'learned' | 'unlearned'>(this.loadLearned());
+
+  readonly sortFieldValues: Array<{ value: SortField; labelKey: string }> = [
+    { value: 'date',    labelKey: 'home.sort.date' },
+    { value: 'alpha',   labelKey: 'home.sort.alpha' },
+    { value: 'type',    labelKey: 'home.sort.type' },
+    { value: 'learned', labelKey: 'home.sort.learned' },
+  ];
+
+  sortField = signal<SortField>(this.loadSortField());
+  sortDir = signal<'asc' | 'desc'>(this.loadSortDir());
 
   private allVocabs = toSignal(this.vocabService.vocabs$, { initialValue: [] as Vocabulary[] });
 
@@ -78,7 +98,7 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
     const learned = this.filterLearned();
     const activeTypes = this.isAllTypesSelected() ? [] : this.filterTypes();
     const activeLevels = this.isAllLevelsSelected() ? [] : this.filterLevels();
-    return this.vocabService.filter(
+    const filtered = this.vocabService.filter(
       this.allVocabs(),
       activeTypes,
       activeLevels,
@@ -88,6 +108,27 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
       learned === 'learned' ? v.learned :
       !v.learned
     );
+
+    const field = this.sortField();
+    const mult = this.sortDir() === 'asc' ? 1 : -1;
+    const typeOrder: Record<string, number> = {
+      noun: 0, verb: 1, adjective: 2, adverb: 3,
+      preposition: 4, conjunction: 5, pronoun: 6, other: 7, unknown: 8
+    };
+
+    return filtered.slice().sort((a, b) => {
+      switch (field) {
+        case 'alpha':
+          return mult * a.german.localeCompare(b.german, 'de');
+        case 'type':
+          return mult * ((typeOrder[a.wordType] ?? 8) - (typeOrder[b.wordType] ?? 8));
+        case 'learned':
+          return mult * (Number(a.learned) - Number(b.learned));
+        case 'date':
+        default:
+          return mult * (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0);
+      }
+    });
   });
 
   totalVocabs = computed(() => this.allVocabs().length);
@@ -104,6 +145,15 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
     if (current.includes(level) && current.length === 1) return;
     const next = current.includes(level) ? current.filter(l => l !== level) : [...current, level];
     this.filterLevels.set(next);
+  }
+
+  selectSort(field: SortField) {
+    if (this.sortField() === field) {
+      this.sortDir.set(this.sortDir() === 'asc' ? 'desc' : 'asc');
+    } else {
+      this.sortField.set(field);
+      this.sortDir.set('asc');
+    }
   }
 
   wordTypes: Array<{ value: WordType; labelKey: string }> = [
@@ -124,10 +174,12 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
   ];
 
   constructor() {
-    addIcons({ add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline });
+    addIcons({ add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline });
     effect(() => localStorage.setItem('filter_types', JSON.stringify(this.filterTypes())));
     effect(() => localStorage.setItem('filter_levels', JSON.stringify(this.filterLevels())));
     effect(() => localStorage.setItem('filter_learned', this.filterLearned()));
+    effect(() => localStorage.setItem('sort_field', this.sortField()));
+    effect(() => localStorage.setItem('sort_dir', this.sortDir()));
   }
 
   async ngOnInit() {

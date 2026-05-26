@@ -42,6 +42,12 @@
       "learned": "Öğrenildi",
       "unlearned": "Öğrenilmedi"
     },
+    "sort": {
+      "date":    "Eklenme Tarihi",
+      "alpha":   "Alfabetik",
+      "type":    "Kelime Türü",
+      "learned": "Öğrenme Durumu"
+    },
     "empty": "Kelime bulunamadı.",
     "footer": {
       "count": "{{total}} kelimeden {{count}} tanesi"
