@@ -107,6 +107,7 @@
       "plural": "Çoğul",
       "separable": "Ayrılabilir",
       "regular": "Düzenli",
+      "reflexive": "Dönüşlü",
       "hilfsverb": "Yardımcı Fiil",
       "komparativ": "Karşılaştırma",
       "superlativ": "En Üstünlük"
@@ -150,6 +151,7 @@
     "inseparable": "Ayrılamaz",
     "regular": "Düzenli",
     "irregular": "Düzensiz",
+    "reflexive": "Dönüşlü",
     "present": "Präsens (Geniş Zaman)",
     "simplePast": "Präteritum (Geçmiş Zaman)",
     "pastPerfect": "Perfekt (Geçmiş Zaman)",

@@ -88,6 +88,7 @@ export class EditVocabularyPage implements OnInit {
       // Verb
       verbIsSeparable: [false],
       verbIsRegular: [true],
+      verbIsReflexive: [false],
       verbHilfsverb: ['haben'],
       verbPresent: this.buildConjugationGroup(),
       verbSimplePast: this.buildConjugationGroup(),
@@ -181,6 +182,7 @@ export class EditVocabularyPage implements OnInit {
       this.form.patchValue({
         verbIsSeparable: v.isSeparable,
         verbIsRegular: v.isRegular,
+        verbIsReflexive: v.isReflexive ?? false,
         verbHilfsverb: v.hilfsverb,
         verbPresent: v.present,
         verbSimplePast: v.simplePast,
@@ -240,6 +242,7 @@ export class EditVocabularyPage implements OnInit {
       vocab.verbDetails = {
         isSeparable: f.verbIsSeparable,
         isRegular: f.verbIsRegular,
+        isReflexive: f.verbIsReflexive,
         hilfsverb: f.verbHilfsverb,
         present: f.verbPresent,
         simplePast: f.verbSimplePast,

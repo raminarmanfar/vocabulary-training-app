@@ -107,6 +107,7 @@
       "plural": "جمع",
       "separable": "جداپذیر",
       "regular": "منظم",
+      "reflexive": "انعکاسی",
       "hilfsverb": "فعل کمکی",
       "komparativ": "تفضیلی",
       "superlativ": "عالی"
@@ -150,6 +151,7 @@
     "inseparable": "جدانشدنی",
     "regular": "منظم",
     "irregular": "نامنظم",
+    "reflexive": "انعکاسی",
     "present": "Präsens (حال)",
     "simplePast": "Präteritum (گذشته ساده)",
     "pastPerfect": "Perfekt (گذشته کامل)",

@@ -13,6 +13,11 @@
       <ion-chip color="primary">
         {{ 'edit.field.hilfsverb' | translate }}: {{ details.hilfsverb }}
       </ion-chip>
+      @if (details.isReflexive) {
+        <ion-chip color="tertiary">
+          {{ 'verb.reflexive' | translate }}
+        </ion-chip>
+      }
     </div>
   </ion-card-content>
 </ion-card>

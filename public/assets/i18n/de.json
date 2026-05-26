@@ -86,6 +86,7 @@
       "plural":       "Plural",
       "separable":    "Trennbar",
       "regular":      "Regelmäßig",
+      "reflexive":    "Reflexiv",
       "hilfsverb":    "Hilfsverb",
       "komparativ":   "Komparativ",
       "superlativ":   "Superlativ"
@@ -129,6 +130,7 @@
     "inseparable": "Untrennbar",
     "regular":     "Regelmäßig",
     "irregular":   "Unregelmäßig",
+    "reflexive":   "Reflexiv",
     "present":     "Präsens",
     "simplePast":  "Präteritum",
     "pastPerfect": "Perfekt",

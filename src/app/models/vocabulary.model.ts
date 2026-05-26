@@ -42,6 +42,7 @@ export interface VerbImperative {
 export interface VerbDetails {
   isSeparable: boolean;
   isRegular: boolean;
+  isReflexive: boolean;
   hilfsverb: 'haben' | 'sein';
   present: VerbConjugation;
   simplePast: VerbConjugation;
