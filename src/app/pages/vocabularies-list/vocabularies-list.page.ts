@@ -7,7 +7,7 @@ import {
   IonBadge, IonIcon, IonFab, IonFabButton, IonFabList, IonSearchbar,
   IonPopover, IonCheckbox, IonButton,
   IonButtons, IonBackButton, IonFooter,
-  ModalController
+  ModalController, ToastController
 } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
@@ -36,6 +36,7 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
   private router = inject(Router);
   private vocabService = inject(VocabularyService);
   private modalCtrl = inject(ModalController);
+  private toastCtrl = inject(ToastController);
 
   readonly allWordTypeValues: WordType[] = ['noun', 'verb', 'adjective', 'adverb', 'preposition', 'conjunction', 'pronoun', 'other'];
   readonly allLevelValues: CefrLevel[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
@@ -146,7 +147,16 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
           this.searchTerm.set(event.results[0][0].transcript.trim());
           this.recording.set(false);
         };
-        this.webRecognition.onerror = () => this.recording.set(false);
+        this.webRecognition.onerror = (event: any) => {
+          this.recording.set(false);
+          const msg = event.error === 'not-allowed'
+            ? 'Microphone permission denied'
+            : event.error === 'network'
+            ? 'Speech recognition requires internet (Chrome only)'
+            : `Speech error: ${event.error}`;
+          this.toastCtrl.create({ message: msg, duration: 3000, color: 'warning', position: 'bottom' })
+            .then(t => t.present());
+        };
         this.webRecognition.onend   = () => this.recording.set(false);
       }
     }

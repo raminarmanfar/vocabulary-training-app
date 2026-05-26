@@ -97,7 +97,16 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
           this.word.set(transcript);
           this.recording.set(false);
         };
-        this.webRecognition.onerror = () => this.recording.set(false);
+        this.webRecognition.onerror = (event: any) => {
+          this.recording.set(false);
+          const msg = event.error === 'not-allowed'
+            ? 'Microphone permission denied'
+            : event.error === 'network'
+            ? 'Speech recognition requires internet (Chrome only)'
+            : `Speech error: ${event.error}`;
+          this.toastCtrl.create({ message: msg, duration: 3000, color: 'warning', position: 'bottom' })
+            .then(t => t.present());
+        };
         this.webRecognition.onend   = () => this.recording.set(false);
       }
     }
