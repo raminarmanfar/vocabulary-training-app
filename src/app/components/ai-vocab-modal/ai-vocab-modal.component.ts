@@ -227,7 +227,15 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
     this.step.set('saving');
     try {
       const vocab = this.aiService.toVocabulary(res);
-      if (existingId) vocab._id = existingId;
+      if (existingId) {
+        vocab._id = existingId;
+        const existing = this.vocabService.vocabsSubject.value
+          .find((v: Vocabulary) => v._id === existingId);
+        if (existing) {
+          vocab.imagePath = existing.imagePath;
+          vocab.learned = existing.learned;
+        }
+      }
       const saved = await this.vocabService.save(vocab);
       const toast = await this.toastCtrl.create({
         message: '',
