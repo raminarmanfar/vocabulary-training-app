@@ -39,8 +39,8 @@
           @if (speechSupported()) {
             <ion-button
               slot="end"
-              fill="clear"
-              [color]="recording() ? 'danger' : 'medium'"
+              [fill]="recording() ? 'solid' : 'clear'"
+              [color]="recording() ? 'danger' : 'secondary'"
               (click)="toggleRecording()"
               class="mic-btn">
               <ion-icon [name]="recording() ? 'mic' : 'mic-outline'" slot="icon-only" [class.mic-pulse]="recording()"></ion-icon>
