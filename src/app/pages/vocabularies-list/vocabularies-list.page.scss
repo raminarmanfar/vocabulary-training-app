@@ -61,3 +61,11 @@ ion-footer ion-toolbar {
 .mic-pulse {
   animation: mic-pulse 0.9s ease-in-out infinite;
 }
+
+ion-item-option.swipe-option {
+  --color: #fff;
+}
+
+ion-item-option.swipe-option ion-icon {
+  font-size: 1.4rem;
+}

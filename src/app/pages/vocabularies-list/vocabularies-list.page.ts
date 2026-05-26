@@ -11,7 +11,7 @@ import {
 } from '@ionic/angular/standalone';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { add, create, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline } from 'ionicons/icons';
+import { add, create, trash, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline } from 'ionicons/icons';
 import { SpeechRecognition } from '@capacitor-community/speech-recognition';
 import { Capacitor } from '@capacitor/core';
 import { VocabularyService } from '../../services/vocabulary.service';
@@ -176,7 +176,7 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
   ];
 
   constructor() {
-    addIcons({ add, create, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline });
+    addIcons({ add, create, trash, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline });
     effect(() => localStorage.setItem('filter_types', JSON.stringify(this.filterTypes())));
     effect(() => localStorage.setItem('filter_levels', JSON.stringify(this.filterLevels())));
     effect(() => localStorage.setItem('filter_learned', this.filterLearned()));

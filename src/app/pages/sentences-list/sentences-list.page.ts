@@ -8,7 +8,7 @@ import {
 } from '@ionic/angular/standalone';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { add, create, chatboxOutline, chatbubbleEllipsesOutline } from 'ionicons/icons';
+import { add, create, trash, chatboxOutline, chatbubbleEllipsesOutline } from 'ionicons/icons';
 import { AlertController, ToastController, ViewWillEnter } from '@ionic/angular';
 import { SentenceService } from '../../services/sentence.service';
 import { Sentence } from '../../models/sentence.model';
@@ -37,7 +37,7 @@ export class SentencesListPage implements OnInit, ViewWillEnter {
   readonly sentencesSignal = toSignal(this.sentenceService.sentences$, { initialValue: [] as Sentence[] });
 
   constructor() {
-    addIcons({ add, create, chatboxOutline, chatbubbleEllipsesOutline });
+    addIcons({ add, create, trash, chatboxOutline, chatbubbleEllipsesOutline });
   }
 
   ngOnInit() {
