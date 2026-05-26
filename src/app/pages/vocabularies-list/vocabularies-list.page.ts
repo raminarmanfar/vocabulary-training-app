@@ -11,13 +11,12 @@ import {
 } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline, qrCodeOutline } from 'ionicons/icons';
+import { add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline } from 'ionicons/icons';
 import { SpeechRecognition } from '@capacitor-community/speech-recognition';
 import { Capacitor } from '@capacitor/core';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { Vocabulary, WordType, CefrLevel } from '../../models/vocabulary.model';
 import { AiVocabModalComponent } from '../../components/ai-vocab-modal/ai-vocab-modal.component';
-import { QrShareModalComponent } from '../../components/qr-share-modal/qr-share-modal.component';
 
 type SortField = 'date' | 'alpha' | 'type' | 'learned';
 
@@ -175,7 +174,7 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
   ];
 
   constructor() {
-    addIcons({ add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline, qrCodeOutline });
+    addIcons({ add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline });
     effect(() => localStorage.setItem('filter_types', JSON.stringify(this.filterTypes())));
     effect(() => localStorage.setItem('filter_levels', JSON.stringify(this.filterLevels())));
     effect(() => localStorage.setItem('filter_learned', this.filterLearned()));
@@ -277,20 +276,6 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
     const { data, role } = await modal.onWillDismiss();
     if (role === 'saved' && data?._id) {
       this.router.navigate(['/vocabulary-details', data._id]);
-    }
-  }
-
-  async openQrShare(): Promise<void> {
-    const modal = await this.modalCtrl.create({
-      component: QrShareModalComponent,
-      breakpoints: [0, 0.92, 1],
-      initialBreakpoint: 0.92,
-      handleBehavior: 'cycle',
-    });
-    await modal.present();
-    const { role } = await modal.onWillDismiss();
-    if (role === 'imported') {
-      await this.vocabService.load();
     }
   }
 

@@ -2,7 +2,8 @@ import { Component, inject, signal, effect } from '@angular/core';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
   IonList, IonItem, IonLabel, IonIcon, IonSelect, IonSelectOption,
-  IonButton, IonToast, IonToggle, IonProgressBar
+  IonButton, IonToast, IonToggle, IonProgressBar,
+  ModalController
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -10,13 +11,14 @@ import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
 import { addIcons } from 'ionicons';
-import { languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline, alertCircleOutline } from 'ionicons/icons';
+import { languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline, alertCircleOutline, qrCodeOutline, chevronForward } from 'ionicons/icons';
 import { LanguageService, AppLanguage } from '../../services/language.service';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { QuizSetService } from '../../services/quiz-set.service';
 import { ThemeService } from '../../services/theme.service';
 import { DatabaseService } from '../../services/database.service';
 import { EnrichmentService } from '../../services/enrichment.service';
+import { QrShareModalComponent } from '../../components/qr-share-modal/qr-share-modal.component';
 
 @Component({
   selector: 'app-settings',
@@ -63,6 +65,15 @@ import { EnrichmentService } from '../../services/enrichment.service';
             [checked]="themeService.isDark()"
             (ionChange)="themeService.setTheme($any($event).detail.checked)">
           </ion-toggle>
+        </ion-item>
+      </ion-list>
+
+      <!-- Data -->
+      <ion-list inset="true">
+        <ion-item button (click)="openQrShare()">
+          <ion-icon name="qr-code-outline" slot="start" color="success"></ion-icon>
+          <ion-label>{{ 'qr.title' | translate }}</ion-label>
+          <ion-icon name="chevron-forward" slot="end" color="medium"></ion-icon>
         </ion-item>
       </ion-list>
 
@@ -165,11 +176,12 @@ export class SettingsPage {
   private dbService = inject(DatabaseService);
   private translate = inject(TranslateService);
   private alertCtrl = inject(AlertController);
+  private modalCtrl = inject(ModalController);
 
   toast = signal<{ open: boolean; message: string; color: string }>({ open: false, message: '', color: 'success' });
 
   constructor() {
-    addIcons({ languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline, alertCircleOutline });
+    addIcons({ languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline, alertCircleOutline, qrCodeOutline, chevronForward });
     // Surface the done-toast from the background service when the page is active
     effect(() => {
       const pending = this.enrichmentService.pendingToast();
@@ -182,6 +194,17 @@ export class SettingsPage {
 
   onLangChange(lang: AppLanguage) {
     this.langService.setLanguage(lang);
+  }
+
+  async openQrShare(): Promise<void> {
+    const modal = await this.modalCtrl.create({
+      component: QrShareModalComponent,
+      breakpoints: [0, 0.92, 1],
+      initialBreakpoint: 0.92,
+      handleBehavior: 'cycle',
+    });
+    await modal.present();
+    await modal.onWillDismiss();
   }
 
   async confirmEraseSummary() {
