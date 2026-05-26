@@ -95,7 +95,7 @@ export class VocabularyService {
 
       // ── Nouns (5 × A1-B1) ─────────────────────────────────────────────────
       {
-        _id: 'seed_noun_1', german: 'der Hund', english: 'dog', wordType: 'noun', level: 'A1',
+        _id: 'seed_noun_1', german: 'Hund', english: 'dog', wordType: 'noun', level: 'A1',
         description: 'A common domestic animal kept as a pet or for work.',
         examples: [
           { german: 'Der Hund läuft schnell.', english: 'The dog runs fast.' },
@@ -103,14 +103,14 @@ export class VocabularyService {
         ],
         learned: false,
         nounDetails: {
-          article: 'der', plural: 'die Hunde',
+          article: 'der', plural: 'Hunde',
           deklinationBestimmt:   { nominative: 'der Hund',  akkusativ: 'den Hund',  genitiv: 'des Hundes', dativ: 'dem Hund' },
           deklinationUnbestimmt: { nominative: 'ein Hund',  akkusativ: 'einen Hund', genitiv: 'eines Hundes', dativ: 'einem Hund' }
         },
         createdAt: now, updatedAt: now
       },
       {
-        _id: 'seed_noun_2', german: 'die Schule', english: 'school', wordType: 'noun', level: 'A1',
+        _id: 'seed_noun_2', german: 'Schule', english: 'school', wordType: 'noun', level: 'A1',
         description: 'A place where children go to learn.',
         examples: [
           { german: 'Die Schule beginnt um acht Uhr.', english: 'School starts at eight o\'clock.' },
@@ -118,14 +118,14 @@ export class VocabularyService {
         ],
         learned: false,
         nounDetails: {
-          article: 'die', plural: 'die Schulen',
+          article: 'die', plural: 'Schulen',
           deklinationBestimmt:   { nominative: 'die Schule',   akkusativ: 'die Schule',   genitiv: 'der Schule',   dativ: 'der Schule' },
           deklinationUnbestimmt: { nominative: 'eine Schule',  akkusativ: 'eine Schule',  genitiv: 'einer Schule', dativ: 'einer Schule' }
         },
         createdAt: now, updatedAt: now
       },
       {
-        _id: 'seed_noun_3', german: 'das Wetter', english: 'weather', wordType: 'noun', level: 'A2',
+        _id: 'seed_noun_3', german: 'Wetter', english: 'weather', wordType: 'noun', level: 'A2',
         description: 'The state of the atmosphere at a place and time.',
         examples: [
           { german: 'Das Wetter heute ist sonnig.', english: 'The weather today is sunny.' },
@@ -140,7 +140,7 @@ export class VocabularyService {
         createdAt: now, updatedAt: now
       },
       {
-        _id: 'seed_noun_4', german: 'die Sprache', english: 'language', wordType: 'noun', level: 'A2',
+        _id: 'seed_noun_4', german: 'Sprache', english: 'language', wordType: 'noun', level: 'A2',
         description: 'A system of communication used by a community.',
         examples: [
           { german: 'Deutsch ist eine schöne Sprache.', english: 'German is a beautiful language.' },
@@ -148,14 +148,14 @@ export class VocabularyService {
         ],
         learned: false,
         nounDetails: {
-          article: 'die', plural: 'die Sprachen',
+          article: 'die', plural: 'Sprachen',
           deklinationBestimmt:   { nominative: 'die Sprache',   akkusativ: 'die Sprache',   genitiv: 'der Sprache',   dativ: 'der Sprache' },
           deklinationUnbestimmt: { nominative: 'eine Sprache',  akkusativ: 'eine Sprache',  genitiv: 'einer Sprache', dativ: 'einer Sprache' }
         },
         createdAt: now, updatedAt: now
       },
       {
-        _id: 'seed_noun_5', german: 'die Lösung', english: 'solution', wordType: 'noun', level: 'B1',
+        _id: 'seed_noun_5', german: 'Lösung', english: 'solution', wordType: 'noun', level: 'B1',
         description: 'A means of solving a problem or dealing with a difficult situation.',
         examples: [
           { german: 'Wir suchen eine Lösung für das Problem.', english: 'We are looking for a solution to the problem.' },
@@ -163,7 +163,7 @@ export class VocabularyService {
         ],
         learned: false,
         nounDetails: {
-          article: 'die', plural: 'die Lösungen',
+          article: 'die', plural: 'Lösungen',
           deklinationBestimmt:   { nominative: 'die Lösung',   akkusativ: 'die Lösung',   genitiv: 'der Lösung',   dativ: 'der Lösung' },
           deklinationUnbestimmt: { nominative: 'eine Lösung',  akkusativ: 'eine Lösung',  genitiv: 'einer Lösung', dativ: 'einer Lösung' }
         },
