@@ -360,7 +360,7 @@
     }
   },
   "qr": {
-    "title":           "اشتراک‌گذاری با QR Code",
+    "title":           "اشتراک‌گذاری لغات با QR Code",
     "tabShare":        "اشتراک",
     "tabScan":         "اسکن",
     "fabTooltip":      "اشتراک QR",

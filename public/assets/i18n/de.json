@@ -330,7 +330,7 @@
     }
   },
   "qr": {
-    "title":           "Per QR-Code teilen",
+    "title":           "Vokabeln per QR-Code teilen",
     "tabShare":        "Teilen",
     "tabScan":         "Scannen",
     "fabTooltip":      "Per QR teilen",

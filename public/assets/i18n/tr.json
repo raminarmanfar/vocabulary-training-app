@@ -360,7 +360,7 @@
     }
   },
   "qr": {
-    "title":           "QR Kod ile Paylaş",
+    "title":           "Kelimeleri QR Kod ile Paylaş",
     "tabShare":        "Paylaş",
     "tabScan":         "Tara",
     "fabTooltip":      "QR ile paylaş",

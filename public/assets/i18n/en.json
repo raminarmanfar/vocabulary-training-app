@@ -330,7 +330,7 @@
     }
   },
   "qr": {
-    "title":           "Share via QR Code",
+    "title":           "Share Vocabularies via QR Code",
     "tabShare":        "Share",
     "tabScan":         "Scan",
     "fabTooltip":      "Share via QR",
