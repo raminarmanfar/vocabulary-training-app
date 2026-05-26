@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, NgZone, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { DatabaseService } from './database.service';
 import { Sentence } from '../models/sentence.model';
@@ -6,12 +6,13 @@ import { Sentence } from '../models/sentence.model';
 @Injectable({ providedIn: 'root' })
 export class SentenceService {
   private db = inject(DatabaseService);
+  private ngZone = inject(NgZone);
   readonly sentencesSubject = new BehaviorSubject<Sentence[]>([]);
   sentences$ = this.sentencesSubject.asObservable();
 
   async load(): Promise<void> {
     const all = await this.db.getAllSentences();
-    this.sentencesSubject.next(all);
+    this.ngZone.run(() => this.sentencesSubject.next(all));
   }
 
   async getById(id: string): Promise<Sentence | undefined> {

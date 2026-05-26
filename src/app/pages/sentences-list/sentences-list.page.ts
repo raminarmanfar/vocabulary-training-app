@@ -1,4 +1,5 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel,
@@ -7,8 +8,8 @@ import {
 } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { add, chatboxOutline } from 'ionicons/icons';
-import { Subscription } from 'rxjs';
+import { add, chatboxOutline, chatbubbleEllipsesOutline } from 'ionicons/icons';
+import { ViewWillEnter } from '@ionic/angular';
 import { SentenceService } from '../../services/sentence.service';
 import { Sentence } from '../../models/sentence.model';
 import { AiSentenceModalComponent } from '../../components/ai-sentence-modal/ai-sentence-modal.component';
@@ -24,25 +25,23 @@ import { AiSentenceModalComponent } from '../../components/ai-sentence-modal/ai-
     TranslatePipe
   ]
 })
-export class SentencesListPage implements OnInit, OnDestroy {
+export class SentencesListPage implements OnInit, ViewWillEnter {
   private router          = inject(Router);
   private sentenceService = inject(SentenceService);
   private modalCtrl       = inject(ModalController);
 
-  sentences: Sentence[] = [];
-  private sub?: Subscription;
+  readonly sentencesSignal = toSignal(this.sentenceService.sentences$, { initialValue: [] as Sentence[] });
 
   constructor() {
-    addIcons({ add, chatboxOutline });
+    addIcons({ add, chatboxOutline, chatbubbleEllipsesOutline });
   }
 
   ngOnInit() {
-    this.sub = this.sentenceService.sentences$.subscribe(s => this.sentences = s);
     this.sentenceService.load();
   }
 
-  ngOnDestroy() {
-    this.sub?.unsubscribe();
+  async ionViewWillEnter() {
+    await this.sentenceService.load();
   }
 
   async openAddModal() {
@@ -52,6 +51,10 @@ export class SentencesListPage implements OnInit, OnDestroy {
       initialBreakpoint: 1
     });
     await modal.present();
+    const { data } = await modal.onDidDismiss<{ saved?: boolean }>();
+    if (data?.saved) {
+      await this.sentenceService.load();
+    }
   }
 
   openDetails(id: string) {

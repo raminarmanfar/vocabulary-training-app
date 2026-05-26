@@ -131,3 +131,12 @@ resource "aws_apigatewayv2_route" "analyze_sentence" {
   authorization_type = "CUSTOM"
   authorizer_id      = aws_apigatewayv2_authorizer.api_key.id
 }
+
+# POST /generate-sentence — AI sentence generation with constraints, protected by API key
+resource "aws_apigatewayv2_route" "generate_sentence" {
+  api_id             = aws_apigatewayv2_api.vocab_ai.id
+  route_key          = "POST /generate-sentence"
+  target             = "integrations/${aws_apigatewayv2_integration.vocab_ai.id}"
+  authorization_type = "CUSTOM"
+  authorizer_id      = aws_apigatewayv2_authorizer.api_key.id
+}

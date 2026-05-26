@@ -1,0 +1,57 @@
+import { Component, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {
+  IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon,
+  IonList, IonItem, IonLabel, IonSelect, IonSelectOption, IonInput, ModalController
+} from '@ionic/angular/standalone';
+import { TranslatePipe } from '@ngx-translate/core';
+import { addIcons } from 'ionicons';
+import { close, sparkles } from 'ionicons/icons';
+import { SentenceGenerateOptions } from '../../services/sentence-ai.service';
+
+@Component({
+  selector: 'app-sentence-generate-modal',
+  templateUrl: './sentence-generate-modal.component.html',
+  styleUrls: ['./sentence-generate-modal.component.scss'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon,
+    IonList, IonItem, IonLabel, IonSelect, IonSelectOption, IonInput,
+    TranslatePipe
+  ]
+})
+export class SentenceGenerateModalComponent {
+  private modalCtrl = inject(ModalController);
+
+  level = signal<'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2'>('A2');
+  sentenceType = signal<'simple' | 'compound' | 'complex' | 'any'>('any');
+  tense = signal<'Präsens' | 'Präteritum' | 'Perfekt' | 'Plusquamperfekt' | 'Futur I' | 'Futur II' | 'any'>('any');
+  modalVerb = signal<'required' | 'forbidden' | 'optional'>('optional');
+  length = signal<'short' | 'medium' | 'long'>('medium');
+  negation = signal<'required' | 'forbidden' | 'optional'>('optional');
+  passiveVoice = signal<'required' | 'forbidden' | 'optional'>('optional');
+  topic = signal('');
+
+  constructor() {
+    addIcons({ close, sparkles });
+  }
+
+  dismiss() {
+    this.modalCtrl.dismiss(null, 'cancel');
+  }
+
+  generate() {
+    const options: SentenceGenerateOptions = {
+      level: this.level(),
+      sentenceType: this.sentenceType(),
+      tense: this.tense(),
+      modalVerb: this.modalVerb(),
+      length: this.length(),
+      negation: this.negation(),
+      passiveVoice: this.passiveVoice(),
+      topic: this.topic().trim() || undefined,
+    };
+    this.modalCtrl.dismiss(options, 'generate');
+  }
+}

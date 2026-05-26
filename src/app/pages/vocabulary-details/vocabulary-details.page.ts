@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, signal, computed, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed, ViewChild, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import {
@@ -11,7 +11,7 @@ import { AlertController, ToastController, ViewWillEnter } from '@ionic/angular'
 import { TranslatePipe } from '@ngx-translate/core';
 import { TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { create, trash, volumeHigh, checkmarkCircle, ellipseOutline, imageOutline, sparkles } from 'ionicons/icons';
+import { close, create, trash, volumeHigh, checkmarkCircle, ellipseOutline, imageOutline, sparkles } from 'ionicons/icons';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { TtsService } from '../../services/tts.service';
 import { VocabAiService } from '../../services/vocab-ai.service';
@@ -49,8 +49,10 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
   private langService = inject(LanguageService);
 
   @ViewChild(IonContent) private content!: IonContent;
+  @Input() vocabId?: string;
 
   private paramSub?: Subscription;
+  isModal = false;
 
   vocab = signal<Vocabulary | null>(null);
   regenerating = signal(false);
@@ -72,10 +74,18 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
   }
 
   constructor() {
-    addIcons({ create, trash, volumeHigh, checkmarkCircle, ellipseOutline, imageOutline, sparkles });
+    addIcons({ close, create, trash, volumeHigh, checkmarkCircle, ellipseOutline, imageOutline, sparkles });
   }
 
   async ngOnInit() {
+    if (this.vocabId) {
+      this.isModal = true;
+      const v = await this.vocabService.getById(this.vocabId);
+      this.vocab.set(v);
+      this.content?.scrollToTop(0);
+      return;
+    }
+
     this.paramSub = this.route.paramMap.subscribe(async params => {
       const id = params.get('id')!;
       const v = await this.vocabService.getById(id);
@@ -93,9 +103,15 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
   }
 
   private async loadVocab() {
-    const id = this.route.snapshot.paramMap.get('id')!;
+    const id = this.vocabId ?? this.route.snapshot.paramMap.get('id')!;
     const v = await this.vocabService.getById(id);
     this.vocab.set(v);
+  }
+
+  dismiss() {
+    if (this.isModal) {
+      this.modalCtrl.dismiss();
+    }
   }
 
   async speak() {
@@ -208,6 +224,10 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
     const v = this.vocab();
     if (!v) return;
     await this.vocabService.delete(v);
+    if (this.isModal) {
+      await this.modalCtrl.dismiss({ deleted: true });
+      return;
+    }
     this.router.navigate(['/vocabularies']);
   }
 

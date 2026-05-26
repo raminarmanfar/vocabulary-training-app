@@ -18,6 +18,99 @@ export class VocabularyService {
     return this.db.getById(id);
   }
 
+  async findByGerman(german: string, wordType?: WordType): Promise<Vocabulary | undefined> {
+    const term = this.normalizeGerman(german);
+    if (!term) return undefined;
+
+    const matchType = (v: Vocabulary) => !wordType || wordType === 'unknown' || wordType === 'other' || v.wordType === wordType;
+
+    const cached = this.findByGermanInList(this.vocabsSubject.value, term, wordType, matchType);
+    if (cached) return cached;
+
+    const all = await this.db.getAll();
+    const found = this.findByGermanInList(all, term, wordType, matchType);
+    this.vocabsSubject.next(all);
+    return found;
+  }
+
+  private findByGermanInList(
+    list: Vocabulary[],
+    term: string,
+    wordType: WordType | undefined,
+    matchType: (v: Vocabulary) => boolean
+  ): Vocabulary | undefined {
+    const candidates = this.buildLookupCandidates(term);
+
+    for (const candidate of candidates) {
+      const exact = list.find(v => this.normalizeGerman(v.german) === candidate && matchType(v));
+      if (exact) return exact;
+    }
+
+    // Fallback: resolve inflected surface forms to existing lemmas/base forms.
+    for (const candidate of candidates) {
+      const inflected = list.find(v => matchType(v) && this.matchesInflectedForm(v, candidate, wordType));
+      if (inflected) return inflected;
+    }
+
+    return undefined;
+  }
+
+  private normalizeGerman(value: string): string {
+    return (value || '')
+      .trim()
+      .toLowerCase()
+      .replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, '');
+  }
+
+  private buildLookupCandidates(term: string): string[] {
+    const candidates = new Set<string>([term]);
+    const withoutArticle = term.replace(/^(der|die|das|ein|eine|einen|einem|einer|eines)\s+/u, '').trim();
+    if (withoutArticle) candidates.add(withoutArticle);
+    return [...candidates];
+  }
+
+  private matchesInflectedForm(vocab: Vocabulary, term: string, requestedType?: WordType): boolean {
+    const type = vocab.wordType;
+    if (requestedType && requestedType !== 'unknown' && requestedType !== 'other' && type !== requestedType) return false;
+
+    if (type === 'verb') {
+      const vd = vocab.verbDetails;
+      if (!vd) return false;
+      const forms = [
+        vd.present.ich, vd.present.du, vd.present.erSieEs, vd.present.wir, vd.present.ihr, vd.present.sie,
+        vd.simplePast.ich, vd.simplePast.du, vd.simplePast.erSieEs, vd.simplePast.wir, vd.simplePast.ihr, vd.simplePast.sie,
+        vd.imperative.du, vd.imperative.wir, vd.imperative.ihr, vd.imperative.Sie,
+        this.extractMainVerbToken(vd.pastPerfect.ich), this.extractMainVerbToken(vd.pastPerfect.du),
+        this.extractMainVerbToken(vd.pastPerfect.erSieEs), this.extractMainVerbToken(vd.pastPerfect.wir),
+        this.extractMainVerbToken(vd.pastPerfect.ihr), this.extractMainVerbToken(vd.pastPerfect.sie),
+        this.extractMainVerbToken(vd.future.ich), this.extractMainVerbToken(vd.future.du),
+        this.extractMainVerbToken(vd.future.erSieEs), this.extractMainVerbToken(vd.future.wir),
+        this.extractMainVerbToken(vd.future.ihr), this.extractMainVerbToken(vd.future.sie)
+      ];
+      return forms.some(f => this.normalizeGerman(f) === term);
+    }
+
+    if (type === 'noun') {
+      const plural = this.normalizeGerman(vocab.nounDetails?.plural || '');
+      return plural !== '' && plural !== '(kein plural)' && plural === term;
+    }
+
+    if (type === 'adjective') {
+      const comp = this.normalizeGerman(vocab.adjectiveDetails?.komparativ || '');
+      const sup = this.normalizeGerman(vocab.adjectiveDetails?.superlativ || '');
+      return comp === term || sup === term;
+    }
+
+    return false;
+  }
+
+  private extractMainVerbToken(phrase: string): string {
+    const cleaned = (phrase || '').trim();
+    if (!cleaned) return '';
+    const parts = cleaned.split(/\s+/).filter(Boolean);
+    return parts[parts.length - 1] || '';
+  }
+
   async save(vocab: Vocabulary): Promise<Vocabulary> {
     const saved = await this.db.save(vocab);
     await this.load();

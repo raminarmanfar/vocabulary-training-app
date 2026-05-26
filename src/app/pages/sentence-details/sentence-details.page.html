@@ -21,7 +21,14 @@
     <!-- Sentence card -->
     <ion-card>
       <ion-card-header>
-        <ion-card-title class="german-sentence">{{ s.german }}</ion-card-title>
+        <div class="sentence-title-row">
+          <ion-card-title class="german-sentence">{{ s.german }}</ion-card-title>
+          @if (ttsSupported()) {
+            <ion-button fill="clear" size="small" class="sentence-tts-btn" (click)="speakSentence()" [title]="'detail.pronounce' | translate">
+              <ion-icon name="volume-high" slot="icon-only" color="primary"></ion-icon>
+            </ion-button>
+          }
+        </div>
       </ion-card-header>
       <ion-card-content>
         <p class="translation en">🇬🇧 {{ s.english }}</p>
@@ -82,18 +89,23 @@
       </ion-card-header>
       <ion-card-content class="words-content">
         @for (w of s.words; track w.word) {
-          <div class="word-row">
+          <div class="word-row clickable" (click)="openWord(w.lemma || w.word, w.type)">
             <div class="word-header">
               <span class="word-german">{{ w.word }}</span>
+              @if (ttsSupported()) {
+                <ion-button fill="clear" size="small" class="word-tts-btn" (click)="speakWord($event, w.word)">
+                  <ion-icon name="volume-high-outline" slot="icon-only" color="medium"></ion-icon>
+                </ion-button>
+              }
               <ion-badge [color]="wordTypeColor(w.type)">
                 {{ ('wordType.' + w.type) | translate }}
               </ion-badge>
             </div>
             <p class="word-en">🇬🇧 {{ w.english }}</p>
-            @if (w.turkish) {
+            @if (showTurkishTranslation && w.turkish) {
               <p class="word-tr">🇹🇷 {{ w.turkish }}</p>
             }
-            @if (w.persian) {
+            @if (showPersianTranslation && w.persian) {
               <p class="word-fa">🇮🇷 {{ w.persian }}</p>
             }
             @if (w.note) {

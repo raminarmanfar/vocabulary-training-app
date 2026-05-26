@@ -14,6 +14,39 @@
   margin: 8px 16px 0;
 }
 
+.mic-btn {
+  align-self: center;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  width: 48px;
+  height: 48px;
+
+  ion-icon {
+    font-size: 28px;
+  }
+}
+
+.generator-btn {
+  align-self: center;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  width: 48px;
+  height: 48px;
+
+  ion-icon {
+    font-size: 24px;
+  }
+}
+
+@keyframes mic-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.6; }
+}
+
+.mic-pulse {
+  animation: mic-pulse 0.9s ease-in-out infinite;
+}
+
 .translation {
   margin: 4px 0;
   font-size: 1rem;
@@ -41,6 +74,15 @@
   padding: 10px 16px;
   border-bottom: 1px solid var(--ion-color-light);
   &:last-child { border-bottom: none; }
+}
+
+.word-row.clickable {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: rgba(var(--ion-color-primary-rgb), 0.06);
+  }
 }
 
 .word-main {

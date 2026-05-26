@@ -1,0 +1,101 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>{{ 'sentences.generator.title' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <p class="generator-hint">{{ 'sentences.generator.hint' | translate }}</p>
+
+  <ion-list lines="inset" class="generator-list">
+    <ion-item>
+      <ion-label>{{ 'sentences.generator.level' | translate }}</ion-label>
+      <ion-select interface="popover" [value]="level()" (ionChange)="level.set($any($event).detail.value)">
+        <ion-select-option value="A1">A1</ion-select-option>
+        <ion-select-option value="A2">A2</ion-select-option>
+        <ion-select-option value="B1">B1</ion-select-option>
+        <ion-select-option value="B2">B2</ion-select-option>
+        <ion-select-option value="C1">C1</ion-select-option>
+        <ion-select-option value="C2">C2</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>{{ 'sentences.generator.sentenceType' | translate }}</ion-label>
+      <ion-select interface="popover" [value]="sentenceType()" (ionChange)="sentenceType.set($any($event).detail.value)">
+        <ion-select-option value="any">{{ 'sentences.generator.any' | translate }}</ion-select-option>
+        <ion-select-option value="simple">simple</ion-select-option>
+        <ion-select-option value="compound">compound</ion-select-option>
+        <ion-select-option value="complex">complex</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>{{ 'sentences.generator.tense' | translate }}</ion-label>
+      <ion-select interface="popover" [value]="tense()" (ionChange)="tense.set($any($event).detail.value)">
+        <ion-select-option value="any">{{ 'sentences.generator.any' | translate }}</ion-select-option>
+        <ion-select-option value="Präsens">Präsens</ion-select-option>
+        <ion-select-option value="Präteritum">Präteritum</ion-select-option>
+        <ion-select-option value="Perfekt">Perfekt</ion-select-option>
+        <ion-select-option value="Plusquamperfekt">Plusquamperfekt</ion-select-option>
+        <ion-select-option value="Futur I">Futur I</ion-select-option>
+        <ion-select-option value="Futur II">Futur II</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>{{ 'sentences.generator.modalVerb' | translate }}</ion-label>
+      <ion-select interface="popover" [value]="modalVerb()" (ionChange)="modalVerb.set($any($event).detail.value)">
+        <ion-select-option value="optional">{{ 'sentences.generator.optional' | translate }}</ion-select-option>
+        <ion-select-option value="required">{{ 'sentences.generator.required' | translate }}</ion-select-option>
+        <ion-select-option value="forbidden">{{ 'sentences.generator.forbidden' | translate }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>{{ 'sentences.generator.length' | translate }}</ion-label>
+      <ion-select interface="popover" [value]="length()" (ionChange)="length.set($any($event).detail.value)">
+        <ion-select-option value="short">{{ 'sentences.generator.short' | translate }}</ion-select-option>
+        <ion-select-option value="medium">{{ 'sentences.generator.medium' | translate }}</ion-select-option>
+        <ion-select-option value="long">{{ 'sentences.generator.long' | translate }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>{{ 'sentences.generator.negation' | translate }}</ion-label>
+      <ion-select interface="popover" [value]="negation()" (ionChange)="negation.set($any($event).detail.value)">
+        <ion-select-option value="optional">{{ 'sentences.generator.optional' | translate }}</ion-select-option>
+        <ion-select-option value="required">{{ 'sentences.generator.required' | translate }}</ion-select-option>
+        <ion-select-option value="forbidden">{{ 'sentences.generator.forbidden' | translate }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>{{ 'sentences.generator.passiveVoice' | translate }}</ion-label>
+      <ion-select interface="popover" [value]="passiveVoice()" (ionChange)="passiveVoice.set($any($event).detail.value)">
+        <ion-select-option value="optional">{{ 'sentences.generator.optional' | translate }}</ion-select-option>
+        <ion-select-option value="required">{{ 'sentences.generator.required' | translate }}</ion-select-option>
+        <ion-select-option value="forbidden">{{ 'sentences.generator.forbidden' | translate }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">{{ 'sentences.generator.topic' | translate }}</ion-label>
+      <ion-input
+        [value]="topic()"
+        (ionInput)="topic.set($any($event).detail.value ?? '')"
+        [placeholder]="'sentences.generator.topicPlaceholder' | translate">
+      </ion-input>
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="block" class="ion-margin-top" (click)="generate()">
+    <ion-icon name="sparkles" slot="start"></ion-icon>
+    {{ 'sentences.generator.generate' | translate }}
+  </ion-button>
+</ion-content>

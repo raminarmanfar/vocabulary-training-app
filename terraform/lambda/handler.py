@@ -68,10 +68,17 @@ def build_user_prompt(word: str, word_type: str | None) -> str:
 
     base = f"""Generate a complete vocabulary entry for the German word "{word}" ({type_instruction}).
 
+Important normalization rule before generating the entry:
+- Convert the input to its canonical dictionary form based on part of speech.
+- Verb: infinitive form (e.g. "muss" -> "müssen", "ging" -> "gehen").
+- Noun: singular nominative without article (e.g. "Bücher" -> "Buch").
+- Adjective/Adverb: positive/base form (e.g. "besser" -> "gut").
+- Use this normalized form as the final vocabulary target.
+
 Return a JSON object with exactly these fields:
 
 {{
-  "german": "<the German word, capitalised if noun>",
+    "german": "<the normalized canonical German word, capitalised if noun>",
   "english": "<English translation(s), comma-separated if multiple>",
   "turkish": "<Turkish translation(s), comma-separated if multiple>",
   "persian": "<Persian/Farsi translation(s), comma-separated if multiple>",
@@ -190,6 +197,7 @@ Return a JSON object with exactly these fields:
 Rules:
 - Return ONLY the raw JSON object. No markdown code blocks, no preamble.
 - All string values must be properly escaped JSON strings.
+- Normalize the input first and generate the full entry for that normalized form.
 - "english", "turkish", and "persian" fields must always be filled with accurate translations.
 - "level" must be one of: A1, A2, B1, B2, C1, C2 — choose based on typical learner exposure.
 - For verbs, provide exactly 3 example sentences: one in Präsens, one in Präteritum, one in Perfekt.
@@ -378,22 +386,91 @@ def handle_share_download(event, context):
 # ── Sentence analysis ─────────────────────────────────────────────────────────
 
 SENTENCE_SYSTEM_PROMPT = (
-    "You are a German language expert. When given a German sentence, "
+    "You are a German language expert and proofreader. When given a German sentence, "
     "you respond ONLY with a single valid JSON object — no markdown, no explanation, just raw JSON."
 )
+
+
+def build_sentence_generation_prompt(options: dict) -> str:
+        level = options.get("level", "A2")
+        sentence_type = options.get("sentenceType", "any")
+        tense = options.get("tense", "any")
+        modal_verb = options.get("modalVerb", "optional")
+        length = options.get("length", "medium")
+        negation = options.get("negation", "optional")
+        passive_voice = options.get("passiveVoice", "optional")
+        topic = (options.get("topic") or "").strip()
+
+        length_instruction = {
+                "short": "4-6 words",
+                "medium": "7-11 words",
+                "long": "12-18 words"
+        }.get(length, "7-11 words")
+
+        topic_line = f'- Topic preference: "{topic}"' if topic else "- Topic preference: choose a common real-life topic"
+
+        return f"""Generate one natural German sentence for learners and return a full analysis JSON.
+
+Constraints:
+- CEFR level target: {level}
+- Sentence type: {sentence_type} (simple | compound | complex | any)
+- Tense target: {tense} (Präsens | Präteritum | Perfekt | Plusquamperfekt | Futur I | Futur II | any)
+- Modal verb usage: {modal_verb} (required | forbidden | optional)
+- Length target: {length} ({length_instruction})
+- Negation usage: {negation} (required | forbidden | optional)
+- Passive voice usage: {passive_voice} (required | forbidden | optional)
+{topic_line}
+
+Return a JSON object with exactly these fields:
+{{
+    "german": "<generated German sentence>",
+    "english": "<full natural English translation>",
+    "turkish": "<full natural Turkish translation>",
+    "persian": "<full natural Persian/Farsi translation>",
+    "words": [
+        {{
+            "word": "<German word>",
+            "lemma": "<canonical dictionary form: verb infinitive, noun singular (no article), adjective/adverb base form>",
+            "type": "<noun | verb | adjective | adverb | other>",
+            "english": "<English translation of this single word>",
+            "turkish": "<Turkish translation of this word>",
+            "persian": "<Persian translation of this word>",
+            "note": "<short grammar note>"
+        }}
+    ],
+    "grammar": {{
+        "tense": "<Präsens | Präteritum | Perfekt | Plusquamperfekt | Futur I | Futur II>",
+        "sentenceType": "<simple | compound | complex>",
+        "hasModalVerb": <true | false>,
+        "modalVerb": "<modal verb if present, otherwise null>",
+        "isNegation": <true | false>,
+        "isPassive": <true | false>,
+        "clauseType": "<main clause | subordinate clause | relative clause | mixed>",
+        "notes": "<one or two concise English notes about grammar and why it matches constraints>"
+    }}
+}}
+
+Rules:
+- Return ONLY raw JSON. No markdown, no explanations.
+- Respect all constraints as much as possible while keeping the sentence natural.
+- "words" should include meaningful words (verbs, nouns, adjectives, adverbs, pronouns as needed).
+- "type" must be exactly one of: noun, verb, adjective, adverb, other.
+- Ensure the returned grammar fields reflect the actual generated sentence.
+"""
 
 def build_sentence_prompt(sentence: str) -> str:
     return f"""Analyze this German sentence: "{sentence}"
 
 Return a JSON object with exactly these fields:
 {{
-  "german": "<the original German sentence, lightly corrected for spelling if needed>",
+    "german": "<the fully corrected German sentence (fix spelling, word order, grammar, and punctuation)>",
   "english": "<full natural English translation of the sentence>",
   "turkish": "<full natural Turkish translation>",
   "persian": "<full natural Persian/Farsi translation>",
   "words": [
     {{
       "word": "<German word>",
+            "lemma": "<canonical dictionary form: verb infinitive, noun singular (no article), adjective/adverb positive/base form>",
       "type": "<noun | verb | adjective | adverb | other>",
       "english": "<English translation of this single word>",
       "turkish": "<Turkish translation of this word>",
@@ -415,7 +492,14 @@ Return a JSON object with exactly these fields:
 
 Rules:
 - Return ONLY raw JSON. No markdown code blocks, no preamble.
+- First silently proofread and correct the input sentence.
+- Always return the corrected sentence in the "german" field, even if the original input had mistakes.
+- Preserve original meaning while correcting; do not paraphrase unless needed for grammatical correctness.
 - "words": include all meaningful words — all verbs (including auxiliaries), all nouns, adjectives, adverbs. Skip standalone articles and conjunctions unless they are noteworthy.
+- "lemma" is required for every word entry and must be the canonical form.
+- For verbs, "lemma" must be the infinitive (e.g. "habe" -> "haben").
+- For nouns, "lemma" must be singular nominative without article (e.g. "Bücher" -> "Buch").
+- For adjectives/adverbs, "lemma" must be positive/base form (e.g. "besser" -> "gut").
 - "type" must be exactly one of: noun, verb, adjective, adverb, other
 - "tense": identify the primary tense of the main clause
 - "sentenceType": simple = one main clause only; compound = two or more main clauses joined by coordinating conjunction; complex = main clause + at least one subordinate clause
@@ -450,6 +534,77 @@ def invoke_bedrock_sentence(sentence: str) -> dict:
     return json.loads(text)
 
 
+def invoke_bedrock_generate_sentence(options: dict) -> dict:
+    prompt = build_sentence_generation_prompt(options)
+    body = {
+        "anthropic_version": "bedrock-2023-05-31",
+        "max_tokens": 2048,
+        "system": SENTENCE_SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": prompt}]
+    }
+    response = BEDROCK_CLIENT.invoke_model(
+        modelId=MODEL_ID,
+        contentType="application/json",
+        accept="application/json",
+        body=json.dumps(body)
+    )
+    result = json.loads(response["body"].read())
+    text = result["content"][0]["text"].strip()
+    if text.startswith("```"):
+        text = text.split("```")[1]
+        if text.startswith("json"):
+            text = text[4:]
+        text = text.strip()
+    return json.loads(text)
+
+
+def matches_generation_constraints(generated: dict, options: dict) -> bool:
+    grammar = generated.get("grammar") or {}
+    sentence = (generated.get("german") or "").strip()
+    if not sentence:
+        return False
+
+    sentence_type = (options.get("sentenceType") or "any").strip().lower()
+    if sentence_type != "any" and (grammar.get("sentenceType") or "").strip().lower() != sentence_type:
+        return False
+
+    tense = (options.get("tense") or "any").strip().lower()
+    if tense != "any" and (grammar.get("tense") or "").strip().lower() != tense:
+        return False
+
+    modal_verb = (options.get("modalVerb") or "optional").strip().lower()
+    has_modal = bool(grammar.get("hasModalVerb"))
+    if modal_verb == "required" and not has_modal:
+        return False
+    if modal_verb == "forbidden" and has_modal:
+        return False
+
+    negation = (options.get("negation") or "optional").strip().lower()
+    has_negation = bool(grammar.get("isNegation"))
+    if negation == "required" and not has_negation:
+        return False
+    if negation == "forbidden" and has_negation:
+        return False
+
+    passive = (options.get("passiveVoice") or "optional").strip().lower()
+    has_passive = bool(grammar.get("isPassive"))
+    if passive == "required" and not has_passive:
+        return False
+    if passive == "forbidden" and has_passive:
+        return False
+
+    length = (options.get("length") or "medium").strip().lower()
+    word_count = len([w for w in sentence.split() if w.strip()])
+    if length == "short" and not (4 <= word_count <= 6):
+        return False
+    if length == "medium" and not (7 <= word_count <= 11):
+        return False
+    if length == "long" and not (12 <= word_count <= 18):
+        return False
+
+    return True
+
+
 def handle_analyze_sentence(event, context):
     """POST /analyze-sentence — analyze a German sentence with AI."""
     try:
@@ -475,6 +630,56 @@ def handle_analyze_sentence(event, context):
     }
 
 
+def handle_generate_sentence(event, context):
+    """POST /generate-sentence — generate a random constrained sentence with analysis."""
+    try:
+        body = json.loads(event.get("body") or "{}")
+    except json.JSONDecodeError:
+        return {"statusCode": 400, "headers": cors_headers(), "body": json.dumps({"error": "Invalid JSON body"})}
+
+    options = body or {}
+    generated = None
+    matched = False
+    last_error = None
+
+    for _ in range(3):
+        try:
+            candidate = invoke_bedrock_generate_sentence(options)
+        except json.JSONDecodeError as exc:
+            last_error = f"Bedrock returned non-JSON response: {exc}"
+            continue
+        except Exception as exc:
+            last_error = str(exc)
+            continue
+
+        generated = candidate
+        if matches_generation_constraints(candidate, options):
+            matched = True
+            break
+
+    if generated is None:
+        return {"statusCode": 502, "headers": cors_headers(), "body": json.dumps({"error": last_error or "Failed to generate sentence"})}
+
+    if not matched:
+        return {
+            "statusCode": 422,
+            "headers": {**cors_headers(), "Content-Type": "application/json"},
+            "body": json.dumps(
+                {
+                    "error": "CONSTRAINTS_NOT_MET",
+                    "message": "Could not generate a sentence that satisfies all constraints. Please try again or relax one option.",
+                },
+                ensure_ascii=False,
+            ),
+        }
+
+    return {
+        "statusCode": 200,
+        "headers": {**cors_headers(), "Content-Type": "application/json"},
+        "body": json.dumps(generated, ensure_ascii=False)
+    }
+
+
 # ── Main router ───────────────────────────────────────────────────────────────
 
 def handler(event, context):
@@ -493,5 +698,7 @@ def handler(event, context):
         return handle_share_download(event, context)
     if route == "POST /analyze-sentence":
         return handle_analyze_sentence(event, context)
+    if route == "POST /generate-sentence":
+        return handle_generate_sentence(event, context)
 
     return {"statusCode": 404, "headers": cors_headers(), "body": json.dumps({"error": "Not found"})}

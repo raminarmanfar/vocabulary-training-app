@@ -14,6 +14,14 @@
   opacity: 0.4;
 }
 
+.sentence-icon {
+  font-size: 1.2rem;
+  color: var(--ion-color-primary);
+  background: rgba(var(--ion-color-primary-rgb), 0.12);
+  border-radius: 50%;
+  padding: 8px;
+}
+
 .german-text {
   font-weight: 600;
   font-size: 1rem;
@@ -38,8 +46,23 @@
   padding-left: 8px;
 }
 
+.grammar-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
 .tense-badge {
   font-size: 0.72rem;
+}
+
+.type-badge {
+  font-size: 0.7rem;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .date-note {

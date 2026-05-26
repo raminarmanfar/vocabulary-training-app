@@ -22,14 +22,26 @@
         rows="3"
         autoGrow="true">
       </ion-textarea>
+      <ion-button
+        slot="end"
+        fill="clear"
+        color="secondary"
+        (click)="openGenerateOptions()"
+        class="generator-btn">
+        <ion-icon name="options-outline" slot="icon-only"></ion-icon>
+      </ion-button>
       @if (speechSupported()) {
         <ion-button
           slot="end"
-          fill="clear"
-          [color]="recording() ? 'danger' : 'medium'"
+          [fill]="recording() ? 'solid' : 'clear'"
+          [color]="recording() ? 'danger' : 'secondary'"
           (click)="toggleRecording()"
-          style="align-self:flex-end;margin-bottom:8px">
-          <ion-icon [name]="recording() ? 'mic' : 'mic-outline'" slot="icon-only"></ion-icon>
+          class="mic-btn">
+          <ion-icon
+            [name]="recording() ? 'mic' : 'mic-outline'"
+            slot="icon-only"
+            [class.mic-pulse]="recording()">
+          </ion-icon>
         </ion-button>
       }
     </ion-item>
@@ -114,7 +126,7 @@
         </ion-card-header>
         <ion-card-content class="words-content">
           @for (w of res.words; track w.word) {
-            <div class="word-row">
+            <div class="word-row clickable" (click)="openWord(w.lemma || w.word, w.type)">
               <div class="word-main">
                 <span class="word-german">{{ w.word }}</span>
                 <ion-badge [color]="wordTypeColor(w.type)" class="word-type-badge">

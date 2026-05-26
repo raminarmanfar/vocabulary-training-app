@@ -43,6 +43,7 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
   private langService  = inject(LanguageService);
 
   @Input() initialWord?: string;
+  @Input() initialWordType?: WordType | 'unknown';
 
   step = signal<ModalStep>('input');
   word = signal('');
@@ -118,6 +119,9 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
         };
         this.webRecognition.onend   = () => this.recording.set(false);
       }
+    }
+    if (this.initialWordType) {
+      this.wordType.set(this.initialWordType);
     }
     if (this.initialWord) {
       this.word.set(this.initialWord);

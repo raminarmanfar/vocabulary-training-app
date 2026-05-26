@@ -1,19 +1,25 @@
 import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel,
   IonTextarea, IonButton, IonButtons, IonIcon, IonSpinner,
-  IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonBadge, IonList,
+  IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonBadge,
   ModalController, ToastController
 } from '@ionic/angular/standalone';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { close, sparkles, save, refreshOutline, mic, micOutline } from 'ionicons/icons';
+import { close, sparkles, save, refreshOutline, mic, micOutline, optionsOutline } from 'ionicons/icons';
 import { SpeechRecognition } from '@capacitor-community/speech-recognition';
 import { Capacitor } from '@capacitor/core';
-import { SentenceAiService, AiSentenceResponse } from '../../services/sentence-ai.service';
+import { SentenceAiService, AiSentenceResponse, SentenceGenerateOptions } from '../../services/sentence-ai.service';
 import { SentenceService } from '../../services/sentence.service';
 import { LanguageService } from '../../services/language.service';
+import { VocabularyService } from '../../services/vocabulary.service';
+import { AiVocabModalComponent } from '../ai-vocab-modal/ai-vocab-modal.component';
+import { VocabularyDetailsPage } from '../../pages/vocabulary-details/vocabulary-details.page';
+import { SentenceGenerateModalComponent } from '../sentence-generate-modal/sentence-generate-modal.component';
+import { WordType } from '../../models/vocabulary.model';
 
 type ModalStep = 'input' | 'loading' | 'preview' | 'saving';
 
@@ -26,17 +32,19 @@ type ModalStep = 'input' | 'loading' | 'preview' | 'saving';
     FormsModule,
     IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel,
     IonTextarea, IonButton, IonButtons, IonIcon, IonSpinner,
-    IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonBadge, IonList,
+    IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonBadge,
     TranslatePipe
   ]
 })
 export class AiSentenceModalComponent implements OnInit, OnDestroy {
+  private router        = inject(Router);
   private modalCtrl     = inject(ModalController);
   private toastCtrl     = inject(ToastController);
   private translate     = inject(TranslateService);
   private aiService     = inject(SentenceAiService);
   private sentenceService = inject(SentenceService);
   private langService   = inject(LanguageService);
+  private vocabService  = inject(VocabularyService);
 
   step        = signal<ModalStep>('input');
   sentence    = signal('');
@@ -47,7 +55,7 @@ export class AiSentenceModalComponent implements OnInit, OnDestroy {
   private webRecognition: any = null;
 
   constructor() {
-    addIcons({ close, sparkles, save, refreshOutline, mic, micOutline });
+    addIcons({ close, sparkles, save, refreshOutline, mic, micOutline, optionsOutline });
   }
 
   ngOnInit() {
@@ -146,6 +154,37 @@ export class AiSentenceModalComponent implements OnInit, OnDestroy {
     });
   }
 
+  async openGenerateOptions() {
+    const modal = await this.modalCtrl.create({
+      component: SentenceGenerateModalComponent,
+      breakpoints: [0, 0.9, 1],
+      initialBreakpoint: 0.9,
+      handleBehavior: 'cycle',
+    });
+    await modal.present();
+
+    const { data, role } = await modal.onWillDismiss<SentenceGenerateOptions>();
+    if (role !== 'generate' || !data) return;
+
+    await this.generateRandomSentence(data);
+  }
+
+  private async generateRandomSentence(options: SentenceGenerateOptions) {
+    this.errorMsg.set('');
+    this.step.set('loading');
+    this.aiService.generateRandom(options).subscribe({
+      next: (res) => {
+        this.sentence.set(res.german);
+        this.result.set(res);
+        this.step.set('preview');
+      },
+      error: () => {
+        this.errorMsg.set(this.translate.instant('sentences.modal.generateError'));
+        this.step.set('input');
+      }
+    });
+  }
+
   async save() {
     const res = this.result();
     if (!res) return;
@@ -168,6 +207,43 @@ export class AiSentenceModalComponent implements OnInit, OnDestroy {
 
   dismiss() {
     this.modalCtrl.dismiss();
+  }
+
+  async openWord(word: string, type: WordType) {
+    const term = word.trim();
+    if (!term) return;
+
+    const existing = await this.vocabService.findByGerman(term, type);
+    if (existing) {
+      await this.openVocabDetailsModal(existing._id);
+      return;
+    }
+
+    const modal = await this.modalCtrl.create({
+      component: AiVocabModalComponent,
+      componentProps: { initialWord: term, initialWordType: type },
+      breakpoints: [0, 0.75, 1],
+      initialBreakpoint: 0.75,
+      handleBehavior: 'cycle',
+    });
+    await modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+    if (role === 'saved' && data?._id) {
+      await this.openVocabDetailsModal(data._id);
+    }
+  }
+
+  private async openVocabDetailsModal(vocabId: string) {
+    const modal = await this.modalCtrl.create({
+      component: VocabularyDetailsPage,
+      componentProps: { vocabId },
+      breakpoints: [0, 0.9, 1],
+      initialBreakpoint: 0.9,
+      handleBehavior: 'cycle',
+    });
+    await modal.present();
+    await modal.onWillDismiss();
   }
 
   wordTypeColor(type: string): string {

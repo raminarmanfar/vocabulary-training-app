@@ -2,6 +2,7 @@ import { WordType } from './vocabulary.model';
 
 export interface SentenceWord {
   word: string;
+  lemma?: string;
   type: WordType;
   english: string;
   turkish?: string;
