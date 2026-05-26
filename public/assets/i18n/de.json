@@ -336,7 +336,7 @@
   "qr": {
     "title":        "Vokabeln per QR-Code teilen",
     "tabShare":     "Teilen",
-    "tabScan":      "Scannen",
+    "tabScan":      "Empfangen (Scan)",
     "fabTooltip":   "Per QR teilen",
     "generateHint": "Tippe, um Vokabeln hochzuladen und einen QR-Code zu erstellen.",
     "generate":     "QR-Code erstellen",

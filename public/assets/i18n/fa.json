@@ -366,7 +366,7 @@
   "qr": {
     "title":        "اشتراک‌گذاری لغات با QR Code",
     "tabShare":     "اشتراک",
-    "tabScan":      "اسکن",
+    "tabScan":      "دریافت (اسکن)",
     "fabTooltip":   "اشتراک QR",
     "generateHint": "برای آپلود لغات و ساخت QR لمس کنید.",
     "generate":     "ساخت QR Code",

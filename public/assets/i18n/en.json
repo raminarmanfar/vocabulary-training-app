@@ -336,7 +336,7 @@
   "qr": {
     "title":        "Share Vocabularies via QR Code",
     "tabShare":     "Share",
-    "tabScan":      "Scan",
+    "tabScan":      "Receive (Scan)",
     "fabTooltip":   "Share via QR",
     "generateHint": "Tap to upload your vocabularies and generate a QR code.",
     "generate":     "Generate QR Code",

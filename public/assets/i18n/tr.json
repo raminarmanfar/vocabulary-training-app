@@ -366,7 +366,7 @@
   "qr": {
     "title":        "Kelimeleri QR Kod ile Paylaş",
     "tabShare":     "Paylaş",
-    "tabScan":      "Tara",
+    "tabScan":      "Al (Tara)",
     "fabTooltip":   "QR ile paylaş",
     "generateHint": "Kelimeleri yüklemek ve QR kod oluşturmak için dokun.",
     "generate":     "QR Kod Oluştur",
