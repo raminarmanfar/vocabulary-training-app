@@ -12,6 +12,22 @@
       [placeholder]="'home.search.placeholder' | translate"
       debounce="200">
     </ion-searchbar>
+    @if (speechSupported()) {
+      <ion-buttons slot="end">
+        <ion-button
+          [fill]="recording() ? 'solid' : 'clear'"
+          [color]="recording() ? 'danger' : 'secondary'"
+          (click)="toggleRecording()"
+          style="--padding-start:8px;--padding-end:8px;width:44px;height:44px;margin-right:4px">
+          <ion-icon
+            [name]="recording() ? 'mic' : 'mic-outline'"
+            slot="icon-only"
+            style="font-size:26px"
+            [class.mic-pulse]="recording()">
+          </ion-icon>
+        </ion-button>
+      </ion-buttons>
+    }
   </ion-toolbar>
   <ion-toolbar class="filter-toolbar">
     <div class="filter-row">

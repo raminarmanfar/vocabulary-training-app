@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +11,9 @@ import {
 } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles } from 'ionicons/icons';
+import { add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline } from 'ionicons/icons';
+import { SpeechRecognition } from '@capacitor-community/speech-recognition';
+import { Capacitor } from '@capacitor/core';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { Vocabulary, WordType, CefrLevel } from '../../models/vocabulary.model';
 import { AiVocabModalComponent } from '../../components/ai-vocab-modal/ai-vocab-modal.component';
@@ -30,7 +32,7 @@ import { AiVocabModalComponent } from '../../components/ai-vocab-modal/ai-vocab-
     TranslatePipe
   ]
 })
-export class VocabulariesListPage implements OnInit {
+export class VocabulariesListPage implements OnInit, OnDestroy {
   private router = inject(Router);
   private vocabService = inject(VocabularyService);
   private modalCtrl = inject(ModalController);
@@ -59,6 +61,9 @@ export class VocabulariesListPage implements OnInit {
   }
 
   searchTerm = signal('');
+  recording = signal(false);
+  speechSupported = signal(false);
+  private webRecognition: any = null;
   filterTypes = signal<WordType[]>(this.loadTypes());
   filterLevels = signal<CefrLevel[]>(this.loadLevels());
   filterLearned = signal<'all' | 'learned' | 'unlearned'>(this.loadLearned());
@@ -118,7 +123,7 @@ export class VocabulariesListPage implements OnInit {
   ];
 
   constructor() {
-    addIcons({ add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles });
+    addIcons({ add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline });
     effect(() => localStorage.setItem('filter_types', JSON.stringify(this.filterTypes())));
     effect(() => localStorage.setItem('filter_levels', JSON.stringify(this.filterLevels())));
     effect(() => localStorage.setItem('filter_learned', this.filterLearned()));
@@ -127,6 +132,67 @@ export class VocabulariesListPage implements OnInit {
   async ngOnInit() {
     await this.vocabService.seedSampleData();
     await this.vocabService.load();
+    if (Capacitor.isNativePlatform()) {
+      SpeechRecognition.available().then(({ available }) => this.speechSupported.set(available));
+    } else {
+      const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SR) {
+        this.speechSupported.set(true);
+        this.webRecognition = new SR();
+        this.webRecognition.lang = 'de-DE';
+        this.webRecognition.interimResults = false;
+        this.webRecognition.maxAlternatives = 1;
+        this.webRecognition.onresult = (event: any) => {
+          this.searchTerm.set(event.results[0][0].transcript.trim());
+          this.recording.set(false);
+        };
+        this.webRecognition.onerror = () => this.recording.set(false);
+        this.webRecognition.onend   = () => this.recording.set(false);
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.recording()) this.stopRecording();
+  }
+
+  async toggleRecording() {
+    if (this.recording()) {
+      await this.stopRecording();
+    } else {
+      await this.startRecording();
+    }
+  }
+
+  private async startRecording() {
+    this.searchTerm.set('');
+    if (Capacitor.isNativePlatform()) {
+      const { speechRecognition } = await SpeechRecognition.requestPermissions();
+      if (speechRecognition !== 'granted') return;
+      this.recording.set(true);
+      try {
+        const result = await SpeechRecognition.start({
+          language: 'de-DE',
+          maxResults: 1,
+          partialResults: false,
+          popup: true,
+        });
+        if (result.matches?.length) this.searchTerm.set(result.matches[0]);
+      } catch { /* cancelled */ }
+      this.recording.set(false);
+    } else {
+      this.webRecognition?.start();
+      this.recording.set(true);
+    }
+  }
+
+  private async stopRecording() {
+    if (Capacitor.isNativePlatform()) {
+      await SpeechRecognition.stop().catch(() => {});
+    } else {
+      this.webRecognition?.stop();
+    }
+    this.recording.set(false);
   }
 
   openDetail(id: string) {
