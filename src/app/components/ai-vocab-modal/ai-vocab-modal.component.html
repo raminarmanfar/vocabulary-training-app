@@ -103,6 +103,9 @@
       </div>
 
       <p class="translation">{{ result()!.english }}</p>
+      @if (nativeTranslation()) {
+        <p class="translation native-translation">{{ nativeTranslation() }}</p>
+      }
 
       @if (result()!.description) {
         <p class="description">{{ result()!.description }}</p>

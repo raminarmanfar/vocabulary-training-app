@@ -73,6 +73,15 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
 
   canGenerate = computed(() => this.word().trim().length > 0);
 
+  nativeTranslation = computed(() => {
+    const res = this.result();
+    if (!res) return null;
+    const lang = this.langService.currentLang();
+    if (lang === 'tr' && res.turkish) return res.turkish;
+    if (lang === 'fa' && res.persian) return res.persian;
+    return null;
+  });
+
   constructor() {
     addIcons({ sparkles, save, close, refreshOutline, checkmarkCircle, micOutline, mic });
   }
