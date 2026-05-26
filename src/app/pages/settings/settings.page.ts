@@ -7,7 +7,7 @@ import {
 import { AlertController } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline } from 'ionicons/icons';
+import { languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline, alertCircleOutline } from 'ionicons/icons';
 import { LanguageService, AppLanguage } from '../../services/language.service';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { QuizSetService } from '../../services/quiz-set.service';
@@ -129,6 +129,13 @@ import { EnrichmentService } from '../../services/enrichment.service';
             {{ 'settings.data.erase' | translate }}
           </ion-button>
         </ion-item>
+        <ion-item>
+          <ion-icon name="alert-circle-outline" slot="start" color="danger"></ion-icon>
+          <ion-label>{{ 'settings.data.resetApp' | translate }}</ion-label>
+          <ion-button slot="end" fill="solid" color="danger" (click)="confirmResetAppData()">
+            {{ 'settings.data.reset' | translate }}
+          </ion-button>
+        </ion-item>
       </ion-list>
 
       <!-- Hidden file input -->
@@ -159,7 +166,7 @@ export class SettingsPage {
   toast = signal<{ open: boolean; message: string; color: string }>({ open: false, message: '', color: 'success' });
 
   constructor() {
-    addIcons({ languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline });
+    addIcons({ languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline, alertCircleOutline });
     // Surface the done-toast from the background service when the page is active
     effect(() => {
       const pending = this.enrichmentService.pendingToast();
@@ -223,6 +230,28 @@ export class SettingsPage {
     if (role === 'confirm') {
       await this.quizSetService.deleteAll();
       this.toast.set({ open: true, message: this.translate.instant('settings.data.eraseQuizzesDone'), color: 'success' });
+    }
+  }
+
+  async confirmResetAppData() {
+    const alert = await this.alertCtrl.create({
+      header: this.translate.instant('settings.data.resetAppTitle'),
+      message: this.translate.instant('settings.data.resetAppMsg'),
+      buttons: [
+        { text: this.translate.instant('common.cancel'), role: 'cancel' },
+        { text: this.translate.instant('settings.data.reset'), role: 'confirm', cssClass: 'ion-color-danger' }
+      ]
+    });
+    await alert.present();
+    const { role } = await alert.onDidDismiss();
+    if (role === 'confirm') {
+      await this.vocabService.deleteAll();
+      await this.quizSetService.deleteAll();
+      await this.dbService.clearAllTrainSessions();
+      await this.dbService.clearAllSettings();
+      this.themeService.setTheme(false);
+      this.langService.setLanguage('de');
+      this.toast.set({ open: true, message: this.translate.instant('settings.data.resetAppDone'), color: 'success' });
     }
   }
 

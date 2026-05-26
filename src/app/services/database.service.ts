@@ -119,4 +119,8 @@ export class DatabaseService {
   async clearAllTrainSessions(): Promise<void> {
     await this.db.trainSessions.clear();
   }
+
+  async clearAllSettings(): Promise<void> {
+    await this.db.settings.clear();
+  }
 }
