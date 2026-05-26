@@ -122,3 +122,12 @@ resource "aws_apigatewayv2_route" "share_download" {
   route_key = "GET /share/{token}"
   target    = "integrations/${aws_apigatewayv2_integration.vocab_ai.id}"
 }
+
+# POST /analyze-sentence — AI sentence analysis, protected by API key
+resource "aws_apigatewayv2_route" "analyze_sentence" {
+  api_id             = aws_apigatewayv2_api.vocab_ai.id
+  route_key          = "POST /analyze-sentence"
+  target             = "integrations/${aws_apigatewayv2_integration.vocab_ai.id}"
+  authorization_type = "CUSTOM"
+  authorizer_id      = aws_apigatewayv2_authorizer.api_key.id
+}

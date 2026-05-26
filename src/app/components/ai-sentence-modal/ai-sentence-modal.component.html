@@ -1,0 +1,148 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>{{ 'sentences.modal.title' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- INPUT STEP -->
+  @if (step() === 'input') {
+    <ion-item lines="full">
+      <ion-label position="stacked">{{ 'sentences.modal.inputLabel' | translate }}</ion-label>
+      <ion-textarea
+        [value]="sentence()"
+        (ionInput)="sentence.set($any($event).detail.value)"
+        [placeholder]="'sentences.modal.inputPlaceholder' | translate"
+        rows="3"
+        autoGrow="true">
+      </ion-textarea>
+      @if (speechSupported()) {
+        <ion-button
+          slot="end"
+          fill="clear"
+          [color]="recording() ? 'danger' : 'medium'"
+          (click)="toggleRecording()"
+          style="align-self:flex-end;margin-bottom:8px">
+          <ion-icon [name]="recording() ? 'mic' : 'mic-outline'" slot="icon-only"></ion-icon>
+        </ion-button>
+      }
+    </ion-item>
+
+    @if (errorMsg()) {
+      <p class="error-msg">{{ errorMsg() }}</p>
+    }
+
+    <ion-button
+      expand="block"
+      class="ion-margin-top"
+      [disabled]="!canAnalyze"
+      (click)="analyze()">
+      <ion-icon name="sparkles" slot="start"></ion-icon>
+      {{ 'sentences.modal.analyze' | translate }}
+    </ion-button>
+  }
+
+  <!-- LOADING STEP -->
+  @if (step() === 'loading') {
+    <div class="loading-wrap">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>{{ 'sentences.modal.analyzing' | translate }}</p>
+    </div>
+  }
+
+  <!-- SAVING STEP -->
+  @if (step() === 'saving') {
+    <div class="loading-wrap">
+      <ion-spinner name="crescent" color="success"></ion-spinner>
+      <p>{{ 'sentences.modal.saving' | translate }}</p>
+    </div>
+  }
+
+  <!-- PREVIEW STEP -->
+  @if (step() === 'preview') {
+    @let res = result();
+    @if (res) {
+
+      <!-- German sentence -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ res.german }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p class="translation en">🇬🇧 {{ res.english }}</p>
+          @if (nativeTranslation()) {
+            <p class="translation native">{{ nativeTranslation() }}</p>
+          }
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Grammar -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ 'sentences.grammar.title' | translate }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="grammar-badges">
+            <ion-badge color="primary">{{ res.grammar.tense }}</ion-badge>
+            <ion-badge color="secondary">{{ res.grammar.sentenceType }}</ion-badge>
+            @if (res.grammar.hasModalVerb && res.grammar.modalVerb) {
+              <ion-badge color="warning">{{ res.grammar.modalVerb }}</ion-badge>
+            }
+            @if (res.grammar.isPassive) {
+              <ion-badge color="danger">{{ 'sentences.grammar.passive' | translate }}</ion-badge>
+            }
+            @if (res.grammar.isNegation) {
+              <ion-badge color="medium">{{ 'sentences.grammar.negation' | translate }}</ion-badge>
+            }
+          </div>
+          @if (res.grammar.notes) {
+            <p class="grammar-notes">{{ res.grammar.notes }}</p>
+          }
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Words -->
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ 'sentences.words.title' | translate }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content class="words-content">
+          @for (w of res.words; track w.word) {
+            <div class="word-row">
+              <div class="word-main">
+                <span class="word-german">{{ w.word }}</span>
+                <ion-badge [color]="wordTypeColor(w.type)" class="word-type-badge">
+                  {{ ('wordType.' + w.type) | translate }}
+                </ion-badge>
+              </div>
+              <p class="word-en">{{ w.english }}</p>
+              @if (w.note) {
+                <p class="word-note">{{ w.note }}</p>
+              }
+            </div>
+          }
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Actions -->
+      <div class="action-row">
+        <ion-button fill="outline" (click)="retry()">
+          <ion-icon name="refresh-outline" slot="start"></ion-icon>
+          {{ 'sentences.modal.retry' | translate }}
+        </ion-button>
+        <ion-button (click)="save()">
+          <ion-icon name="save" slot="start"></ion-icon>
+          {{ 'sentences.modal.save' | translate }}
+        </ion-button>
+      </div>
+
+    }
+  }
+
+</ion-content>

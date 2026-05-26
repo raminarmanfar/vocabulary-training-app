@@ -20,6 +20,8 @@ const routes: Routes = [
   { path: 'quiz/new', loadComponent: () => import('./pages/quiz-new/quiz-new.page').then(m => m.QuizNewPage) },
   { path: 'about', loadComponent: () => import('./pages/about/about.page').then(m => m.AboutPage) },
   { path: 'settings', loadComponent: () => import('./pages/settings/settings.page').then(m => m.SettingsPage) },
+  { path: 'sentences', loadComponent: () => import('./pages/sentences-list/sentences-list.page').then(m => m.SentencesListPage) },
+  { path: 'sentence-details/:id', loadComponent: () => import('./pages/sentence-details/sentence-details.page').then(m => m.SentenceDetailsPage) },
 ];
 
 export const appConfig: ApplicationConfig = {

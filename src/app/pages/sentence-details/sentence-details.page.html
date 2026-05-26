@@ -1,0 +1,108 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/sentences"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'sentences.details.title' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="danger" (click)="confirmDelete()">
+        <ion-icon name="trash" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @let s = sentence();
+  @if (!s) {
+    <p class="ion-text-center ion-padding">{{ 'sentences.details.notFound' | translate }}</p>
+  } @else {
+
+    <!-- Sentence card -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title class="german-sentence">{{ s.german }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p class="translation en">🇬🇧 {{ s.english }}</p>
+        @if (nativeTranslation) {
+          <p class="translation native">{{ nativeTranslation }}</p>
+        }
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Grammar card -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{ 'sentences.grammar.title' | translate }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="grammar-grid">
+          <div class="grammar-row">
+            <span class="grammar-label">{{ 'sentences.grammar.tense' | translate }}</span>
+            <ion-badge color="primary">{{ s.grammar.tense }}</ion-badge>
+          </div>
+          <div class="grammar-row">
+            <span class="grammar-label">{{ 'sentences.grammar.sentenceType' | translate }}</span>
+            <ion-badge color="secondary">{{ s.grammar.sentenceType }}</ion-badge>
+          </div>
+          <div class="grammar-row">
+            <span class="grammar-label">{{ 'sentences.grammar.clauseType' | translate }}</span>
+            <span class="grammar-value">{{ s.grammar.clauseType }}</span>
+          </div>
+          <div class="grammar-row">
+            <span class="grammar-label">{{ 'sentences.grammar.modalVerb' | translate }}</span>
+            @if (s.grammar.hasModalVerb && s.grammar.modalVerb) {
+              <ion-badge color="warning">{{ s.grammar.modalVerb }}</ion-badge>
+            } @else {
+              <ion-icon name="close-circle" color="medium"></ion-icon>
+            }
+          </div>
+          <div class="grammar-row">
+            <span class="grammar-label">{{ 'sentences.grammar.passive' | translate }}</span>
+            <ion-icon [name]="s.grammar.isPassive ? 'checkmark-circle' : 'close-circle'"
+                      [color]="s.grammar.isPassive ? 'success' : 'medium'"></ion-icon>
+          </div>
+          <div class="grammar-row">
+            <span class="grammar-label">{{ 'sentences.grammar.negation' | translate }}</span>
+            <ion-icon [name]="s.grammar.isNegation ? 'checkmark-circle' : 'close-circle'"
+                      [color]="s.grammar.isNegation ? 'success' : 'medium'"></ion-icon>
+          </div>
+        </div>
+        @if (s.grammar.notes) {
+          <p class="grammar-notes">{{ s.grammar.notes }}</p>
+        }
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Words card -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{ 'sentences.words.title' | translate }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content class="words-content">
+        @for (w of s.words; track w.word) {
+          <div class="word-row">
+            <div class="word-header">
+              <span class="word-german">{{ w.word }}</span>
+              <ion-badge [color]="wordTypeColor(w.type)">
+                {{ ('wordType.' + w.type) | translate }}
+              </ion-badge>
+            </div>
+            <p class="word-en">🇬🇧 {{ w.english }}</p>
+            @if (w.turkish) {
+              <p class="word-tr">🇹🇷 {{ w.turkish }}</p>
+            }
+            @if (w.persian) {
+              <p class="word-fa">🇮🇷 {{ w.persian }}</p>
+            }
+            @if (w.note) {
+              <p class="word-note">{{ w.note }}</p>
+            }
+          </div>
+        }
+      </ion-card-content>
+    </ion-card>
+
+  }
+</ion-content>

@@ -374,6 +374,107 @@ def handle_share_download(event, context):
     }
 
 
+
+# ── Sentence analysis ─────────────────────────────────────────────────────────
+
+SENTENCE_SYSTEM_PROMPT = (
+    "You are a German language expert. When given a German sentence, "
+    "you respond ONLY with a single valid JSON object — no markdown, no explanation, just raw JSON."
+)
+
+def build_sentence_prompt(sentence: str) -> str:
+    return f"""Analyze this German sentence: "{sentence}"
+
+Return a JSON object with exactly these fields:
+{{
+  "german": "<the original German sentence, lightly corrected for spelling if needed>",
+  "english": "<full natural English translation of the sentence>",
+  "turkish": "<full natural Turkish translation>",
+  "persian": "<full natural Persian/Farsi translation>",
+  "words": [
+    {{
+      "word": "<German word>",
+      "type": "<noun | verb | adjective | adverb | other>",
+      "english": "<English translation of this single word>",
+      "turkish": "<Turkish translation of this word>",
+      "persian": "<Persian translation of this word>",
+      "note": "<short grammar note, e.g. 'strong verb, hilfsverb: haben' or 'neuter noun, article: das'>"
+    }}
+  ],
+  "grammar": {{
+    "tense": "<Präsens | Präteritum | Perfekt | Plusquamperfekt | Futur I | Futur II>",
+    "sentenceType": "<simple | compound | complex>",
+    "hasModalVerb": <true | false>,
+    "modalVerb": "<the modal verb if present, otherwise null>",
+    "isNegation": <true | false>,
+    "isPassive": <true | false>,
+    "clauseType": "<main clause | subordinate clause | relative clause | mixed>",
+    "notes": "<one or two sentences explaining the main grammar points of this sentence>"
+  }}
+}}
+
+Rules:
+- Return ONLY raw JSON. No markdown code blocks, no preamble.
+- "words": include all meaningful words — all verbs (including auxiliaries), all nouns, adjectives, adverbs. Skip standalone articles and conjunctions unless they are noteworthy.
+- "type" must be exactly one of: noun, verb, adjective, adverb, other
+- "tense": identify the primary tense of the main clause
+- "sentenceType": simple = one main clause only; compound = two or more main clauses joined by coordinating conjunction; complex = main clause + at least one subordinate clause
+- "hasModalVerb": true if a modal verb (können, müssen, dürfen, wollen, sollen, mögen, möchten) is used
+- "isNegation": true if nicht, kein, nie, niemals, niemand, nichts or similar negation is present
+- "isPassive": true if Vorgangspassiv (werden + Partizip II) or Zustandspassiv (sein + Partizip II) is used
+- "grammar.notes": write in English, be concise but informative
+"""
+
+
+def invoke_bedrock_sentence(sentence: str) -> dict:
+    prompt = build_sentence_prompt(sentence)
+    body = {
+        "anthropic_version": "bedrock-2023-05-31",
+        "max_tokens": 2048,
+        "system": SENTENCE_SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": prompt}]
+    }
+    response = BEDROCK_CLIENT.invoke_model(
+        modelId=MODEL_ID,
+        contentType="application/json",
+        accept="application/json",
+        body=json.dumps(body)
+    )
+    result = json.loads(response["body"].read())
+    text = result["content"][0]["text"].strip()
+    if text.startswith("```"):
+        text = text.split("```")[1]
+        if text.startswith("json"):
+            text = text[4:]
+        text = text.strip()
+    return json.loads(text)
+
+
+def handle_analyze_sentence(event, context):
+    """POST /analyze-sentence — analyze a German sentence with AI."""
+    try:
+        body = json.loads(event.get("body") or "{}")
+    except json.JSONDecodeError:
+        return {"statusCode": 400, "headers": cors_headers(), "body": json.dumps({"error": "Invalid JSON body"})}
+
+    sentence = (body.get("sentence") or "").strip()
+    if not sentence:
+        return {"statusCode": 400, "headers": cors_headers(), "body": json.dumps({"error": "Missing required field: sentence"})}
+
+    try:
+        analysis = invoke_bedrock_sentence(sentence)
+    except json.JSONDecodeError as exc:
+        return {"statusCode": 502, "headers": cors_headers(), "body": json.dumps({"error": f"Bedrock returned non-JSON response: {exc}"})}
+    except Exception as exc:
+        return {"statusCode": 502, "headers": cors_headers(), "body": json.dumps({"error": str(exc)})}
+
+    return {
+        "statusCode": 200,
+        "headers": {**cors_headers(), "Content-Type": "application/json"},
+        "body": json.dumps(analysis, ensure_ascii=False)
+    }
+
+
 # ── Main router ───────────────────────────────────────────────────────────────
 
 def handler(event, context):
@@ -390,5 +491,7 @@ def handler(event, context):
         return handle_share_upload(event, context)
     if route == "GET /share/{token}":
         return handle_share_download(event, context)
+    if route == "POST /analyze-sentence":
+        return handle_analyze_sentence(event, context)
 
     return {"statusCode": 404, "headers": cors_headers(), "body": json.dumps({"error": "Not found"})}

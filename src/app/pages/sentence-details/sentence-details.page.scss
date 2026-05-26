@@ -1,0 +1,79 @@
+.german-sentence {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.translation {
+  margin: 4px 0;
+  font-size: 0.95rem;
+  &.en { color: var(--ion-color-dark); }
+  &.native { color: var(--ion-color-medium); }
+}
+
+.grammar-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.grammar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.grammar-label {
+  font-size: 0.85rem;
+  color: var(--ion-color-medium);
+  min-width: 130px;
+}
+
+.grammar-value {
+  font-size: 0.9rem;
+}
+
+.grammar-notes {
+  margin: 8px 0 0;
+  font-size: 0.88rem;
+  color: var(--ion-color-medium);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.words-content { padding: 0 !important; }
+
+.word-row {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--ion-color-light);
+  &:last-child { border-bottom: none; }
+}
+
+.word-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.word-german {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.word-en, .word-tr, .word-fa {
+  margin: 2px 0;
+  font-size: 0.88rem;
+}
+
+.word-en  { color: var(--ion-color-dark); }
+.word-tr  { color: var(--ion-color-medium); }
+.word-fa  { color: var(--ion-color-medium); }
+
+.word-note {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+  font-style: italic;
+}

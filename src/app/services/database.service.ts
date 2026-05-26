@@ -3,6 +3,7 @@ import Dexie, { Table } from 'dexie';
 import { Vocabulary } from '../models/vocabulary.model';
 import { QuizSet } from '../models/quiz-set.model';
 import { TrainSession } from '../models/train-session.model';
+import { Sentence } from '../models/sentence.model';
 
 interface AppSetting { key: string; value: string; }
 
@@ -11,6 +12,7 @@ class VocabDatabase extends Dexie {
   settings!: Table<AppSetting, string>;
   quizSets!: Table<QuizSet, string>;
   trainSessions!: Table<TrainSession, string>;
+  sentences!: Table<Sentence, string>;
 
   constructor() {
     super('VocabTrainer');
@@ -31,6 +33,13 @@ class VocabDatabase extends Dexie {
       settings: 'key',
       quizSets: '_id, status, createdAt',
       trainSessions: '_id, startedAt'
+    });
+    this.version(5).stores({
+      vocabularies: '_id, wordType, level, learned, german, english',
+      settings: 'key',
+      quizSets: '_id, status, createdAt',
+      trainSessions: '_id, startedAt',
+      sentences: '_id, createdAt'
     });
   }
 }
@@ -122,5 +131,27 @@ export class DatabaseService {
 
   async clearAllSettings(): Promise<void> {
     await this.db.settings.clear();
+  }
+
+  async getAllSentences(): Promise<Sentence[]> {
+    return this.db.sentences.orderBy('createdAt').reverse().toArray();
+  }
+
+  async getSentenceById(id: string): Promise<Sentence | undefined> {
+    return this.db.sentences.get(id);
+  }
+
+  async saveSentence(sentence: Sentence): Promise<Sentence> {
+    sentence.updatedAt = new Date().toISOString();
+    if (!sentence._id) {
+      sentence._id = `sentence_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      sentence.createdAt = sentence.updatedAt;
+    }
+    await this.db.sentences.put(sentence);
+    return sentence;
+  }
+
+  async deleteSentence(id: string): Promise<void> {
+    await this.db.sentences.delete(id);
   }
 }

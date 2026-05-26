@@ -7,6 +7,7 @@
     "subtitle": "Deine Deutsche Vokabeltrainer-App",
     "tiles": {
       "vocabularies": { "label": "Vokabeln",      "description": "Wortliste durchsuchen & verwalten" },
+      "sentences":    { "label": "Sätze",          "description": "Deutsche Sätze mit KI analysieren und speichern" },
       "train":        { "label": "Trainieren",    "description": "Karteikarten üben, um Wörter zu lernen" },
       "quiz":         { "label": "Quiz",          "description": "Wissen mit Multiple-Choice testen" },
       "about":        { "label": "Über mich",      "description": "Über diese App" },
@@ -391,6 +392,45 @@
       "message": "\"{{word}}\" ist bereits in deiner Bibliothek. Möchtest du es durch den neuen KI-generierten Eintrag ersetzen?",
       "cancel":  "Bestehenden behalten",
       "replace": "Ersetzen"
+    }
+  },
+  "sentences": {
+    "list": {
+      "title": "Sätze",
+      "empty": "Noch keine Sätze. Tippe auf +, um deinen ersten deutschen Satz hinzuzufügen."
+    },
+    "details": {
+      "title": "Satz Details",
+      "notFound": "Satz nicht gefunden.",
+      "deleteTitle": "Satz löschen",
+      "deleteMsg": "Möchtest du diesen Satz wirklich löschen?",
+      "deleted": "Satz gelöscht"
+    },
+    "modal": {
+      "title": "Deutschen Satz analysieren",
+      "inputLabel": "Deutscher Satz",
+      "inputPlaceholder": "Einen deutschen Satz eingeben oder sprechen…",
+      "analyze": "Analysieren",
+      "analyzing": "KI analysiert…",
+      "analyzeError": "Analyse fehlgeschlagen. Bitte überprüfe deine Verbindung.",
+      "retry": "Erneut versuchen",
+      "save": "Speichern",
+      "saving": "Wird gespeichert…",
+      "saveSuccess": "Satz gespeichert!",
+      "voiceHint": "Mikrofon antippen und den Satz sprechen",
+      "listening": "Höre zu… jetzt sprechen"
+    },
+    "grammar": {
+      "title": "Grammatik",
+      "tense": "Zeitform",
+      "sentenceType": "Satzart",
+      "clauseType": "Satztyp",
+      "modalVerb": "Modalverb",
+      "passive": "Passiv",
+      "negation": "Verneinung"
+    },
+    "words": {
+      "title": "Wörter"
     }
   }
 }

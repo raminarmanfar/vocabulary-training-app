@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'sentences.list.title' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (sentences.length === 0) {
+    <div class="empty-state">
+      <ion-icon name="chatbox-outline" class="empty-icon"></ion-icon>
+      <p>{{ 'sentences.list.empty' | translate }}</p>
+    </div>
+  } @else {
+    <ion-list>
+      @for (s of sentences; track s._id) {
+        <ion-item button detail (click)="openDetails(s._id)">
+          <ion-label>
+            <h2 class="german-text">{{ s.german }}</h2>
+            <p class="english-text">{{ s.english }}</p>
+          </ion-label>
+          <div slot="end" class="item-end">
+            <ion-badge color="primary" class="tense-badge">{{ s.grammar.tense }}</ion-badge>
+            <ion-note class="date-note">{{ formatDate(s.createdAt) }}</ion-note>
+          </div>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="openAddModal()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

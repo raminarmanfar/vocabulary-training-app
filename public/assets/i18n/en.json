@@ -7,6 +7,7 @@
     "subtitle": "Your German vocabulary training app",
     "tiles": {
       "vocabularies": { "label": "Vocabularies", "description": "Browse & manage your German word list" },
+      "sentences":    { "label": "Sentences",    "description": "Analyze and save German sentences with AI" },
       "train":        { "label": "Train",         "description": "Practice flashcards to memorize words" },
       "quiz":         { "label": "Quiz",          "description": "Test your knowledge with multiple choice" },
       "about":        { "label": "About",         "description": "About this app" },
@@ -391,6 +392,45 @@
       "message": "\"{{word}}\" is already in your library. Do you want to replace it with the new AI-generated entry?",
       "cancel":  "Keep Existing",
       "replace": "Replace"
+    }
+  },
+  "sentences": {
+    "list": {
+      "title": "Sentences",
+      "empty": "No sentences yet. Tap + to add your first German sentence."
+    },
+    "details": {
+      "title": "Sentence Details",
+      "notFound": "Sentence not found.",
+      "deleteTitle": "Delete Sentence",
+      "deleteMsg": "Are you sure you want to delete this sentence?",
+      "deleted": "Sentence deleted"
+    },
+    "modal": {
+      "title": "Analyze German Sentence",
+      "inputLabel": "German Sentence",
+      "inputPlaceholder": "Type or speak a German sentence…",
+      "analyze": "Analyze",
+      "analyzing": "Analyzing with AI…",
+      "analyzeError": "Analysis failed. Please check your connection and try again.",
+      "retry": "Try Again",
+      "save": "Save",
+      "saving": "Saving…",
+      "saveSuccess": "Sentence saved!",
+      "voiceHint": "Tap the mic to speak your sentence",
+      "listening": "Listening… speak now"
+    },
+    "grammar": {
+      "title": "Grammar",
+      "tense": "Tense",
+      "sentenceType": "Sentence Type",
+      "clauseType": "Clause Type",
+      "modalVerb": "Modal Verb",
+      "passive": "Passive Voice",
+      "negation": "Negation"
+    },
+    "words": {
+      "title": "Words"
     }
   }
 }

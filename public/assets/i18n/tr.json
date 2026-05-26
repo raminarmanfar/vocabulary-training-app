@@ -10,6 +10,10 @@
         "label": "Kelimeler",
         "description": "Almanca kelime listenizi görüntüleyin ve yönetin"
       },
+      "sentences": {
+        "label": "Cümleler",
+        "description": "Almanca cümleleri yapay zeka ile analiz edin ve kaydedin"
+      },
       "train": {
         "label": "Antrenman",
         "description": "Kelimeleri ezberlemek için kart alıştırması yapın"
@@ -423,6 +427,45 @@
       "message": "\"{{word}}\" zaten kütüphanenizde. Yeni yapay zeka girişiyle değiştirmek ister misiniz?",
       "cancel": "Mevcut Olanı Koru",
       "replace": "Değiştir"
+    }
+  },
+  "sentences": {
+    "list": {
+      "title": "Cümleler",
+      "empty": "Henüz cümle yok. İlk Almanca cümlenizi eklemek için + 'a dokunun."
+    },
+    "details": {
+      "title": "Cümle Detayları",
+      "notFound": "Cümle bulunamadı.",
+      "deleteTitle": "Cümleyi Sil",
+      "deleteMsg": "Bu cümleyi silmek istediğinize emin misiniz?",
+      "deleted": "Cümle silindi"
+    },
+    "modal": {
+      "title": "Almanca Cümle Analiz Et",
+      "inputLabel": "Almanca Cümle",
+      "inputPlaceholder": "Bir Almanca cümle yazın veya söyleyin…",
+      "analyze": "Analiz Et",
+      "analyzing": "Yapay zeka analiz ediyor…",
+      "analyzeError": "Analiz başarısız. Bağlantınızı kontrol edin.",
+      "retry": "Tekrar Dene",
+      "save": "Kaydet",
+      "saving": "Kaydediliyor…",
+      "saveSuccess": "Cümle kaydedildi!",
+      "voiceHint": "Mikrofona dokunup cümleyi söyleyin",
+      "listening": "Dinleniyor… şimdi konuşun"
+    },
+    "grammar": {
+      "title": "Dilbilgisi",
+      "tense": "Zaman",
+      "sentenceType": "Cümle Türü",
+      "clauseType": "Yan Cümle Türü",
+      "modalVerb": "Modal Fiil",
+      "passive": "Pasif Yapı",
+      "negation": "Olumsuzluk"
+    },
+    "words": {
+      "title": "Kelimeler"
     }
   }
 }
