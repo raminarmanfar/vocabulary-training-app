@@ -12,7 +12,7 @@
       },
       "sentences": {
         "label": "جملات",
-        "description": "تحلیل و ذخیره جملات آلمانی با هوش مصنوعی"
+        "description": "تحلیل و یادگیری جملات آلمانی با هوش مصنوعی"
       },
       "train": {
         "label": "تمرین",
@@ -38,7 +38,7 @@
       "placeholder": "جستجو به آلمانی یا انگلیسی..."
     },
     "filter": {
-      "typePlaceholder": "نوع کلمه",
+      "typePlaceholder": "بخش کلام",
       "levelPlaceholder": "سطح",
       "allTypes": "همه انواع",
       "allLevels": "همه سطوح",
@@ -49,7 +49,7 @@
     "sort": {
       "date":    "تاریخ افزودن",
       "alpha":   "حروف الفبا",
-      "type":    "نوع کلمه",
+      "type":    "بخش کلام",
       "learned": "وضعیت یادگیری"
     },
     "empty": "لغتی یافت نشد.",
@@ -106,7 +106,7 @@
       "germanPh": "مثال: der Hund",
       "english": "ترجمه انگلیسی *",
       "englishPh": "مثال: dog",
-      "wordType": "نوع کلمه *",
+      "wordType": "بخش کلام *",
       "level": "سطح CEFR *",
       "description": "توضیحات",
       "descriptionPh": "توضیحات اختیاری...",
@@ -403,7 +403,7 @@
       "hint": "یک کلمه آلمانی وارد کنید. اگر نوع آن را می‌دانید انتخاب کنید — در غیر این صورت «نمی‌دانم» را انتخاب کنید تا هوش مصنوعی آن را تشخیص دهد.",
       "wordLabel": "کلمه آلمانی",
       "wordPlaceholder": "مثال: laufen",
-      "typeLabel": "نوع کلمه",
+      "typeLabel": "بخش کلام",
       "generate": "تولید",
       "generating": "در حال تولید لغت…",
       "retry": "دوباره امتحان",

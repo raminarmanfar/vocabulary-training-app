@@ -7,7 +7,7 @@
     "subtitle": "Deine Deutsche Vokabeltrainer-App",
     "tiles": {
       "vocabularies": { "label": "Vokabeln",      "description": "Wortliste durchsuchen & verwalten" },
-      "sentences":    { "label": "Sätze",          "description": "Deutsche Sätze mit KI analysieren und speichern" },
+      "sentences":    { "label": "Sätze",          "description": "Deutsche Sätze mit KI analysieren und lernen" },
       "train":        { "label": "Trainieren",    "description": "Karteikarten üben, um Wörter zu lernen" },
       "quiz":         { "label": "Quiz",          "description": "Wissen mit Multiple-Choice testen" },
       "about":        { "label": "Über mich",      "description": "Über diese App" },
@@ -18,7 +18,7 @@
     "title": "Vokabeln",
     "search": { "placeholder": "Auf Deutsch oder Englisch suchen..." },
     "filter": {
-      "typePlaceholder": "Worttyp",
+      "typePlaceholder": "Wortart",
       "levelPlaceholder": "Niveau",
       "allTypes": "Alle Typen",
       "allLevels": "Alle Niveaus",
@@ -29,7 +29,7 @@
     "sort": {
       "date":    "Hinzugefügt",
       "alpha":   "Alphabetisch",
-      "type":    "Worttyp",
+      "type":    "Wortart",
       "learned": "Lernstatus"
     },
     "empty": "Keine Vokabeln gefunden.",
@@ -82,7 +82,7 @@
       "germanPh":     "z.B. der Hund",
       "english":      "Englische Übersetzung *",
       "englishPh":    "z.B. dog",
-      "wordType":     "Worttyp *",
+      "wordType":     "Wortart *",
       "level":        "CEFR-Niveau *",
       "description":  "Beschreibung",
       "descriptionPh":"Optionale Beschreibung...",
@@ -100,7 +100,7 @@
     },
     "duplicate": {
       "title":   "Vokabel existiert bereits",
-      "message": "Eine Vokabel mit diesem Wort und demselben Worttyp existiert bereits. Ersetzen oder ignorieren?",
+      "message": "Eine Vokabel mit diesem Wort und derselben Wortart existiert bereits. Ersetzen oder ignorieren?",
       "replace": "Ersetzen",
       "ignore":  "Ignorieren"
     },

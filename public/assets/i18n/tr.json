@@ -12,7 +12,7 @@
       },
       "sentences": {
         "label": "Cümleler",
-        "description": "Almanca cümleleri yapay zeka ile analiz edin ve kaydedin"
+        "description": "Almanca cümleleri yapay zeka ile analiz edin ve öğrenin"
       },
       "train": {
         "label": "Antrenman",
@@ -38,7 +38,7 @@
       "placeholder": "Almanca veya İngilizce ara..."
     },
     "filter": {
-      "typePlaceholder": "Kelime türü",
+      "typePlaceholder": "Sözcük türü",
       "levelPlaceholder": "Seviye",
       "allTypes": "Tüm türler",
       "allLevels": "Tüm seviyeler",
@@ -49,7 +49,7 @@
     "sort": {
       "date":    "Eklenme Tarihi",
       "alpha":   "Alfabetik",
-      "type":    "Kelime Türü",
+      "type":    "Sözcük Türü",
       "learned": "Öğrenme Durumu"
     },
     "empty": "Kelime bulunamadı.",
@@ -106,7 +106,7 @@
       "germanPh": "örn. der Hund",
       "english": "İngilizce Çeviri *",
       "englishPh": "örn. dog",
-      "wordType": "Kelime Türü *",
+      "wordType": "Sözcük Türü *",
       "level": "CEFR Seviyesi *",
       "description": "Açıklama",
       "descriptionPh": "İsteğe bağlı açıklama...",
@@ -403,7 +403,7 @@
       "hint": "Bir Almanca kelime girin. Türünü biliyorsanız seçin — aksi takdirde \"Bilmiyorum\" seçin, yapay zeka tespit edecektir.",
       "wordLabel": "Almanca Kelime",
       "wordPlaceholder": "örn. laufen",
-      "typeLabel": "Kelime Türü",
+      "typeLabel": "Sözcük Türü",
       "generate": "Oluştur",
       "generating": "Kelime oluşturuluyor…",
       "retry": "Tekrar Dene",

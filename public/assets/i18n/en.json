@@ -7,7 +7,7 @@
     "subtitle": "Your German vocabulary training app",
     "tiles": {
       "vocabularies": { "label": "Vocabularies", "description": "Browse & manage your German word list" },
-      "sentences":    { "label": "Sentences",    "description": "Analyze and save German sentences with AI" },
+      "sentences":    { "label": "Sentences",    "description": "Analyze and learn German sentences with AI" },
       "train":        { "label": "Train",         "description": "Practice flashcards to memorize words" },
       "quiz":         { "label": "Quiz",          "description": "Test your knowledge with multiple choice" },
       "about":        { "label": "About",         "description": "About this app" },
@@ -18,7 +18,7 @@
     "title": "Vocabularies",
     "search": { "placeholder": "Search German or English..." },
     "filter": {
-      "typePlaceholder": "Word type",
+      "typePlaceholder": "Part of speech",
       "levelPlaceholder": "Level",
       "allTypes": "All types",
       "allLevels": "All levels",
@@ -29,7 +29,7 @@
     "sort": {
       "date":    "Date Added",
       "alpha":   "Alphabetical",
-      "type":    "Word Type",
+      "type":    "Part of Speech",
       "learned": "Learned Status"
     },
     "empty": "No vocabularies found.",
@@ -82,7 +82,7 @@
       "germanPh":     "e.g. der Hund",
       "english":      "English Translation *",
       "englishPh":    "e.g. dog",
-      "wordType":     "Word Type *",
+      "wordType":     "Part of Speech *",
       "level":        "CEFR Level *",
       "description":  "Description",
       "descriptionPh":"Optional description...",
@@ -368,7 +368,7 @@
       "hint":           "Enter a German word. Select a type if you know it — otherwise choose \"I don't know\" and the AI will detect it.",
       "wordLabel":      "German Word",
       "wordPlaceholder":"e.g. laufen",
-      "typeLabel":      "Word Type",
+      "typeLabel":      "Part of Speech",
       "generate":       "Generate",
       "generating":     "Generating vocabulary…",
       "retry":          "Try Again",
