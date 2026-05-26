@@ -1,67 +1,53 @@
 import { Injectable } from '@angular/core';
-import * as pako from 'pako';
+import { environment } from '../../environments/environment';
 import { Vocabulary } from '../models/vocabulary.model';
 
-const CHUNK_SIZE = 2200;
-const PREFIX = 'VT1:';
-
-export interface QrChunk {
-  total: number;
-  index: number;
-  data: string;
-}
+export const QR_TOKEN_PREFIX = 'VT2:';
 
 @Injectable({ providedIn: 'root' })
 export class QrShareService {
+  private readonly apiBase = environment.apiBaseUrl;
+  private readonly apiKey  = environment.bedrockApiKey;
 
-  /** Serialize + compress + split vocabs into QR-sized string chunks. */
-  encode(vocabs: Vocabulary[]): string[] {
-    const stripped = vocabs.map(v => ({ ...v, learned: false, imagePath: undefined }));
-    const json = JSON.stringify(stripped);
-    const deflated = pako.deflate(json, { level: 9 });
-    let binary = '';
-    for (let i = 0; i < deflated.length; i++) {
-      binary += String.fromCharCode(deflated[i]);
-    }
-    const base64 = btoa(binary);
-    const total = Math.ceil(base64.length / CHUNK_SIZE) || 1;
-    const result: string[] = [];
-    for (let i = 0; i < total; i++) {
-      const slice = base64.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
-      result.push(`${PREFIX}${total}:${i}:${slice}`);
-    }
-    return result;
+  /** Encode a token for display in a QR code. */
+  encodeToken(token: string): string {
+    return `${QR_TOKEN_PREFIX}${token}`;
   }
 
-  /** Parse a single raw QR string into a chunk descriptor, or null if not ours. */
-  parseChunk(raw: string): QrChunk | null {
-    if (!raw.startsWith(PREFIX)) return null;
-    const rest = raw.slice(PREFIX.length);
-    const c1 = rest.indexOf(':');
-    const c2 = rest.indexOf(':', c1 + 1);
-    if (c1 < 0 || c2 < 0) return null;
-    const total = parseInt(rest.slice(0, c1), 10);
-    const index = parseInt(rest.slice(c1 + 1, c2), 10);
-    const data = rest.slice(c2 + 1);
-    if (isNaN(total) || isNaN(index) || !data) return null;
-    return { total, index, data };
+  /** Parse a scanned QR string; returns the token or null if not ours. */
+  parseToken(raw: string): string | null {
+    if (!raw.startsWith(QR_TOKEN_PREFIX)) return null;
+    const token = raw.slice(QR_TOKEN_PREFIX.length).trim();
+    return token.length === 32 ? token : null;
   }
 
-  /** Reassemble chunks into Vocabulary objects with reset learned/id fields. */
-  assemble(chunks: Map<number, string>, total: number): Vocabulary[] {
-    let base64 = '';
-    for (let i = 0; i < total; i++) {
-      base64 += chunks.get(i) ?? '';
-    }
-    const binary = atob(base64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-      bytes[i] = binary.charCodeAt(i);
-    }
-    const json = pako.inflate(bytes, { to: 'string' });
-    const vocabs: Vocabulary[] = JSON.parse(json);
+  /**
+   * Upload vocabs to S3 via Lambda.
+   * Returns the one-time token to embed in the QR code.
+   */
+  async uploadVocabs(vocabs: Vocabulary[]): Promise<string> {
+    const stripped = vocabs.map(({ imagePath: _img, learned: _l, ...rest }) => rest);
+    const res = await fetch(`${this.apiBase}/share`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': this.apiKey },
+      body: JSON.stringify({ vocabs: stripped }),
+    });
+    if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
+    const data = await res.json();
+    return data.token as string;
+  }
+
+  /**
+   * Download vocabs from S3 via Lambda using the scanned token.
+   * The object is deleted server-side after the first successful fetch.
+   */
+  async downloadVocabs(token: string): Promise<Vocabulary[]> {
+    const res = await fetch(`${this.apiBase}/share/${encodeURIComponent(token)}`);
+    if (res.status === 404) throw new Error('EXPIRED');
+    if (!res.ok) throw new Error(`Download failed: ${res.status}`);
+    const raw: any[] = await res.json();
     const now = new Date().toISOString();
-    return vocabs.map(v => ({
+    return raw.map(v => ({
       ...v,
       _id: crypto.randomUUID(),
       learned: false,
@@ -70,3 +56,4 @@ export class QrShareService {
     }));
   }
 }
+

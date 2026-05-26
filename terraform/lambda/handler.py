@@ -2,13 +2,22 @@
 Lambda handler: receives a German word + word type, calls AWS Bedrock
 (Claude 3 Haiku) and returns a fully structured Vocabulary JSON object
 matching the VocabTrainer app data model.
+
+Also handles POST /share and GET /share/{token} for temporary
+cross-device vocabulary sharing via S3.
 """
 import json
 import os
+import uuid
 import boto3
+from botocore.exceptions import ClientError
 
 BEDROCK_CLIENT = boto3.client("bedrock-runtime", region_name=os.environ.get("AWS_REGION", "eu-central-1"))
-MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "eu.anthropic.claude-3-haiku-20240307-v1:0")
+S3_CLIENT      = boto3.client("s3",              region_name=os.environ.get("AWS_REGION", "eu-central-1"))
+
+MODEL_ID     = os.environ.get("BEDROCK_MODEL_ID", "eu.anthropic.claude-3-haiku-20240307-v1:0")
+SHARE_BUCKET = os.environ.get("SHARE_BUCKET", "")
+SHARE_PREFIX = "shares/"
 
 WORD_TYPES = {"noun", "verb", "adjective", "adverb", "preposition", "conjunction", "pronoun", "other"}
 CEFR_LEVELS = {"A1", "A2", "B1", "B2", "C1", "C2"}
@@ -223,12 +232,12 @@ def invoke_bedrock(word: str, word_type: str) -> dict:
 def cors_headers() -> dict:
     return {
         "Access-Control-Allow-Origin":  "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, x-api-key"
     }
 
 
-def handler(event, context):
+def handle_generate(event, context):
     # Handle CORS pre-flight
     if event.get("requestContext", {}).get("http", {}).get("method") == "OPTIONS":
         return {"statusCode": 200, "headers": cors_headers(), "body": ""}
@@ -297,3 +306,89 @@ def handler(event, context):
         "headers": {**cors_headers(), "Content-Type": "application/json"},
         "body": json.dumps(vocab, ensure_ascii=False)
     }
+
+
+# ── Share handlers ────────────────────────────────────────────────────────────
+
+def handle_share_upload(event, context):
+    """POST /share — store vocab JSON in S3, return a one-time token."""
+    try:
+        body = json.loads(event.get("body") or "{}")
+    except json.JSONDecodeError:
+        return {"statusCode": 400, "headers": cors_headers(), "body": json.dumps({"error": "Invalid JSON"})}
+
+    vocabs = body.get("vocabs", [])
+    if not isinstance(vocabs, list) or not vocabs:
+        return {"statusCode": 400, "headers": cors_headers(), "body": json.dumps({"error": "vocabs must be a non-empty array"})}
+
+    token = uuid.uuid4().hex  # 32-char hex, no dashes
+    key   = f"{SHARE_PREFIX}{token}.json"
+
+    try:
+        S3_CLIENT.put_object(
+            Bucket=SHARE_BUCKET,
+            Key=key,
+            Body=json.dumps(vocabs, ensure_ascii=False).encode("utf-8"),
+            ContentType="application/json"
+        )
+    except Exception as exc:
+        return {"statusCode": 500, "headers": cors_headers(), "body": json.dumps({"error": str(exc)})}
+
+    return {
+        "statusCode": 200,
+        "headers": {**cors_headers(), "Content-Type": "application/json"},
+        "body": json.dumps({"token": token})
+    }
+
+
+def handle_share_download(event, context):
+    """GET /share/{token} — fetch vocab JSON from S3, delete it, return it."""
+    path_params = event.get("pathParameters") or {}
+    token = (path_params.get("token") or "").strip()
+    if not token:
+        return {"statusCode": 400, "headers": cors_headers(), "body": json.dumps({"error": "Missing token"})}
+
+    key = f"{SHARE_PREFIX}{token}.json"
+
+    try:
+        obj = S3_CLIENT.get_object(Bucket=SHARE_BUCKET, Key=key)
+        vocabs = json.loads(obj["Body"].read().decode("utf-8"))
+    except ClientError as exc:
+        code = exc.response["Error"]["Code"]
+        if code in ("NoSuchKey", "404"):
+            return {"statusCode": 404, "headers": cors_headers(), "body": json.dumps({"error": "Not found or already used"})}
+        return {"statusCode": 500, "headers": cors_headers(), "body": json.dumps({"error": str(exc)})}
+    except Exception as exc:
+        return {"statusCode": 500, "headers": cors_headers(), "body": json.dumps({"error": str(exc)})}
+
+    # One-time use: delete immediately after retrieval
+    try:
+        S3_CLIENT.delete_object(Bucket=SHARE_BUCKET, Key=key)
+    except Exception:
+        pass  # best-effort delete; lifecycle rule is the safety net
+
+    return {
+        "statusCode": 200,
+        "headers": {**cors_headers(), "Content-Type": "application/json"},
+        "body": json.dumps(vocabs, ensure_ascii=False)
+    }
+
+
+# ── Main router ───────────────────────────────────────────────────────────────
+
+def handler(event, context):
+    # Handle CORS pre-flight
+    method = event.get("requestContext", {}).get("http", {}).get("method", "")
+    if method == "OPTIONS":
+        return {"statusCode": 200, "headers": cors_headers(), "body": ""}
+
+    route = event.get("routeKey", "")
+
+    if route == "POST /generate":
+        return handle_generate(event, context)
+    if route == "POST /share":
+        return handle_share_upload(event, context)
+    if route == "GET /share/{token}":
+        return handle_share_download(event, context)
+
+    return {"statusCode": 404, "headers": cors_headers(), "body": json.dumps({"error": "Not found"})}

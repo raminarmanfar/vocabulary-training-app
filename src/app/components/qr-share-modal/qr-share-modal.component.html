@@ -26,62 +26,64 @@
   <!-- ══════════════════  SHARE PANEL  ══════════════════ -->
   <div [style.display]="activeTab() === 'share' ? '' : 'none'" class="panel">
 
-    @if (shareStatus() === 'idle' || shareStatus() === 'encoding') {
-      <div class="center-panel">
-        <ion-spinner name="crescent" color="primary"></ion-spinner>
-        <p class="status-text">{{ 'qr.preparing' | translate }}</p>
-      </div>
-    }
-
-    @if (shareStatus() === 'empty') {
+    @if (shareStatus() === 'idle') {
       <div class="center-panel">
         <ion-icon name="qr-code-outline" class="empty-icon"></ion-icon>
-        <p class="status-text">{{ 'qr.noVocabs' | translate }}</p>
+        <p class="status-text">{{ 'qr.generateHint' | translate }}</p>
+        <ion-button expand="block" (click)="generateQr()" style="margin-top:16px">
+          <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+          {{ 'qr.generate' | translate }}
+        </ion-button>
       </div>
     }
 
-    @if (shareStatus() === 'ready') {
-      <div class="share-content">
-        <p class="share-subtitle">
-          {{ 'qr.shareSubtitle' | translate: { count: shareVocabCount() } }}
-        </p>
+    @if (shareStatus() === 'uploading') {
+      <div class="center-panel">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+        <p class="status-text">{{ 'qr.uploading' | translate }}</p>
+      </div>
+    }
 
-        <!-- QR Code canvas -->
-        <div class="qr-wrap">
-          <canvas #qrCanvas class="qr-canvas"></canvas>
-        </div>
+    <!-- QR canvas always in DOM so qrCanvasRef is available when renderQr() is called -->
+    <div class="share-content" [style.display]="shareStatus() === 'ready' ? '' : 'none'">
+      <p class="share-subtitle">
+        {{ 'qr.shareSubtitle' | translate: { count: shareVocabCount() } }}
+      </p>
+      <div class="qr-wrap">
+        <canvas #qrCanvas class="qr-canvas"></canvas>
+      </div>
+      <p class="hint-text">{{ 'qr.shareHint' | translate }}</p>
+      <p class="hint-text secondary-hint">{{ 'qr.expiryHint' | translate }}</p>
+    </div>
 
-        <!-- Multi-chunk navigation -->
-        @if (shareChunks().length > 1) {
-          <div class="chunk-nav">
-            <ion-chip color="primary" class="chunk-badge">
-              {{ 'qr.chunkOf' | translate: { current: shareIndex() + 1, total: shareChunks().length } }}
-            </ion-chip>
-            <ion-progress-bar [value]="shareProgress()" color="primary" style="margin:8px 0 12px"></ion-progress-bar>
-            <div class="nav-buttons">
-              <ion-button fill="outline" size="small" (click)="prevChunk()">
-                <ion-icon name="chevron-back-outline" slot="icon-only"></ion-icon>
-              </ion-button>
-              <ion-button fill="outline" size="small" (click)="toggleAutoAdvance()" [color]="autoAdvance() ? 'primary' : 'medium'">
-                <ion-icon [name]="autoAdvance() ? 'pause-outline' : 'play-outline'" slot="icon-only"></ion-icon>
-              </ion-button>
-              <ion-button fill="outline" size="small" (click)="nextChunk()">
-                <ion-icon name="chevron-forward-outline" slot="icon-only"></ion-icon>
-              </ion-button>
-            </div>
-            <p class="hint-text">{{ 'qr.autoAdvanceHint' | translate }}</p>
-          </div>
-        }
-
-        @if (shareChunks().length === 1) {
-          <p class="hint-text">{{ 'qr.shareHint' | translate }}</p>
-        }
+    @if (shareStatus() === 'error') {
+      <div class="center-panel">
+        <ion-icon name="alert-circle-outline" class="empty-icon" color="danger"></ion-icon>
+        <p class="status-text error-text">{{ 'qr.uploadError' | translate }}</p>
+        <ion-button expand="block" (click)="generateQr()" style="margin-top:16px">
+          <ion-icon name="refresh-outline" slot="start"></ion-icon>
+          {{ 'qr.tryAgain' | translate }}
+        </ion-button>
       </div>
     }
   </div>
 
   <!-- ══════════════════  SCAN PANEL  ══════════════════ -->
+  <!-- Outer div always rendered (display toggle) so @ViewChild refs for video/canvas persist -->
   <div [style.display]="activeTab() === 'scan' ? '' : 'none'" class="panel">
+
+    <!-- video + canvas always in DOM so @ViewChild works regardless of scan state -->
+    <div class="camera-wrap" [style.display]="scanStatus() === 'scanning' ? '' : 'none'">
+      <video #videoEl autoplay playsinline muted class="camera-video"></video>
+      <canvas #scanCanvas class="hidden-canvas"></canvas>
+      <div class="scan-overlay">
+        <div class="scan-box"></div>
+      </div>
+    </div>
+
+    @if (scanStatus() === 'scanning') {
+      <p class="hint-text" style="margin-top:12px">{{ 'qr.scanHint' | translate }}</p>
+    }
 
     @if (scanStatus() === 'idle') {
       <div class="center-panel">
@@ -93,56 +95,33 @@
       </div>
     }
 
-    @if (scanStatus() === 'scanning' || scanStatus() === 'complete') {
-      <div class="scan-content">
+    @if (scanStatus() === 'downloading') {
+      <div class="center-panel">
+        <ion-spinner name="crescent" color="success"></ion-spinner>
+        <p class="status-text">{{ 'qr.downloading' | translate }}</p>
+      </div>
+    }
 
-        <!-- Camera viewfinder -->
-        <div class="camera-wrap" [class.scan-done]="scanStatus() === 'complete'">
-          <video #videoEl autoplay playsinline muted class="camera-video"></video>
-          <canvas #scanCanvas class="hidden-canvas"></canvas>
-          <div class="scan-overlay">
-            <div class="scan-box"></div>
-          </div>
-        </div>
-
-        <!-- Progress indicator -->
-        <div class="scan-progress">
-          @if (scanTotal() > 0) {
-            <ion-chip [color]="scanStatus() === 'complete' ? 'success' : 'primary'">
-              @if (scanStatus() === 'complete') {
-                <ion-icon name="checkmark-circle" style="margin-right:4px"></ion-icon>
-              }
-              {{ 'qr.chunksOf' | translate: { scanned: scanProgress(), total: scanTotal() } }}
-            </ion-chip>
-            <ion-progress-bar
-              [value]="scanTotal() > 0 ? scanProgress() / scanTotal() : 0"
-              [color]="scanStatus() === 'complete' ? 'success' : 'primary'"
-              style="margin-top:8px">
-            </ion-progress-bar>
-          } @else {
-            <p class="hint-text">{{ 'qr.scanHint' | translate }}</p>
-          }
-        </div>
-
-        @if (scanStatus() === 'complete') {
-          <div class="import-section">
-            <p class="complete-msg">{{ 'qr.allChunksScanned' | translate }}</p>
-            <ion-button expand="block" color="success" (click)="importVocabs()">
-              <ion-icon name="download-outline" slot="start"></ion-icon>
-              {{ 'qr.import' | translate }}
-            </ion-button>
-          </div>
-        }
+    @if (scanStatus() === 'imported') {
+      <div class="center-panel">
+        <ion-icon name="checkmark-circle" class="empty-icon" color="success"></ion-icon>
+        <p class="status-text">
+          {{ 'qr.importSuccess' | translate: { count: scanImportCount() } }}
+        </p>
       </div>
     }
 
     @if (scanStatus() === 'error') {
       <div class="center-panel">
-        <p class="status-text error-text">{{ 'qr.cameraError' | translate }}</p>
-        <ion-button (click)="startCamera()">{{ 'qr.tryAgain' | translate }}</ion-button>
+        <ion-icon name="alert-circle-outline" class="empty-icon" color="danger"></ion-icon>
+        <p class="status-text error-text">{{ scanErrorKey() | translate }}</p>
+        <ion-button (click)="retryScan()" style="margin-top:16px">
+          <ion-icon name="refresh-outline" slot="start"></ion-icon>
+          {{ 'qr.tryAgain' | translate }}
+        </ion-button>
       </div>
     }
-
   </div>
 
 </ion-content>
+

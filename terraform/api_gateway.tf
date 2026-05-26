@@ -6,7 +6,7 @@ resource "aws_apigatewayv2_api" "vocab_ai" {
 
   cors_configuration {
     allow_origins = ["*"]
-    allow_methods = ["POST", "OPTIONS"]
+    allow_methods = ["POST", "GET", "OPTIONS"]
     allow_headers = ["Content-Type", "x-api-key"]
     max_age       = 300
   }
@@ -105,4 +105,20 @@ resource "aws_apigatewayv2_route" "generate" {
   target             = "integrations/${aws_apigatewayv2_integration.vocab_ai.id}"
   authorization_type = "CUSTOM"
   authorizer_id      = aws_apigatewayv2_authorizer.api_key.id
+}
+
+# POST /share — upload vocabs, protected by API key
+resource "aws_apigatewayv2_route" "share_upload" {
+  api_id             = aws_apigatewayv2_api.vocab_ai.id
+  route_key          = "POST /share"
+  target             = "integrations/${aws_apigatewayv2_integration.vocab_ai.id}"
+  authorization_type = "CUSTOM"
+  authorizer_id      = aws_apigatewayv2_authorizer.api_key.id
+}
+
+# GET /share/{token} — download vocabs, public (token itself is the secret)
+resource "aws_apigatewayv2_route" "share_download" {
+  api_id    = aws_apigatewayv2_api.vocab_ai.id
+  route_key = "GET /share/{token}"
+  target    = "integrations/${aws_apigatewayv2_integration.vocab_ai.id}"
 }

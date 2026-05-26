@@ -19,6 +19,7 @@ resource "aws_lambda_function" "vocab_ai" {
   environment {
     variables = {
       BEDROCK_MODEL_ID = var.bedrock_model_id
+      SHARE_BUCKET     = aws_s3_bucket.vocab_share.id
     }
   }
 }
