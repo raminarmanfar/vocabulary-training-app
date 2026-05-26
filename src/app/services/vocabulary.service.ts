@@ -60,12 +60,33 @@ export class VocabularyService {
     );
   }
 
-  async importAll(vocabs: Vocabulary[]): Promise<number> {
+  countDuplicates(incoming: Vocabulary[]): number {
+    const existing = this.vocabsSubject.value;
+    return incoming.filter(v =>
+      existing.some(e =>
+        e.german.trim().toLowerCase() === v.german.trim().toLowerCase() &&
+        e.wordType === v.wordType
+      )
+    ).length;
+  }
+
+  async importAll(vocabs: Vocabulary[], duplicateStrategy: 'replace' | 'keep' = 'replace'): Promise<number> {
+    const existing = await this.db.getAll();
+    let count = 0;
     for (const vocab of vocabs) {
+      const dup = existing.find(e =>
+        e.german.trim().toLowerCase() === vocab.german.trim().toLowerCase() &&
+        e.wordType === vocab.wordType
+      );
+      if (dup) {
+        if (duplicateStrategy === 'keep') continue;
+        await this.db.delete(dup);
+      }
       await this.db.save(vocab);
+      count++;
     }
     await this.load();
-    return vocabs.length;
+    return count;
   }
 
   filter(vocabs: Vocabulary[], wordTypes?: WordType[], levels?: CefrLevel[], searchTerm?: string): Vocabulary[] {

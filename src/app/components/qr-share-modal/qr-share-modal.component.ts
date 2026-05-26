@@ -5,7 +5,7 @@ import {
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon,
   IonSegment, IonSegmentButton, IonLabel, IonSpinner,
-  ModalController, ToastController
+  ModalController, ToastController, AlertController
 } from '@ionic/angular/standalone';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
@@ -37,6 +37,7 @@ export class QrShareModalComponent implements AfterViewInit, OnDestroy {
 
   private modalCtrl    = inject(ModalController);
   private toastCtrl    = inject(ToastController);
+  private alertCtrl    = inject(AlertController);
   private translate    = inject(TranslateService);
   private qrService    = inject(QrShareService);
   private vocabService = inject(VocabularyService);
@@ -149,8 +150,25 @@ export class QrShareModalComponent implements AfterViewInit, OnDestroy {
     this.scanStatus.set('downloading');
     try {
       const vocabs = await this.qrService.downloadVocabs(token);
-      await this.vocabService.importAll(vocabs);
-      this.scanImportCount.set(vocabs.length);
+
+      const dupCount = this.vocabService.countDuplicates(vocabs);
+      let dupStrategy: 'replace' | 'keep' = 'replace';
+      if (dupCount > 0) {
+        const dupAlert = await this.alertCtrl.create({
+          header: this.translate.instant('settings.data.importDupTitle'),
+          message: this.translate.instant('settings.data.importDupMsg', { count: dupCount }),
+          buttons: [
+            { text: this.translate.instant('settings.data.importDupKeep'), role: 'keep' },
+            { text: this.translate.instant('settings.data.importDupReplace'), role: 'replace' }
+          ]
+        });
+        await dupAlert.present();
+        const { role: dupRole } = await dupAlert.onDidDismiss();
+        dupStrategy = dupRole === 'keep' ? 'keep' : 'replace';
+      }
+
+      const importedCount = await this.vocabService.importAll(vocabs, dupStrategy);
+      this.scanImportCount.set(importedCount);
       this.scanStatus.set('imported');
       const toast = await this.toastCtrl.create({
         message: this.translate.instant('qr.importSuccess', { count: vocabs.length }),

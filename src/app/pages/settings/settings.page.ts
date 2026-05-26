@@ -343,7 +343,23 @@ export class SettingsPage {
     const { role } = await alert.onDidDismiss();
 
     if (role === 'merge') {
-      const count = await this.vocabService.importAll(vocabs);
+      const dupCount = this.vocabService.countDuplicates(vocabs);
+      let dupStrategy: 'replace' | 'keep' = 'replace';
+      if (dupCount > 0) {
+        const dupAlert = await this.alertCtrl.create({
+          header: this.translate.instant('settings.data.importDupTitle'),
+          message: this.translate.instant('settings.data.importDupMsg', { count: dupCount }),
+          buttons: [
+            { text: this.translate.instant('settings.data.importDupKeep'), role: 'keep' },
+            { text: this.translate.instant('settings.data.importDupReplace'), role: 'replace' }
+          ]
+        });
+        await dupAlert.present();
+        const { role: dupRole } = await dupAlert.onDidDismiss();
+        if (dupRole === 'backdrop') { input.value = ''; return; }
+        dupStrategy = dupRole === 'keep' ? 'keep' : 'replace';
+      }
+      const count = await this.vocabService.importAll(vocabs, dupStrategy);
       this.toast.set({ open: true, message: this.translate.instant('settings.data.importSuccess', { count }), color: 'success' });
     } else if (role === 'replace') {
       await this.vocabService.deleteAll();
