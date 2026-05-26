@@ -12,24 +12,7 @@ resource "aws_iam_role" "lambda_exec" {
   })
 }
 
-# Allow Lambda to read/write/delete share objects in S3
-resource "aws_iam_role_policy" "lambda_s3_share" {
-  name = "${var.project_name}-s3-share"
-  role = aws_iam_role.lambda_exec.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Action = [
-        "s3:PutObject",
-        "s3:GetObject",
-        "s3:DeleteObject"
-      ]
-      Resource = "${aws_s3_bucket.vocab_share.arn}/shares/*"
-    }]
-  })
-}
+# Allow Lambda to write CloudWatch logs
 resource "aws_iam_role_policy_attachment" "lambda_basic_logs" {
   role       = aws_iam_role.lambda_exec.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
