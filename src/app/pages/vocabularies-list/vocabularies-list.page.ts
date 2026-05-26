@@ -5,13 +5,13 @@ import { FormsModule } from '@angular/forms';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel,
   IonBadge, IonIcon, IonFab, IonFabButton, IonFabList, IonSearchbar,
-  IonPopover, IonCheckbox, IonButton,
+  IonPopover, IonCheckbox, IonButton, IonItemSliding, IonItemOptions, IonItemOption,
   IonButtons, IonBackButton, IonFooter,
-  ModalController, ToastController
+  ModalController, ToastController, AlertController
 } from '@ionic/angular/standalone';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline } from 'ionicons/icons';
+import { add, create, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline } from 'ionicons/icons';
 import { SpeechRecognition } from '@capacitor-community/speech-recognition';
 import { Capacitor } from '@capacitor/core';
 import { VocabularyService } from '../../services/vocabulary.service';
@@ -29,7 +29,7 @@ type SortField = 'date' | 'alpha' | 'type' | 'learned';
     FormsModule,
     IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel,
     IonBadge, IonIcon, IonFab, IonFabButton, IonFabList, IonSearchbar,
-    IonPopover, IonCheckbox, IonButton,
+    IonPopover, IonCheckbox, IonButton, IonItemSliding, IonItemOptions, IonItemOption,
     IonButtons, IonBackButton, IonFooter,
     TranslatePipe
   ]
@@ -39,6 +39,8 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
   private vocabService = inject(VocabularyService);
   private modalCtrl = inject(ModalController);
   private toastCtrl = inject(ToastController);
+  private alertCtrl = inject(AlertController);
+  private translate = inject(TranslateService);
 
   readonly allWordTypeValues: WordType[] = ['noun', 'verb', 'adjective', 'adverb', 'preposition', 'conjunction', 'pronoun', 'other'];
   readonly allLevelValues: CefrLevel[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
@@ -174,7 +176,7 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
   ];
 
   constructor() {
-    addIcons({ add, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline });
+    addIcons({ add, create, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline });
     effect(() => localStorage.setItem('filter_types', JSON.stringify(this.filterTypes())));
     effect(() => localStorage.setItem('filter_levels', JSON.stringify(this.filterLevels())));
     effect(() => localStorage.setItem('filter_learned', this.filterLearned()));
@@ -259,6 +261,30 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
 
   openDetail(id: string) {
     this.router.navigate(['/vocabulary-details', id]);
+  }
+
+  async editVocabulary(vocab: Vocabulary, sliding?: IonItemSliding) {
+    await sliding?.close();
+    this.router.navigate(['/edit-vocabulary', vocab._id]);
+  }
+
+  async confirmDelete(vocab: Vocabulary, sliding?: IonItemSliding) {
+    await sliding?.close();
+    const alert = await this.alertCtrl.create({
+      header: this.translate.instant('detail.delete.header'),
+      message: this.translate.instant('detail.delete.message'),
+      buttons: [
+        { text: this.translate.instant('detail.delete.cancel'), role: 'cancel' },
+        {
+          text: this.translate.instant('detail.delete.confirm'),
+          role: 'destructive',
+          handler: async () => {
+            await this.vocabService.delete(vocab);
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   addNew() {

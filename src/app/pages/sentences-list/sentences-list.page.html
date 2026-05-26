@@ -16,20 +16,32 @@
   } @else {
     <ion-list>
       @for (s of sentencesSignal(); track s._id) {
-        <ion-item button detail (click)="openDetails(s._id)">
-          <ion-icon slot="start" name="chatbubble-ellipses-outline" class="sentence-icon"></ion-icon>
-          <ion-label>
-            <h2 class="german-text">{{ s.german }}</h2>
-            <p class="english-text">{{ s.english }}</p>
-          </ion-label>
-          <div slot="end" class="item-end">
-            <div class="grammar-badges">
-              <ion-badge color="primary" class="tense-badge">{{ s.grammar.tense }}</ion-badge>
-              <ion-badge color="secondary" class="type-badge">{{ s.grammar.sentenceType }}</ion-badge>
+        <ion-item-sliding #sentenceSliding>
+          <ion-item-options side="start">
+            <ion-item-option color="primary" expandable (click)="editSentence(s, sentenceSliding)">
+              <ion-icon name="create" slot="icon-only"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+          <ion-item button detail (click)="openDetails(s._id)">
+            <ion-icon slot="start" name="chatbubble-ellipses-outline" class="sentence-icon"></ion-icon>
+            <ion-label>
+              <h2 class="german-text">{{ s.german }}</h2>
+              <p class="english-text">{{ s.english }}</p>
+            </ion-label>
+            <div slot="end" class="item-end">
+              <div class="grammar-badges">
+                <ion-badge color="primary" class="tense-badge">{{ s.grammar.tense }}</ion-badge>
+                <ion-badge color="secondary" class="type-badge">{{ s.grammar.sentenceType }}</ion-badge>
+              </div>
+              <ion-note class="date-note">{{ formatDate(s.createdAt) }}</ion-note>
             </div>
-            <ion-note class="date-note">{{ formatDate(s.createdAt) }}</ion-note>
-          </div>
-        </ion-item>
+          </ion-item>
+          <ion-item-options side="end">
+            <ion-item-option color="danger" expandable (click)="confirmDelete(s, sentenceSliding)">
+              <ion-icon name="trash" slot="icon-only"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
       }
     </ion-list>
   }

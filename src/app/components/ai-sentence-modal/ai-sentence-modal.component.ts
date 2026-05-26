@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
@@ -15,6 +15,7 @@ import { Capacitor } from '@capacitor/core';
 import { SentenceAiService, AiSentenceResponse, SentenceGenerateOptions } from '../../services/sentence-ai.service';
 import { SentenceService } from '../../services/sentence.service';
 import { LanguageService } from '../../services/language.service';
+import { Sentence } from '../../models/sentence.model';
 import { VocabularyService } from '../../services/vocabulary.service';
 import { AiVocabModalComponent } from '../ai-vocab-modal/ai-vocab-modal.component';
 import { VocabularyDetailsPage } from '../../pages/vocabulary-details/vocabulary-details.page';
@@ -46,6 +47,8 @@ export class AiSentenceModalComponent implements OnInit, OnDestroy {
   private langService   = inject(LanguageService);
   private vocabService  = inject(VocabularyService);
 
+  @Input() editingSentence?: Sentence;
+
   step        = signal<ModalStep>('input');
   sentence    = signal('');
   result      = signal<AiSentenceResponse | null>(null);
@@ -59,6 +62,10 @@ export class AiSentenceModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    if (this.editingSentence?.german) {
+      this.sentence.set(this.editingSentence.german);
+    }
+
     if (Capacitor.isNativePlatform()) {
       SpeechRecognition.available().then(({ available }) => this.speechSupported.set(available));
     } else {
@@ -190,6 +197,10 @@ export class AiSentenceModalComponent implements OnInit, OnDestroy {
     if (!res) return;
     this.step.set('saving');
     const sentence = this.aiService.toSentence(res);
+    if (this.editingSentence?._id) {
+      sentence._id = this.editingSentence._id;
+      sentence.createdAt = this.editingSentence.createdAt;
+    }
     await this.sentenceService.save(sentence);
     const toast = await this.toastCtrl.create({
       message: this.translate.instant('sentences.modal.saveSuccess'),
