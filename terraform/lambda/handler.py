@@ -391,7 +391,7 @@ SENTENCE_SYSTEM_PROMPT = (
 )
 
 
-def build_sentence_generation_prompt(options: dict) -> str:
+def build_sentence_generation_prompt(options: dict, compact: bool = False) -> str:
         level = options.get("level", "A2")
         sentence_type = options.get("sentenceType", "any")
         tense = options.get("tense", "any")
@@ -408,6 +408,12 @@ def build_sentence_generation_prompt(options: dict) -> str:
         }.get(length, "7-11 words")
 
         topic_line = f'- Topic preference: "{topic}"' if topic else "- Topic preference: choose a common real-life topic"
+
+        compact_rules = """
+    - Keep the output compact: include at most 8 entries in "words".
+    - Keep each "note" very short (max 8 words).
+    - Prefer concise translations for single-word fields.
+    """ if compact else ""
 
         return f"""Generate one natural German sentence for learners and return a full analysis JSON.
 
@@ -456,6 +462,7 @@ Rules:
 - "words" should include meaningful words (verbs, nouns, adjectives, adverbs, pronouns as needed).
 - "type" must be exactly one of: noun, verb, adjective, adverb, other.
 - Ensure the returned grammar fields reflect the actual generated sentence.
+{compact_rules}
 """
 
 def build_sentence_prompt(sentence: str) -> str:
@@ -534,11 +541,11 @@ def invoke_bedrock_sentence(sentence: str) -> dict:
     return json.loads(text)
 
 
-def invoke_bedrock_generate_sentence(options: dict) -> dict:
-    prompt = build_sentence_generation_prompt(options)
+def invoke_bedrock_generate_sentence(options: dict, compact: bool = False) -> dict:
+    prompt = build_sentence_generation_prompt(options, compact=compact)
     body = {
         "anthropic_version": "bedrock-2023-05-31",
-        "max_tokens": 1500,
+        "max_tokens": 2400,
         "system": SENTENCE_SYSTEM_PROMPT,
         "messages": [{"role": "user", "content": prompt}]
     }
@@ -641,8 +648,14 @@ def handle_generate_sentence(event, context):
 
     try:
         generated = invoke_bedrock_generate_sentence(options)
-    except json.JSONDecodeError as exc:
-        return {"statusCode": 502, "headers": cors_headers(), "body": json.dumps({"error": f"Bedrock returned non-JSON response: {exc}"})}
+    except json.JSONDecodeError:
+        # Retry once with stricter compactness rules to avoid token truncation.
+        try:
+            generated = invoke_bedrock_generate_sentence(options, compact=True)
+        except json.JSONDecodeError as exc:
+            return {"statusCode": 502, "headers": cors_headers(), "body": json.dumps({"error": f"Bedrock returned non-JSON response: {exc}"})}
+        except Exception as exc:
+            return {"statusCode": 502, "headers": cors_headers(), "body": json.dumps({"error": str(exc)})}
     except Exception as exc:
         return {"statusCode": 502, "headers": cors_headers(), "body": json.dumps({"error": str(exc)})}
 
