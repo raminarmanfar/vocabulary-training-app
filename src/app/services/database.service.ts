@@ -109,6 +109,16 @@ export class DatabaseService {
     await this.db.quizSets.clear();
   }
 
+  async clearAllAppData(): Promise<void> {
+    await Promise.all([
+      this.db.vocabularies.clear(),
+      this.db.quizSets.clear(),
+      this.db.trainSessions.clear(),
+      this.db.sentences.clear(),
+      this.db.settings.clear(),
+    ]);
+  }
+
   async getAllTrainSessions(): Promise<TrainSession[]> {
     return this.db.trainSessions.orderBy('startedAt').reverse().toArray();
   }

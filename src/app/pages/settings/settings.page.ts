@@ -271,12 +271,15 @@ export class SettingsPage {
     await alert.present();
     const { role } = await alert.onDidDismiss();
     if (role === 'confirm') {
-      await this.vocabService.deleteAll();
-      await this.quizSetService.deleteAll();
-      await this.dbService.clearAllTrainSessions();
-      await this.dbService.clearAllSettings();
-      this.themeService.setTheme(false);
-      this.langService.setLanguage('de');
+      await this.dbService.clearAllAppData();
+      localStorage.removeItem('filter_types');
+      localStorage.removeItem('filter_levels');
+      localStorage.removeItem('filter_learned');
+      localStorage.removeItem('sort_field');
+      localStorage.removeItem('sort_dir');
+      localStorage.removeItem('sentence_generate_options_v1');
+      this.themeService.resetToDefault();
+      this.langService.resetToDefault();
       this.toast.set({ open: true, message: this.translate.instant('settings.data.resetAppDone'), color: 'success' });
     }
   }

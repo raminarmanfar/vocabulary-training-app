@@ -20,6 +20,11 @@ export class ThemeService {
     this.db.saveSetting('theme', dark ? 'dark' : 'light');
   }
 
+  resetToDefault(): void {
+    this.isDark.set(false);
+    this.applyTheme(false);
+  }
+
   toggleTheme(): void {
     this.setTheme(!this.isDark());
   }

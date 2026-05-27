@@ -33,4 +33,11 @@ export class LanguageService {
     this.db.saveSetting('language', lang);
     this.document.documentElement.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
   }
+
+  resetToDefault(): void {
+    const lang: AppLanguage = 'de';
+    this.currentLang.set(lang);
+    this.translate.use(lang);
+    this.document.documentElement.setAttribute('dir', 'ltr');
+  }
 }
