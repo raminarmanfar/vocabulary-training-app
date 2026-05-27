@@ -538,7 +538,7 @@ def invoke_bedrock_generate_sentence(options: dict) -> dict:
     prompt = build_sentence_generation_prompt(options)
     body = {
         "anthropic_version": "bedrock-2023-05-31",
-        "max_tokens": 2048,
+        "max_tokens": 1500,
         "system": SENTENCE_SYSTEM_PROMPT,
         "messages": [{"role": "user", "content": prompt}]
     }
@@ -595,11 +595,11 @@ def matches_generation_constraints(generated: dict, options: dict) -> bool:
 
     length = (options.get("length") or "medium").strip().lower()
     word_count = len([w for w in sentence.split() if w.strip()])
-    if length == "short" and not (4 <= word_count <= 6):
+    if length == "short" and not (3 <= word_count <= 8):
         return False
-    if length == "medium" and not (7 <= word_count <= 11):
+    if length == "medium" and not (6 <= word_count <= 14):
         return False
-    if length == "long" and not (12 <= word_count <= 18):
+    if length == "long" and not (10 <= word_count <= 22):
         return False
 
     return True
@@ -638,41 +638,16 @@ def handle_generate_sentence(event, context):
         return {"statusCode": 400, "headers": cors_headers(), "body": json.dumps({"error": "Invalid JSON body"})}
 
     options = body or {}
-    generated = None
-    matched = False
-    last_error = None
 
-    for _ in range(3):
-        try:
-            candidate = invoke_bedrock_generate_sentence(options)
-        except json.JSONDecodeError as exc:
-            last_error = f"Bedrock returned non-JSON response: {exc}"
-            continue
-        except Exception as exc:
-            last_error = str(exc)
-            continue
+    try:
+        generated = invoke_bedrock_generate_sentence(options)
+    except json.JSONDecodeError as exc:
+        return {"statusCode": 502, "headers": cors_headers(), "body": json.dumps({"error": f"Bedrock returned non-JSON response: {exc}"})}
+    except Exception as exc:
+        return {"statusCode": 502, "headers": cors_headers(), "body": json.dumps({"error": str(exc)})}
 
-        generated = candidate
-        if matches_generation_constraints(candidate, options):
-            matched = True
-            break
-
-    if generated is None:
-        return {"statusCode": 502, "headers": cors_headers(), "body": json.dumps({"error": last_error or "Failed to generate sentence"})}
-
-    if not matched:
-        return {
-            "statusCode": 422,
-            "headers": {**cors_headers(), "Content-Type": "application/json"},
-            "body": json.dumps(
-                {
-                    "error": "CONSTRAINTS_NOT_MET",
-                    "message": "Could not generate a sentence that satisfies all constraints. Please try again or relax one option.",
-                },
-                ensure_ascii=False,
-            ),
-        }
-
+    # Always return the generated sentence; constraints are best-effort.
+    # The client can surface a soft warning if grammar fields don't match options.
     return {
         "statusCode": 200,
         "headers": {**cors_headers(), "Content-Type": "application/json"},
