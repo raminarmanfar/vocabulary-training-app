@@ -400,13 +400,15 @@ def build_sentence_generation_prompt(options: dict, compact: bool = False) -> st
         negation = options.get("negation", "optional")
         passive_voice = options.get("passiveVoice", "optional")
         case_focus = (options.get("caseFocus") or "any").strip().lower()
-        connectors = options.get("connectors") or []
+        required_words = options.get("requiredWords") or ""
         topic = (options.get("topic") or "").strip()
 
-        if isinstance(connectors, list):
-            connectors = [str(c).strip() for c in connectors if str(c).strip()]
+        if isinstance(required_words, str):
+            required_words = [part.strip() for part in required_words.replace("\n", ",").split(",") if part.strip()]
+        elif isinstance(required_words, list):
+            required_words = [str(part).strip() for part in required_words if str(part).strip()]
         else:
-            connectors = []
+            required_words = []
 
         length_instruction = {
                 "short": "4-6 words",
@@ -415,10 +417,10 @@ def build_sentence_generation_prompt(options: dict, compact: bool = False) -> st
         }.get(length, "7-11 words")
 
         topic_line = f'- Topic preference: "{topic}"' if topic else "- Topic preference: choose a common real-life topic"
-        connector_line = (
-            f"- Preferred connectors/structures: {', '.join(connectors)}. Use at least one naturally in the sentence."
-            if connectors
-            else "- Preferred connectors/structures: optional"
+        required_words_line = (
+            f"- Required words/phrases to include: {', '.join(required_words)}. Include each naturally if possible, and keep the sentence grammatical."
+            if required_words
+            else "- Required words/phrases to include: optional"
         )
         case_line = (
             "- Grammatical case focus: use at least one clear example of the nominated case naturally in the sentence."
@@ -443,7 +445,7 @@ Constraints:
 - Negation usage: {negation} (required | forbidden | optional)
 - Passive voice usage: {passive_voice} (required | forbidden | optional)
 {case_line}
-{connector_line}
+{required_words_line}
 {topic_line}
 
 Return a JSON object with exactly these fields:

@@ -25,7 +25,7 @@ export class SentenceGenerateModalComponent {
   private modalCtrl = inject(ModalController);
   private readonly storageKey = 'sentence_generate_options_v1';
 
-  private loadSavedOptions(): Partial<SentenceGenerateOptions & { topic: string }> {
+  private loadSavedOptions(): Partial<SentenceGenerateOptions & { topic: string; requiredWords: string }> {
     try {
       const raw = localStorage.getItem(this.storageKey);
       if (!raw) return {};
@@ -38,6 +38,8 @@ export class SentenceGenerateModalComponent {
 
   private saved = this.loadSavedOptions();
 
+  private legacyRequiredWords = Array.isArray((this.saved as any).connectors) ? (this.saved as any).connectors.join(', ') : '';
+
   level = signal<'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2'>(this.saved.level ?? 'A2');
   sentenceType = signal<'simple' | 'compound' | 'complex' | 'any'>(this.saved.sentenceType ?? 'any');
   tense = signal<'Präsens' | 'Präteritum' | 'Perfekt' | 'Plusquamperfekt' | 'Futur I' | 'Futur II' | 'any'>(this.saved.tense ?? 'any');
@@ -46,24 +48,8 @@ export class SentenceGenerateModalComponent {
   negation = signal<'required' | 'forbidden' | 'optional'>(this.saved.negation ?? 'optional');
   passiveVoice = signal<'required' | 'forbidden' | 'optional'>(this.saved.passiveVoice ?? 'optional');
   caseFocus = signal<'nominative' | 'accusative' | 'dative' | 'genitive' | 'any'>(this.saved.caseFocus ?? 'any');
-  connectors = signal<string[]>(Array.isArray(this.saved.connectors) ? this.saved.connectors : []);
+  requiredWords = signal(this.saved.requiredWords ?? this.legacyRequiredWords);
   topic = signal(this.saved.topic ?? '');
-
-  connectorOptions = [
-    'obwohl',
-    'zwar...aber',
-    'weil',
-    'damit',
-    'sodass',
-    'während',
-    'trotzdem',
-    'dafür',
-    'darüber',
-    'als',
-    'wohin',
-    'irgendwie',
-    'irgendwas',
-  ];
 
   constructor() {
     addIcons({ close, sparkles });
@@ -77,7 +63,7 @@ export class SentenceGenerateModalComponent {
         negation: this.negation(),
         passiveVoice: this.passiveVoice(),
         caseFocus: this.caseFocus(),
-        connectors: this.connectors(),
+        requiredWords: this.requiredWords(),
         topic: this.topic(),
       };
       localStorage.setItem(this.storageKey, JSON.stringify(payload));
@@ -98,7 +84,7 @@ export class SentenceGenerateModalComponent {
       negation: this.negation(),
       passiveVoice: this.passiveVoice(),
       caseFocus: this.caseFocus(),
-      connectors: this.connectors(),
+      requiredWords: this.requiredWords().trim() || undefined,
       topic: this.topic().trim() || undefined,
     };
     this.modalCtrl.dismiss(options, 'generate');

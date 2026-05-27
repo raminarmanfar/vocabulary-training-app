@@ -96,16 +96,12 @@
     </ion-item>
 
     <ion-item>
-      <ion-label>{{ 'sentences.generator.connectors' | translate }}</ion-label>
-      <ion-select
-        interface="popover"
-        [multiple]="true"
-        [value]="connectors()"
-        (ionChange)="connectors.set($any($event).detail.value ?? [])">
-        @for (connector of connectorOptions; track connector) {
-          <ion-select-option [value]="connector">{{ connector }}</ion-select-option>
-        }
-      </ion-select>
+      <ion-label position="stacked">{{ 'sentences.generator.requiredWords' | translate }}</ion-label>
+      <ion-input
+        [value]="requiredWords()"
+        (ionInput)="requiredWords.set($any($event).detail.value ?? '')"
+        [placeholder]="'sentences.generator.requiredWordsPlaceholder' | translate">
+      </ion-input>
     </ion-item>
 
     <ion-item>

@@ -22,7 +22,7 @@ export interface SentenceGenerateOptions {
   negation: 'required' | 'forbidden' | 'optional';
   passiveVoice: 'required' | 'forbidden' | 'optional';
   caseFocus?: 'nominative' | 'accusative' | 'dative' | 'genitive' | 'any';
-  connectors?: string[];
+  requiredWords?: string;
   topic?: string;
 }
 
