@@ -399,7 +399,13 @@ def build_sentence_generation_prompt(options: dict, compact: bool = False) -> st
         length = options.get("length", "medium")
         negation = options.get("negation", "optional")
         passive_voice = options.get("passiveVoice", "optional")
+        connectors = options.get("connectors") or []
         topic = (options.get("topic") or "").strip()
+
+        if isinstance(connectors, list):
+            connectors = [str(c).strip() for c in connectors if str(c).strip()]
+        else:
+            connectors = []
 
         length_instruction = {
                 "short": "4-6 words",
@@ -408,6 +414,11 @@ def build_sentence_generation_prompt(options: dict, compact: bool = False) -> st
         }.get(length, "7-11 words")
 
         topic_line = f'- Topic preference: "{topic}"' if topic else "- Topic preference: choose a common real-life topic"
+        connector_line = (
+            f"- Preferred connectors/structures: {', '.join(connectors)}. Use at least one naturally in the sentence."
+            if connectors
+            else "- Preferred connectors/structures: optional"
+        )
 
         compact_rules = """
     - Keep the output compact: include at most 8 entries in "words".
@@ -425,6 +436,7 @@ Constraints:
 - Length target: {length} ({length_instruction})
 - Negation usage: {negation} (required | forbidden | optional)
 - Passive voice usage: {passive_voice} (required | forbidden | optional)
+{connector_line}
 {topic_line}
 
 Return a JSON object with exactly these fields:

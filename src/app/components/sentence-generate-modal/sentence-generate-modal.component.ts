@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon,
@@ -23,18 +23,57 @@ import { SentenceGenerateOptions } from '../../services/sentence-ai.service';
 })
 export class SentenceGenerateModalComponent {
   private modalCtrl = inject(ModalController);
+  private readonly storageKey = 'sentence_generate_options_v1';
 
-  level = signal<'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2'>('A2');
-  sentenceType = signal<'simple' | 'compound' | 'complex' | 'any'>('any');
-  tense = signal<'Präsens' | 'Präteritum' | 'Perfekt' | 'Plusquamperfekt' | 'Futur I' | 'Futur II' | 'any'>('any');
-  modalVerb = signal<'required' | 'forbidden' | 'optional'>('optional');
-  length = signal<'short' | 'medium' | 'long'>('medium');
-  negation = signal<'required' | 'forbidden' | 'optional'>('optional');
-  passiveVoice = signal<'required' | 'forbidden' | 'optional'>('optional');
-  topic = signal('');
+  private loadSavedOptions(): Partial<SentenceGenerateOptions & { topic: string }> {
+    try {
+      const raw = localStorage.getItem(this.storageKey);
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      return typeof parsed === 'object' && parsed ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  private saved = this.loadSavedOptions();
+
+  level = signal<'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2'>(this.saved.level ?? 'A2');
+  sentenceType = signal<'simple' | 'compound' | 'complex' | 'any'>(this.saved.sentenceType ?? 'any');
+  tense = signal<'Präsens' | 'Präteritum' | 'Perfekt' | 'Plusquamperfekt' | 'Futur I' | 'Futur II' | 'any'>(this.saved.tense ?? 'any');
+  modalVerb = signal<'required' | 'forbidden' | 'optional'>(this.saved.modalVerb ?? 'optional');
+  length = signal<'short' | 'medium' | 'long'>(this.saved.length ?? 'medium');
+  negation = signal<'required' | 'forbidden' | 'optional'>(this.saved.negation ?? 'optional');
+  passiveVoice = signal<'required' | 'forbidden' | 'optional'>(this.saved.passiveVoice ?? 'optional');
+  connectors = signal<string[]>(Array.isArray(this.saved.connectors) ? this.saved.connectors : []);
+  topic = signal(this.saved.topic ?? '');
+
+  connectorOptions = [
+    'obwohl',
+    'zwar...aber',
+    'weil',
+    'damit',
+    'sodass',
+    'während',
+    'trotzdem',
+  ];
 
   constructor() {
     addIcons({ close, sparkles });
+    effect(() => {
+      const payload = {
+        level: this.level(),
+        sentenceType: this.sentenceType(),
+        tense: this.tense(),
+        modalVerb: this.modalVerb(),
+        length: this.length(),
+        negation: this.negation(),
+        passiveVoice: this.passiveVoice(),
+        connectors: this.connectors(),
+        topic: this.topic(),
+      };
+      localStorage.setItem(this.storageKey, JSON.stringify(payload));
+    });
   }
 
   dismiss() {
@@ -50,6 +89,7 @@ export class SentenceGenerateModalComponent {
       length: this.length(),
       negation: this.negation(),
       passiveVoice: this.passiveVoice(),
+      connectors: this.connectors(),
       topic: this.topic().trim() || undefined,
     };
     this.modalCtrl.dismiss(options, 'generate');

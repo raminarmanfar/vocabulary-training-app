@@ -21,6 +21,7 @@ export interface SentenceGenerateOptions {
   length: 'short' | 'medium' | 'long';
   negation: 'required' | 'forbidden' | 'optional';
   passiveVoice: 'required' | 'forbidden' | 'optional';
+  connectors?: string[];
   topic?: string;
 }
 

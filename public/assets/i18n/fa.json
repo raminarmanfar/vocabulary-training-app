@@ -465,6 +465,7 @@
       "length": "طول",
       "negation": "نفی",
       "passiveVoice": "مجهول",
+      "connectors": "حروف ربط / الگوها",
       "topic": "موضوع (اختیاری)",
       "topicPlaceholder": "مثلاً سفر، کار، خرید",
       "any": "مهم نیست",

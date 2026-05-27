@@ -85,6 +85,19 @@
     </ion-item>
 
     <ion-item>
+      <ion-label>{{ 'sentences.generator.connectors' | translate }}</ion-label>
+      <ion-select
+        interface="popover"
+        [multiple]="true"
+        [value]="connectors()"
+        (ionChange)="connectors.set($any($event).detail.value ?? [])">
+        @for (connector of connectorOptions; track connector) {
+          <ion-select-option [value]="connector">{{ connector }}</ion-select-option>
+        }
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
       <ion-label position="stacked">{{ 'sentences.generator.topic' | translate }}</ion-label>
       <ion-input
         [value]="topic()"
