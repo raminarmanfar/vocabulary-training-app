@@ -102,22 +102,24 @@ export class AiSentenceModalComponent implements OnInit, OnDestroy {
     this.recording.set(true);
     if (Capacitor.isNativePlatform()) {
       try {
-        const perm = await SpeechRecognition.requestPermissions();
-        if (perm.speechRecognition !== 'granted') {
+        const { speechRecognition } = await SpeechRecognition.requestPermissions();
+        if (speechRecognition !== 'granted') {
           this.recording.set(false);
           return;
         }
-        await SpeechRecognition.start({ language: 'de-DE', maxResults: 1, prompt: '', partialResults: false, popup: false });
-        SpeechRecognition.addListener('partialResults', (data: any) => {
-          if (data.matches?.length) {
-            this.sentence.set(data.matches[0]);
-            this.recording.set(false);
-            SpeechRecognition.stop();
-          }
+        const result = await SpeechRecognition.start({
+          language: 'de-DE',
+          maxResults: 1,
+          partialResults: false,
+          popup: true,
         });
+        if (result.matches?.length) {
+          this.sentence.set(result.matches[0]);
+        }
       } catch {
         this.recording.set(false);
       }
+      this.recording.set(false);
     } else {
       this.webRecognition?.start();
     }

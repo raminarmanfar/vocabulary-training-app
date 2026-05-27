@@ -465,6 +465,7 @@
       "length": "طول",
       "negation": "نفی",
       "passiveVoice": "مجهول",
+      "caseFocus": "تمرکز حالت دستوری",
       "connectors": "حروف ربط / الگوها",
       "topic": "موضوع (اختیاری)",
       "topicPlaceholder": "مثلاً سفر، کار، خرید",

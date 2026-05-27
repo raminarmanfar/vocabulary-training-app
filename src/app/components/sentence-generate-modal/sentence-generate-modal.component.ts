@@ -45,6 +45,7 @@ export class SentenceGenerateModalComponent {
   length = signal<'short' | 'medium' | 'long'>(this.saved.length ?? 'medium');
   negation = signal<'required' | 'forbidden' | 'optional'>(this.saved.negation ?? 'optional');
   passiveVoice = signal<'required' | 'forbidden' | 'optional'>(this.saved.passiveVoice ?? 'optional');
+  caseFocus = signal<'nominative' | 'accusative' | 'dative' | 'genitive' | 'any'>(this.saved.caseFocus ?? 'any');
   connectors = signal<string[]>(Array.isArray(this.saved.connectors) ? this.saved.connectors : []);
   topic = signal(this.saved.topic ?? '');
 
@@ -56,6 +57,12 @@ export class SentenceGenerateModalComponent {
     'sodass',
     'während',
     'trotzdem',
+    'dafür',
+    'darüber',
+    'als',
+    'wohin',
+    'irgendwie',
+    'irgendwas',
   ];
 
   constructor() {
@@ -69,6 +76,7 @@ export class SentenceGenerateModalComponent {
         length: this.length(),
         negation: this.negation(),
         passiveVoice: this.passiveVoice(),
+        caseFocus: this.caseFocus(),
         connectors: this.connectors(),
         topic: this.topic(),
       };
@@ -89,6 +97,7 @@ export class SentenceGenerateModalComponent {
       length: this.length(),
       negation: this.negation(),
       passiveVoice: this.passiveVoice(),
+      caseFocus: this.caseFocus(),
       connectors: this.connectors(),
       topic: this.topic().trim() || undefined,
     };

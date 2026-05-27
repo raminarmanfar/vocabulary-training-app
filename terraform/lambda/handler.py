@@ -399,6 +399,7 @@ def build_sentence_generation_prompt(options: dict, compact: bool = False) -> st
         length = options.get("length", "medium")
         negation = options.get("negation", "optional")
         passive_voice = options.get("passiveVoice", "optional")
+        case_focus = (options.get("caseFocus") or "any").strip().lower()
         connectors = options.get("connectors") or []
         topic = (options.get("topic") or "").strip()
 
@@ -419,6 +420,11 @@ def build_sentence_generation_prompt(options: dict, compact: bool = False) -> st
             if connectors
             else "- Preferred connectors/structures: optional"
         )
+        case_line = (
+            "- Grammatical case focus: use at least one clear example of the nominated case naturally in the sentence."
+            if case_focus == "any"
+            else f"- Grammatical case focus: {case_focus}. Use at least one clear example of this case naturally in the sentence."
+        )
 
         compact_rules = """
     - Keep the output compact: include at most 8 entries in "words".
@@ -436,6 +442,7 @@ Constraints:
 - Length target: {length} ({length_instruction})
 - Negation usage: {negation} (required | forbidden | optional)
 - Passive voice usage: {passive_voice} (required | forbidden | optional)
+{case_line}
 {connector_line}
 {topic_line}
 

@@ -432,6 +432,7 @@
       "length": "Länge",
       "negation": "Verneinung",
       "passiveVoice": "Passiv",
+      "caseFocus": "Kasus-Fokus",
       "connectors": "Konnektoren / Muster",
       "topic": "Thema (optional)",
       "topicPlaceholder": "z. B. Reisen, Arbeit, Einkaufen",

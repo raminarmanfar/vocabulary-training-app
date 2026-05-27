@@ -432,6 +432,7 @@
       "length": "Length",
       "negation": "Negation",
       "passiveVoice": "Passive Voice",
+      "caseFocus": "Case Focus",
       "connectors": "Connectors / Patterns",
       "topic": "Topic (optional)",
       "topicPlaceholder": "e.g. travel, work, shopping",

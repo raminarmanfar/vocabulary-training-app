@@ -85,6 +85,17 @@
     </ion-item>
 
     <ion-item>
+      <ion-label>{{ 'sentences.generator.caseFocus' | translate }}</ion-label>
+      <ion-select interface="popover" [value]="caseFocus()" (ionChange)="caseFocus.set($any($event).detail.value)">
+        <ion-select-option value="any">{{ 'sentences.generator.any' | translate }}</ion-select-option>
+        <ion-select-option value="nominative">Nominative</ion-select-option>
+        <ion-select-option value="accusative">Accusative</ion-select-option>
+        <ion-select-option value="dative">Dative</ion-select-option>
+        <ion-select-option value="genitive">Genitive</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
       <ion-label>{{ 'sentences.generator.connectors' | translate }}</ion-label>
       <ion-select
         interface="popover"

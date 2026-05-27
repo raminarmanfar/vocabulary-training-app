@@ -21,6 +21,7 @@ export interface SentenceGenerateOptions {
   length: 'short' | 'medium' | 'long';
   negation: 'required' | 'forbidden' | 'optional';
   passiveVoice: 'required' | 'forbidden' | 'optional';
+  caseFocus?: 'nominative' | 'accusative' | 'dative' | 'genitive' | 'any';
   connectors?: string[];
   topic?: string;
 }
