@@ -1,33 +1,71 @@
-import { Component, inject, signal, effect } from '@angular/core';
-import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
-  IonList, IonItem, IonLabel, IonIcon, IonSelect, IonSelectOption,
-  IonButton, IonToast, IonToggle, IonProgressBar,
-  ModalController
-} from '@ionic/angular/standalone';
-import { AlertController } from '@ionic/angular';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
-import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Directory, Filesystem } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
+import { AlertController } from '@ionic/angular';
+import {
+  IonBackButton,
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonProgressBar,
+  IonSelect,
+  IonSelectOption,
+  IonTitle,
+  IonToast,
+  IonToggle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline, alertCircleOutline, qrCodeOutline, chevronForward } from 'ionicons/icons';
-import { LanguageService, AppLanguage } from '../../services/language.service';
-import { VocabularyService } from '../../services/vocabulary.service';
-import { QuizSetService } from '../../services/quiz-set.service';
-import { ThemeService } from '../../services/theme.service';
+import {
+  alertCircleOutline,
+  chevronForward,
+  cloudUploadOutline,
+  downloadOutline,
+  languageOutline,
+  moonOutline,
+  qrCodeOutline,
+  sparklesOutline,
+  statsChartOutline,
+  trashOutline,
+} from 'ionicons/icons';
+import { QrShareModalComponent } from '../../components/qr-share-modal/qr-share-modal.component';
 import { DatabaseService } from '../../services/database.service';
 import { EnrichmentService } from '../../services/enrichment.service';
-import { QrShareModalComponent } from '../../components/qr-share-modal/qr-share-modal.component';
+import { AppLanguage, LanguageService } from '../../services/language.service';
+import { QuizSetService } from '../../services/quiz-set.service';
+import { SentenceService } from '../../services/sentence.service';
+import { ThemeService } from '../../services/theme.service';
+import { VocabularyService } from '../../services/vocabulary.service';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
   imports: [
-    IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
-    IonList, IonItem, IonLabel, IonIcon, IonSelect, IonSelectOption,
-    IonButton, IonToast, IonToggle, IonProgressBar,
-    TranslatePipe
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonButtons,
+    IonBackButton,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonIcon,
+    IonSelect,
+    IonSelectOption,
+    IonButton,
+    IonToast,
+    IonToggle,
+    IonProgressBar,
+    TranslatePipe,
   ],
   template: `
     <ion-header>
@@ -39,7 +77,6 @@ import { QrShareModalComponent } from '../../components/qr-share-modal/qr-share-
       </ion-toolbar>
     </ion-header>
     <ion-content>
-
       <!-- Language -->
       <ion-list inset="true" style="margin-top:16px">
         <ion-item>
@@ -50,11 +87,20 @@ import { QrShareModalComponent } from '../../components/qr-share-modal/qr-share-
             [value]="langService.currentLang()"
             (ionChange)="onLangChange($any($event).detail.value)"
             interface="popover"
-            style="max-width:120px">
-            <ion-select-option value="en">{{ 'settings.language.en' | translate }}</ion-select-option>
-            <ion-select-option value="de">{{ 'settings.language.de' | translate }}</ion-select-option>
-            <ion-select-option value="tr">{{ 'settings.language.tr' | translate }}</ion-select-option>
-            <ion-select-option value="fa">{{ 'settings.language.fa' | translate }}</ion-select-option>
+            style="max-width:120px"
+          >
+            <ion-select-option value="en">{{
+              'settings.language.en' | translate
+            }}</ion-select-option>
+            <ion-select-option value="de">{{
+              'settings.language.de' | translate
+            }}</ion-select-option>
+            <ion-select-option value="tr">{{
+              'settings.language.tr' | translate
+            }}</ion-select-option>
+            <ion-select-option value="fa">{{
+              'settings.language.fa' | translate
+            }}</ion-select-option>
           </ion-select>
         </ion-item>
         <ion-item>
@@ -63,7 +109,8 @@ import { QrShareModalComponent } from '../../components/qr-share-modal/qr-share-
           <ion-toggle
             slot="end"
             [checked]="themeService.isDark()"
-            (ionChange)="themeService.setTheme($any($event).detail.checked)">
+            (ionChange)="themeService.setTheme($any($event).detail.checked)"
+          >
           </ion-toggle>
         </ion-item>
       </ion-list>
@@ -98,11 +145,18 @@ import { QrShareModalComponent } from '../../components/qr-share-modal/qr-share-
           <ion-label>
             {{ 'settings.data.enrichVocabs' | translate }}
             @if (enrichmentService.enriching()) {
-              <p style="font-size:0.78rem;margin-top:2px">{{ enrichmentService.enrichCount() }} / {{ enrichmentService.enrichTotal() }}</p>
+              <p style="font-size:0.78rem;margin-top:2px">
+                {{ enrichmentService.enrichCount() }} / {{ enrichmentService.enrichTotal() }}
+              </p>
             }
           </ion-label>
           @if (enrichmentService.enriching()) {
-            <ion-button slot="end" fill="outline" color="danger" (click)="enrichmentService.cancel()">
+            <ion-button
+              slot="end"
+              fill="outline"
+              color="danger"
+              (click)="enrichmentService.cancel()"
+            >
               {{ 'common.cancel' | translate }}
             </ion-button>
           } @else {
@@ -113,9 +167,14 @@ import { QrShareModalComponent } from '../../components/qr-share-modal/qr-share-
         </ion-item>
         @if (enrichmentService.enriching()) {
           <ion-progress-bar
-            [value]="enrichmentService.enrichTotal() ? enrichmentService.enrichCount() / enrichmentService.enrichTotal() : 0"
+            [value]="
+              enrichmentService.enrichTotal()
+                ? enrichmentService.enrichCount() / enrichmentService.enrichTotal()
+                : 0
+            "
             color="secondary"
-            style="height:3px">
+            style="height:3px"
+          >
           </ion-progress-bar>
         }
       </ion-list>
@@ -153,7 +212,13 @@ import { QrShareModalComponent } from '../../components/qr-share-modal/qr-share-
       </ion-list>
 
       <!-- Hidden file input -->
-      <input #fileInput type="file" accept=".json" style="display:none" (change)="importData($event)" />
+      <input
+        #fileInput
+        type="file"
+        accept=".json"
+        style="display:none"
+        (change)="importData($event)"
+      />
 
       <!-- Toast -->
       <ion-toast
@@ -161,11 +226,11 @@ import { QrShareModalComponent } from '../../components/qr-share-modal/qr-share-
         [message]="toast().message"
         [color]="toast().color"
         [duration]="2500"
-        (didDismiss)="toast.set({ open: false, message: '', color: 'success' })">
+        (didDismiss)="toast.set({ open: false, message: '', color: 'success' })"
+      >
       </ion-toast>
-
     </ion-content>
-  `
+  `,
 })
 export class SettingsPage {
   langService = inject(LanguageService);
@@ -173,15 +238,31 @@ export class SettingsPage {
   readonly enrichmentService = inject(EnrichmentService);
   private vocabService = inject(VocabularyService);
   private quizSetService = inject(QuizSetService);
+  private sentenceService = inject(SentenceService);
   private dbService = inject(DatabaseService);
   private translate = inject(TranslateService);
   private alertCtrl = inject(AlertController);
   private modalCtrl = inject(ModalController);
 
-  toast = signal<{ open: boolean; message: string; color: string }>({ open: false, message: '', color: 'success' });
+  toast = signal<{ open: boolean; message: string; color: string }>({
+    open: false,
+    message: '',
+    color: 'success',
+  });
 
   constructor() {
-    addIcons({ languageOutline, downloadOutline, cloudUploadOutline, moonOutline, trashOutline, statsChartOutline, sparklesOutline, alertCircleOutline, qrCodeOutline, chevronForward });
+    addIcons({
+      languageOutline,
+      downloadOutline,
+      cloudUploadOutline,
+      moonOutline,
+      trashOutline,
+      statsChartOutline,
+      sparklesOutline,
+      alertCircleOutline,
+      qrCodeOutline,
+      chevronForward,
+    });
     // Surface the done-toast from the background service when the page is active
     effect(() => {
       const pending = this.enrichmentService.pendingToast();
@@ -208,80 +289,117 @@ export class SettingsPage {
   }
 
   async confirmEraseSummary() {
-    const alert = await this.alertCtrl.create({
-      header: this.translate.instant('settings.data.eraseSummaryTitle'),
-      message: this.translate.instant('settings.data.eraseSummaryMsg'),
-      buttons: [
-        { text: this.translate.instant('common.cancel'), role: 'cancel' },
-        { text: this.translate.instant('settings.data.erase'), role: 'confirm' }
-      ]
+    await this.presentDangerConfirm({
+      headerKey: 'settings.data.eraseSummaryTitle',
+      messageKey: 'settings.data.eraseSummaryMsg',
+      confirmKey: 'settings.data.erase',
+      successMessageKey: 'settings.data.eraseSummaryDone',
+      onConfirm: async () => {
+        await this.dbService.clearAllTrainSessions();
+        await this.vocabService.resetAllLearned();
+      },
     });
-    await alert.present();
-    const { role } = await alert.onDidDismiss();
-    if (role === 'confirm') {
-      await this.dbService.clearAllTrainSessions();
-      await this.vocabService.resetAllLearned();
-      this.toast.set({ open: true, message: this.translate.instant('settings.data.eraseSummaryDone'), color: 'success' });
-    }
   }
 
   async confirmEraseVocabs() {
-    const alert = await this.alertCtrl.create({
-      header: this.translate.instant('settings.data.eraseVocabsTitle'),
-      message: this.translate.instant('settings.data.eraseVocabsMsg'),
-      buttons: [
-        { text: this.translate.instant('common.cancel'), role: 'cancel' },
-        { text: this.translate.instant('settings.data.erase'), role: 'confirm' }
-      ]
+    await this.presentDangerConfirm({
+      headerKey: 'settings.data.eraseVocabsTitle',
+      messageKey: 'settings.data.eraseVocabsMsg',
+      confirmKey: 'settings.data.erase',
+      successMessageKey: 'settings.data.eraseVocabsDone',
+      onConfirm: async () => {
+        await this.vocabService.deleteAll();
+      },
+      postRefresh: async () => {
+        await this.vocabService.load();
+      },
     });
-    await alert.present();
-    const { role } = await alert.onDidDismiss();
-    if (role === 'confirm') {
-      await this.vocabService.deleteAll();
-      this.toast.set({ open: true, message: this.translate.instant('settings.data.eraseVocabsDone'), color: 'success' });
-    }
   }
 
   async confirmEraseQuizzes() {
-    const alert = await this.alertCtrl.create({
-      header: this.translate.instant('settings.data.eraseQuizzesTitle'),
-      message: this.translate.instant('settings.data.eraseQuizzesMsg'),
-      buttons: [
-        { text: this.translate.instant('common.cancel'), role: 'cancel' },
-        { text: this.translate.instant('settings.data.erase'), role: 'confirm' }
-      ]
+    await this.presentDangerConfirm({
+      headerKey: 'settings.data.eraseQuizzesTitle',
+      messageKey: 'settings.data.eraseQuizzesMsg',
+      confirmKey: 'settings.data.erase',
+      successMessageKey: 'settings.data.eraseQuizzesDone',
+      onConfirm: async () => {
+        await this.quizSetService.deleteAll();
+      },
+      postRefresh: async () => {
+        await this.quizSetService.load();
+      },
     });
-    await alert.present();
-    const { role } = await alert.onDidDismiss();
-    if (role === 'confirm') {
-      await this.quizSetService.deleteAll();
-      this.toast.set({ open: true, message: this.translate.instant('settings.data.eraseQuizzesDone'), color: 'success' });
-    }
   }
 
   async confirmResetAppData() {
+    await this.presentDangerConfirm({
+      headerKey: 'settings.data.resetAppTitle',
+      messageKey: 'settings.data.resetAppMsg',
+      confirmKey: 'settings.data.reset',
+      successMessageKey: 'settings.data.resetAppDone',
+      onConfirm: async () => {
+        await this.dbService.resetAllAppData();
+        localStorage.removeItem('filter_types');
+        localStorage.removeItem('filter_levels');
+        localStorage.removeItem('filter_learned');
+        localStorage.removeItem('sort_field');
+        localStorage.removeItem('sort_dir');
+        localStorage.removeItem('sentence_generate_options_v1');
+        this.themeService.resetToDefault();
+        this.langService.resetToDefault();
+      },
+      postRefresh: async () => {
+        await Promise.all([
+          this.vocabService.load(),
+          this.quizSetService.load(),
+          this.sentenceService.load(),
+        ]);
+      },
+    });
+  }
+
+  private async presentDangerConfirm(options: {
+    headerKey: string;
+    messageKey: string;
+    confirmKey: string;
+    successMessageKey: string;
+    onConfirm: () => Promise<void>;
+    postRefresh?: () => Promise<void>;
+  }): Promise<void> {
     const alert = await this.alertCtrl.create({
-      header: this.translate.instant('settings.data.resetAppTitle'),
-      message: this.translate.instant('settings.data.resetAppMsg'),
+      header: this.translate.instant(options.headerKey),
+      message: this.translate.instant(options.messageKey),
       buttons: [
         { text: this.translate.instant('common.cancel'), role: 'cancel' },
-        { text: this.translate.instant('settings.data.reset'), role: 'confirm', cssClass: 'ion-color-danger' }
-      ]
+        {
+          text: this.translate.instant(options.confirmKey),
+          role: 'destructive',
+          cssClass: 'ion-color-danger',
+          handler: async () => {
+            try {
+              await options.onConfirm();
+              if (options.postRefresh) {
+                await options.postRefresh();
+              }
+              this.toast.set({
+                open: true,
+                message: this.translate.instant(options.successMessageKey),
+                color: 'success',
+              });
+            } catch {
+              this.toast.set({
+                open: true,
+                message: this.translate.instant('common.error.unknown'),
+                color: 'danger',
+              });
+              return false;
+            }
+            return true;
+          },
+        },
+      ],
     });
     await alert.present();
-    const { role } = await alert.onDidDismiss();
-    if (role === 'confirm') {
-      await this.dbService.clearAllAppData();
-      localStorage.removeItem('filter_types');
-      localStorage.removeItem('filter_levels');
-      localStorage.removeItem('filter_learned');
-      localStorage.removeItem('sort_field');
-      localStorage.removeItem('sort_dir');
-      localStorage.removeItem('sentence_generate_options_v1');
-      this.themeService.resetToDefault();
-      this.langService.resetToDefault();
-      this.toast.set({ open: true, message: this.translate.instant('settings.data.resetAppDone'), color: 'success' });
-    }
   }
 
   async exportData() {
@@ -328,7 +446,11 @@ export class SettingsPage {
       vocabs = JSON.parse(text);
       if (!Array.isArray(vocabs)) throw new Error('not an array');
     } catch {
-      this.toast.set({ open: true, message: this.translate.instant('settings.data.importError'), color: 'danger' });
+      this.toast.set({
+        open: true,
+        message: this.translate.instant('settings.data.importError'),
+        color: 'danger',
+      });
       input.value = '';
       return;
     }
@@ -339,8 +461,8 @@ export class SettingsPage {
       buttons: [
         { text: this.translate.instant('common.cancel'), role: 'cancel' },
         { text: this.translate.instant('settings.data.importMerge'), role: 'merge' },
-        { text: this.translate.instant('settings.data.importReplace'), role: 'replace' }
-      ]
+        { text: this.translate.instant('settings.data.importReplace'), role: 'replace' },
+      ],
     });
     await alert.present();
     const { role } = await alert.onDidDismiss();
@@ -354,20 +476,31 @@ export class SettingsPage {
           message: this.translate.instant('settings.data.importDupMsg', { count: dupCount }),
           buttons: [
             { text: this.translate.instant('settings.data.importDupKeep'), role: 'keep' },
-            { text: this.translate.instant('settings.data.importDupReplace'), role: 'replace' }
-          ]
+            { text: this.translate.instant('settings.data.importDupReplace'), role: 'replace' },
+          ],
         });
         await dupAlert.present();
         const { role: dupRole } = await dupAlert.onDidDismiss();
-        if (dupRole === 'backdrop') { input.value = ''; return; }
+        if (dupRole === 'backdrop') {
+          input.value = '';
+          return;
+        }
         dupStrategy = dupRole === 'keep' ? 'keep' : 'replace';
       }
       const count = await this.vocabService.importAll(vocabs, dupStrategy);
-      this.toast.set({ open: true, message: this.translate.instant('settings.data.importSuccess', { count }), color: 'success' });
+      this.toast.set({
+        open: true,
+        message: this.translate.instant('settings.data.importSuccess', { count }),
+        color: 'success',
+      });
     } else if (role === 'replace') {
       await this.vocabService.deleteAll();
       const count = await this.vocabService.importAll(vocabs);
-      this.toast.set({ open: true, message: this.translate.instant('settings.data.importSuccess', { count }), color: 'success' });
+      this.toast.set({
+        open: true,
+        message: this.translate.instant('settings.data.importSuccess', { count }),
+        color: 'success',
+      });
     }
 
     input.value = '';
@@ -383,24 +516,33 @@ export class SettingsPage {
       buttons: [
         { text: this.translate.instant('common.cancel'), role: 'cancel' },
         { text: this.translate.instant('settings.data.enrichScopeNew'), role: 'new' },
-        { text: this.translate.instant('settings.data.enrichScopeAll'), role: 'all' }
-      ]
+        { text: this.translate.instant('settings.data.enrichScopeAll'), role: 'all' },
+      ],
     });
     await scopeAlert.present();
     const { role: scopeRole } = await scopeAlert.onDidDismiss();
     if (scopeRole === 'cancel' || scopeRole === 'backdrop') return;
 
-    const toEnrich = scopeRole === 'all'
-      ? vocabs
-      : vocabs.filter(v =>
-          !v.aiGenerated && !v.aiEnriched && (
-            !v.turkish || !v.persian || !v.synonyms?.length || !v.antonyms?.length ||
-            v.examples?.some(ex => !ex.turkish || !ex.persian)
-          )
-        );
+    const toEnrich =
+      scopeRole === 'all'
+        ? vocabs
+        : vocabs.filter(
+            (v) =>
+              !v.aiGenerated &&
+              !v.aiEnriched &&
+              (!v.turkish ||
+                !v.persian ||
+                !v.synonyms?.length ||
+                !v.antonyms?.length ||
+                v.examples?.some((ex) => !ex.turkish || !ex.persian)),
+          );
 
     if (!toEnrich.length) {
-      this.toast.set({ open: true, message: this.translate.instant('settings.data.enrichNone'), color: 'primary' });
+      this.toast.set({
+        open: true,
+        message: this.translate.instant('settings.data.enrichNone'),
+        color: 'primary',
+      });
       return;
     }
 
@@ -410,8 +552,8 @@ export class SettingsPage {
       message: this.translate.instant('settings.data.enrichMsg', { count: toEnrich.length }),
       buttons: [
         { text: this.translate.instant('common.cancel'), role: 'cancel' },
-        { text: this.translate.instant('settings.data.enrich'), role: 'confirm' }
-      ]
+        { text: this.translate.instant('settings.data.enrich'), role: 'confirm' },
+      ],
     });
     await confirmAlert.present();
     const { role } = await confirmAlert.onDidDismiss();
@@ -420,7 +562,7 @@ export class SettingsPage {
     this.toast.set({
       open: true,
       message: this.translate.instant('settings.data.enrichStarted', { count: toEnrich.length }),
-      color: 'secondary'
+      color: 'secondary',
     });
     // Fire-and-forget — the singleton service keeps state alive across navigation
     this.enrichmentService.start(toEnrich);

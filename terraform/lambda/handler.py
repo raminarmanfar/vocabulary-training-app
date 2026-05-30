@@ -1,6 +1,6 @@
 """
 Lambda handler: receives a German word + word type, calls AWS Bedrock
-(Claude 3 Haiku) and returns a fully structured Vocabulary JSON object
+(Claude 3.5 Haiku) and returns a fully structured Vocabulary JSON object
 matching the VocabTrainer app data model.
 
 Also handles POST /share and GET /share/{token} for temporary
@@ -15,7 +15,7 @@ from botocore.exceptions import ClientError
 BEDROCK_CLIENT = boto3.client("bedrock-runtime", region_name=os.environ.get("AWS_REGION", "eu-central-1"))
 S3_CLIENT      = boto3.client("s3",              region_name=os.environ.get("AWS_REGION", "eu-central-1"))
 
-MODEL_ID     = os.environ.get("BEDROCK_MODEL_ID", "eu.anthropic.claude-3-haiku-20240307-v1:0")
+MODEL_ID     = os.environ.get("BEDROCK_MODEL_ID", "eu.anthropic.claude-3-5-haiku-20241022-v1:0")
 SHARE_BUCKET = os.environ.get("SHARE_BUCKET", "")
 SHARE_PREFIX = "shares/"
 

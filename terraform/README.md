@@ -18,7 +18,7 @@ Lambda: vocab-ai (Python 3.12)
     │
     │  InvokeModel
     ▼
-AWS Bedrock – Claude 3 Haiku
+AWS Bedrock – Claude 3.5 Haiku
 ```
 
 ## Prerequisites
@@ -26,7 +26,7 @@ AWS Bedrock – Claude 3 Haiku
 1. **AWS CLI** configured with credentials that can create IAM roles, Lambda, API Gateway, SSM, and call Bedrock.
 2. **Terraform ≥ 1.5** installed (`terraform -version`).
 3. **Bedrock model access** enabled in `eu-central-1`:
-   - Go to AWS Console → Bedrock → Model access → Request `Claude 3 Haiku`.
+    - Go to AWS Console → Bedrock → Model access → Request `Claude 3.5 Haiku`.
 
 ## Deploy
 
@@ -78,11 +78,11 @@ terraform destroy
 
 ## Cost estimate (eu-central-1, light usage)
 
-| Service | Est. monthly cost |
-|---|---|
-| API Gateway HTTP API | ~$0.001 per 1 000 requests |
-| Lambda invocations | Free tier covers 1M req/month |
-| Bedrock Claude 3 Haiku | ~$0.00025 per 1K input tokens, ~$0.00125 per 1K output tokens |
-| SSM Parameter Store | Free (standard tier) |
+| Service                  | Est. monthly cost                                                                                  |
+| ------------------------ | -------------------------------------------------------------------------------------------------- |
+| API Gateway HTTP API     | ~$0.001 per 1 000 requests                                                                         |
+| Lambda invocations       | Free tier covers 1M req/month                                                                      |
+| Bedrock Claude 3.5 Haiku | Low-cost Anthropic tier; slightly higher than Claude 3 Haiku but still inexpensive for light usage |
+| SSM Parameter Store      | Free (standard tier)                                                                               |
 
 Generating ~100 vocabulary entries/month ≈ **< $0.10 total**.

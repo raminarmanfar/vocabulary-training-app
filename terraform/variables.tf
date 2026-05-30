@@ -13,7 +13,7 @@ variable "project_name" {
 variable "bedrock_model_id" {
   description = "AWS Bedrock model ID to use for vocabulary generation"
   type        = string
-  default     = "eu.anthropic.claude-3-haiku-20240307-v1:0"
+  default     = "eu.anthropic.claude-3-5-haiku-20241022-v1:0"
 }
 
 variable "lambda_timeout" {

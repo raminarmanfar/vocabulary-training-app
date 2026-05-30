@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import Dexie, { Table } from 'dexie';
-import { Vocabulary } from '../models/vocabulary.model';
 import { QuizSet } from '../models/quiz-set.model';
-import { TrainSession } from '../models/train-session.model';
 import { Sentence } from '../models/sentence.model';
+import { TrainSession } from '../models/train-session.model';
+import { Vocabulary } from '../models/vocabulary.model';
 
-interface AppSetting { key: string; value: string; }
+interface AppSetting {
+  key: string;
+  value: string;
+}
 
 class VocabDatabase extends Dexie {
   vocabularies!: Table<Vocabulary, string>;
@@ -17,29 +20,29 @@ class VocabDatabase extends Dexie {
   constructor() {
     super('VocabTrainer');
     this.version(1).stores({
-      vocabularies: '_id, wordType, level, learned, german, english'
+      vocabularies: '_id, wordType, level, learned, german, english',
     });
     this.version(2).stores({
       vocabularies: '_id, wordType, level, learned, german, english',
-      settings: 'key'
+      settings: 'key',
     });
     this.version(3).stores({
       vocabularies: '_id, wordType, level, learned, german, english',
       settings: 'key',
-      quizSets: '_id, status, createdAt'
+      quizSets: '_id, status, createdAt',
     });
     this.version(4).stores({
       vocabularies: '_id, wordType, level, learned, german, english',
       settings: 'key',
       quizSets: '_id, status, createdAt',
-      trainSessions: '_id, startedAt'
+      trainSessions: '_id, startedAt',
     });
     this.version(5).stores({
       vocabularies: '_id, wordType, level, learned, german, english',
       settings: 'key',
       quizSets: '_id, status, createdAt',
       trainSessions: '_id, startedAt',
-      sentences: '_id, createdAt'
+      sentences: '_id, createdAt',
     });
   }
 }
@@ -47,6 +50,13 @@ class VocabDatabase extends Dexie {
 @Injectable({ providedIn: 'root' })
 export class DatabaseService {
   private db = new VocabDatabase();
+
+  private createDefaultSettings(): AppSetting[] {
+    return [
+      { key: 'theme', value: 'light' },
+      { key: 'language', value: 'de' },
+    ];
+  }
 
   async getAll(): Promise<Vocabulary[]> {
     return this.db.vocabularies.toArray();
@@ -110,13 +120,15 @@ export class DatabaseService {
   }
 
   async clearAllAppData(): Promise<void> {
-    await Promise.all([
-      this.db.vocabularies.clear(),
-      this.db.quizSets.clear(),
-      this.db.trainSessions.clear(),
-      this.db.sentences.clear(),
-      this.db.settings.clear(),
-    ]);
+    await this.resetAllAppData();
+  }
+
+  async resetAllAppData(): Promise<void> {
+    await this.db.delete();
+    this.db = new VocabDatabase();
+    await this.db.open();
+    await this.db.settings.bulkPut(this.createDefaultSettings());
+    localStorage.setItem('suppress_sample_seed_v1', 'true');
   }
 
   async getAllTrainSessions(): Promise<TrainSession[]> {
