@@ -520,9 +520,13 @@ Return a JSON object with exactly these fields:
 
 Rules:
 - Return ONLY raw JSON. No markdown code blocks, no preamble.
-- First silently proofread and correct the input sentence.
+- First silently proofread and minimally correct the input sentence.
 - Always return the corrected sentence in the "german" field, even if the original input had mistakes.
-- Preserve original meaning while correcting; do not paraphrase unless needed for grammatical correctness.
+- Preserve original meaning and vocabulary.
+- Do NOT replace user vocabulary with synonyms or easier alternatives.
+- Allowed edits: spelling/typo fixes, punctuation, capitalization, article/case/gender agreement, verb inflection, auxiliary choice, and word order.
+- Only replace a content word when the original token is clearly misspelled/non-German and cannot form a grammatical sentence otherwise.
+- If a content word is replaced due to typo/non-German input, use the closest intended German word.
 - "words": include all meaningful words — all verbs (including auxiliaries), all nouns, adjectives, adverbs. Skip standalone articles and conjunctions unless they are noteworthy.
 - "lemma" is required for every word entry and must be the canonical form.
 - For verbs, "lemma" must be the infinitive (e.g. "habe" -> "haben").
