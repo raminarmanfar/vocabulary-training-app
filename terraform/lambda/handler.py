@@ -113,6 +113,7 @@ Return a JSON object with exactly these fields:
   "nounDetails": null,
   "verbDetails": {
     "isSeparable": <true | false>,
+        "isReflexive": <true | false>,
     "isRegular": <true | false>,
     "hilfsverb": "<haben | sein>",
     "present": {
@@ -171,7 +172,7 @@ Return a JSON object with exactly these fields:
     "deklinationBestimmt": {"nominative":"<>","akkusativ":"<>","genitiv":"<>","dativ":"<>"},
     "deklinationUnbestimmt": {"nominative":"<>","akkusativ":"<>","genitiv":"<>","dativ":"<>"}}>,
   "verbDetails": <if the word is a verb, fill in full conjugation object; otherwise null.
-    Verb object shape: {"isSeparable": true|false, "isRegular": true|false, "hilfsverb": "haben|sein",
+        Verb object shape: {"isSeparable": true|false, "isReflexive": true|false, "isRegular": true|false, "hilfsverb": "haben|sein",
     "present": {"ich":"<>","du":"<>","erSieEs":"<>","wir":"<>","ihr":"<>","sie":"<>"},
     "simplePast": {"ich":"<>","du":"<>","erSieEs":"<>","wir":"<>","ihr":"<>","sie":"<>"},
     "pastPerfect": {"ich":"<>","du":"<>","erSieEs":"<>","wir":"<>","ihr":"<>","sie":"<>"},
@@ -198,6 +199,11 @@ Rules:
 - Return ONLY the raw JSON object. No markdown code blocks, no preamble.
 - All string values must be properly escaped JSON strings.
 - Normalize the input first and generate the full entry for that normalized form.
+- For verbs, decide "isSeparable" and "isReflexive" from the actual dictionary lemma, not from a superficial prefix guess.
+- Be strict about separable verbs: only mark a verb as separable if the separable prefix is genuinely detachable in standard usage.
+- Be strict about reflexive verbs: only mark "isReflexive" true when the verb genuinely requires a reflexive pronoun in dictionary usage.
+- Do not mark a verb reflexive just because one example sentence uses "sich" or separable just because it starts with a common prefix.
+- Re-check borderline verbs such as an-, auf-, aus-, ein-, mit-, nach-, vor-, weg-, weiter-, wieder-, zu-, zurück-, zusammen- before finalizing the flags.
 - "english", "turkish", and "persian" fields must always be filled with accurate translations.
 - "level" must be one of: A1, A2, B1, B2, C1, C2 — choose based on typical learner exposure.
 - For verbs, provide exactly 3 example sentences: one in Präsens, one in Präteritum, one in Perfekt.
