@@ -1,23 +1,52 @@
-import { Component, inject, signal, computed, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, computed, inject, Input, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { SpeechRecognition } from '@capacitor-community/speech-recognition';
+import { Capacitor } from '@capacitor/core';
 import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel,
-  IonInput, IonSelect, IonSelectOption, IonButton, IonButtons,
-  IonIcon, IonSpinner, IonList, IonBadge,
-  IonCard, IonCardHeader, IonCardTitle, IonCardContent,
-  AlertController, ModalController, ToastController
+  AlertController,
+  IonBadge,
+  IonButton,
+  IonButtons,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonChip,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonSelect,
+  IonSelectOption,
+  IonSpinner,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+  ToastController,
 } from '@ionic/angular/standalone';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { sparkles, save, close, refreshOutline, checkmarkCircle, micOutline, mic } from 'ionicons/icons';
-import { SpeechRecognition } from '@capacitor-community/speech-recognition';
-import { Capacitor } from '@capacitor/core';
-import { VocabAiService, AiVocabResponse } from '../../services/vocab-ai.service';
-import { VocabularyService } from '../../services/vocabulary.service';
+import {
+  checkmarkCircle,
+  close,
+  mic,
+  micOutline,
+  refreshOutline,
+  save,
+  sparkles,
+  volumeHigh,
+} from 'ionicons/icons';
+import { CefrLevel, Vocabulary, WordType } from '../../models/vocabulary.model';
 import { LanguageService } from '../../services/language.service';
-import { WordType, CefrLevel, Vocabulary } from '../../models/vocabulary.model';
+import { TtsService } from '../../services/tts.service';
+import { AiVocabResponse, VocabAiService } from '../../services/vocab-ai.service';
+import { VocabularyService } from '../../services/vocabulary.service';
 
 type ModalStep = 'input' | 'loading' | 'preview' | 'saving';
+type ConjugationTab = 'present' | 'simplePast' | 'pastPerfect' | 'future';
 
 @Component({
   selector: 'app-ai-vocab-modal',
@@ -26,21 +55,38 @@ type ModalStep = 'input' | 'loading' | 'preview' | 'saving';
   standalone: true,
   imports: [
     FormsModule,
-    IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel,
-    IonInput, IonSelect, IonSelectOption, IonButton, IonButtons,
-    IonIcon, IonSpinner, IonList, IonBadge,
-    IonCard, IonCardHeader, IonCardTitle, IonCardContent,
-    TranslatePipe
-  ]
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonSelect,
+    IonSelectOption,
+    IonButton,
+    IonButtons,
+    IonIcon,
+    IonSpinner,
+    IonList,
+    IonBadge,
+    IonChip,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    TranslatePipe,
+  ],
 })
 export class AiVocabModalComponent implements OnInit, OnDestroy {
-  private modalCtrl   = inject(ModalController);
-  private toastCtrl   = inject(ToastController);
-  private alertCtrl   = inject(AlertController);
-  private translate   = inject(TranslateService);
-  private aiService   = inject(VocabAiService);
+  private modalCtrl = inject(ModalController);
+  private toastCtrl = inject(ToastController);
+  private alertCtrl = inject(AlertController);
+  private translate = inject(TranslateService);
+  private aiService = inject(VocabAiService);
   private vocabService = inject(VocabularyService);
-  private langService  = inject(LanguageService);
+  private langService = inject(LanguageService);
+  private tts = inject(TtsService);
 
   @Input() initialWord?: string;
   @Input() initialWordType?: WordType | 'unknown';
@@ -50,26 +96,31 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
   wordType = signal<WordType | 'unknown'>('unknown');
   result = signal<AiVocabResponse | null>(null);
   errorMsg = signal('');
+  conjugationTab = signal<ConjugationTab>('present');
   recording = signal(false);
   speechSupported = signal(false);
   // Web Speech API fallback for browser
   private webRecognition: any = null;
 
   readonly wordTypes: Array<{ value: WordType | 'unknown'; labelKey: string }> = [
-    { value: 'unknown',     labelKey: 'wordType.unknown' },
-    { value: 'noun',        labelKey: 'wordType.noun' },
-    { value: 'verb',        labelKey: 'wordType.verb' },
-    { value: 'adjective',   labelKey: 'wordType.adjective' },
-    { value: 'adverb',      labelKey: 'wordType.adverb' },
+    { value: 'unknown', labelKey: 'wordType.unknown' },
+    { value: 'noun', labelKey: 'wordType.noun' },
+    { value: 'verb', labelKey: 'wordType.verb' },
+    { value: 'adjective', labelKey: 'wordType.adjective' },
+    { value: 'adverb', labelKey: 'wordType.adverb' },
     { value: 'preposition', labelKey: 'wordType.preposition' },
     { value: 'conjunction', labelKey: 'wordType.conjunction' },
-    { value: 'pronoun',     labelKey: 'wordType.pronoun' },
-    { value: 'other',       labelKey: 'wordType.other' },
+    { value: 'pronoun', labelKey: 'wordType.pronoun' },
+    { value: 'other', labelKey: 'wordType.other' },
   ];
 
   readonly cefrColors: Record<CefrLevel, string> = {
-    A1: 'success', A2: 'success', B1: 'warning',
-    B2: 'warning', C1: 'danger', C2: 'danger'
+    A1: 'success',
+    A2: 'success',
+    B1: 'warning',
+    B2: 'warning',
+    C1: 'danger',
+    C2: 'danger',
   };
 
   canGenerate = computed(() => this.word().trim().length > 0);
@@ -83,8 +134,23 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
     return null;
   });
 
+  currentConjugation = computed(() => {
+    const res = this.result();
+    if (!res?.verbDetails) return null;
+    return res.verbDetails[this.conjugationTab()];
+  });
+
   constructor() {
-    addIcons({ sparkles, save, close, refreshOutline, checkmarkCircle, micOutline, mic });
+    addIcons({
+      sparkles,
+      save,
+      close,
+      refreshOutline,
+      checkmarkCircle,
+      micOutline,
+      mic,
+      volumeHigh,
+    });
   }
 
   ngOnInit() {
@@ -109,15 +175,17 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
         };
         this.webRecognition.onerror = (event: any) => {
           this.recording.set(false);
-          const msg = event.error === 'not-allowed'
-            ? 'Microphone permission denied'
-            : event.error === 'network'
-            ? 'Speech recognition requires internet (Chrome only)'
-            : `Speech error: ${event.error}`;
-          this.toastCtrl.create({ message: msg, duration: 3000, color: 'warning', position: 'bottom' })
-            .then(t => t.present());
+          const msg =
+            event.error === 'not-allowed'
+              ? 'Microphone permission denied'
+              : event.error === 'network'
+                ? 'Speech recognition requires internet (Chrome only)'
+                : `Speech error: ${event.error}`;
+          this.toastCtrl
+            .create({ message: msg, duration: 3000, color: 'warning', position: 'bottom' })
+            .then((t) => t.present());
         };
-        this.webRecognition.onend   = () => this.recording.set(false);
+        this.webRecognition.onend = () => this.recording.set(false);
       }
     }
     if (this.initialWordType) {
@@ -158,7 +226,9 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
           popup: true,
         });
         if (result.matches?.length) this.word.set(result.matches[0]);
-      } catch { /* user cancelled or error */ }
+      } catch {
+        /* user cancelled or error */
+      }
       this.recording.set(false);
     } else {
       this.webRecognition?.start();
@@ -184,10 +254,11 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
     this.step.set('loading');
     this.errorMsg.set('');
 
-    const wt = this.wordType() === 'unknown' ? undefined : this.wordType() as WordType;
+    const wt = this.wordType() === 'unknown' ? undefined : (this.wordType() as WordType);
     this.aiService.generate(this.word(), wt).subscribe({
       next: (res) => {
         this.result.set(res);
+        this.conjugationTab.set('present');
         this.step.set('preview');
       },
       error: (err) => {
@@ -201,13 +272,25 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
           this.errorMsg.set(this.translate.instant(code ?? 'ai.error.unknown'));
         }
         this.step.set('input');
-      }
+      },
     });
   }
 
   reset() {
     this.result.set(null);
+    this.conjugationTab.set('present');
     this.step.set('input');
+  }
+
+  setConjugationTab(value: string | undefined) {
+    if (
+      value === 'present' ||
+      value === 'simplePast' ||
+      value === 'pastPerfect' ||
+      value === 'future'
+    ) {
+      this.conjugationTab.set(value);
+    }
   }
 
   async save() {
@@ -216,17 +299,25 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
 
     // Check for duplicate by German word (case-insensitive)
     const term = res.german.trim().toLowerCase();
-    const existing = this.vocabService.vocabsSubject.value
-      .find((v: Vocabulary) => v.german.trim().toLowerCase() === term);
+    const existing = this.vocabService.vocabsSubject.value.find(
+      (v: Vocabulary) => v.german.trim().toLowerCase() === term,
+    );
 
     if (existing) {
       const alert = await this.alertCtrl.create({
         header: this.translate.instant('ai.duplicate.header'),
         message: this.translate.instant('ai.duplicate.message', { word: existing.german }),
         buttons: [
-          { text: this.translate.instant('ai.duplicate.cancel'), role: 'cancel', handler: () => this.step.set('preview') },
-          { text: this.translate.instant('ai.duplicate.replace'), handler: () => this.doSave(res, existing._id) }
-        ]
+          {
+            text: this.translate.instant('ai.duplicate.cancel'),
+            role: 'cancel',
+            handler: () => this.step.set('preview'),
+          },
+          {
+            text: this.translate.instant('ai.duplicate.replace'),
+            handler: () => this.doSave(res, existing._id),
+          },
+        ],
       });
       this.step.set('preview');
       await alert.present();
@@ -236,14 +327,21 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
     await this.doSave(res);
   }
 
+  async speakVerb() {
+    const res = this.result();
+    if (!res || res.wordType !== 'verb') return;
+    await this.tts.speak(res.german);
+  }
+
   private async doSave(res: AiVocabResponse, existingId?: string) {
     this.step.set('saving');
     try {
       const vocab = this.aiService.toVocabulary(res);
       if (existingId) {
         vocab._id = existingId;
-        const existing = this.vocabService.vocabsSubject.value
-          .find((v: Vocabulary) => v._id === existingId);
+        const existing = this.vocabService.vocabsSubject.value.find(
+          (v: Vocabulary) => v._id === existingId,
+        );
         if (existing) {
           vocab.imagePath = existing.imagePath;
           vocab.learned = existing.learned;
@@ -255,7 +353,7 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
         duration: 1800,
         color: 'success',
         position: 'bottom',
-        icon: 'checkmark-circle'
+        icon: 'checkmark-circle',
       });
       await toast.present();
       this.modalCtrl.dismiss(saved, 'saved');
@@ -267,9 +365,15 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
 
   wordTypeColor(type: WordType): string {
     const map: Record<WordType, string> = {
-      noun: 'primary', verb: 'success', adjective: 'warning',
-      adverb: 'tertiary', preposition: 'medium', conjunction: 'dark',
-      pronoun: 'secondary', other: 'light', unknown: 'medium'
+      noun: 'primary',
+      verb: 'success',
+      adjective: 'warning',
+      adverb: 'tertiary',
+      preposition: 'medium',
+      conjunction: 'dark',
+      pronoun: 'secondary',
+      other: 'light',
+      unknown: 'medium',
     };
     return map[type] ?? 'medium';
   }

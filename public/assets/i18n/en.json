@@ -6,17 +6,37 @@
     "welcome": "Welcome!",
     "subtitle": "Your German vocabulary training app",
     "tiles": {
-      "vocabularies": { "label": "Vocabularies", "description": "Browse & manage your German word list" },
-      "sentences":    { "label": "Sentences",    "description": "Analyze and learn German sentences with AI" },
-      "train":        { "label": "Train",         "description": "Practice flashcards to memorize words" },
-      "quiz":         { "label": "Quiz",          "description": "Test your knowledge with multiple choice" },
-      "about":        { "label": "About",         "description": "About this app" },
-      "settings":     { "label": "Settings",      "description": "App preferences & data management" }
+      "vocabularies": {
+        "label": "Vocabularies",
+        "description": "Browse & manage your German word list"
+      },
+      "sentences": {
+        "label": "Sentences",
+        "description": "Analyze and learn German sentences with AI"
+      },
+      "train": {
+        "label": "Train",
+        "description": "Practice flashcards to memorize words"
+      },
+      "quiz": {
+        "label": "Quiz",
+        "description": "Test your knowledge with multiple choice"
+      },
+      "about": {
+        "label": "About",
+        "description": "About this app"
+      },
+      "settings": {
+        "label": "Settings",
+        "description": "App preferences & data management"
+      }
     }
   },
   "home": {
     "title": "Vocabularies",
-    "search": { "placeholder": "Search German or English..." },
+    "search": {
+      "placeholder": "Search German or English..."
+    },
     "filter": {
       "typePlaceholder": "Part of speech",
       "levelPlaceholder": "Level",
@@ -27,144 +47,148 @@
       "unlearned": "Unlearned"
     },
     "sort": {
-      "date":    "Date Added",
-      "alpha":   "Alphabetical",
-      "type":    "Part of Speech",
+      "date": "Date Added",
+      "alpha": "Alphabetical",
+      "type": "Part of Speech",
       "learned": "Learned Status"
     },
     "empty": "No vocabularies found.",
-    "footer": { "count": "{{count}} of {{total}} vocabularies" }
+    "footer": {
+      "count": "{{count}} of {{total}} vocabularies"
+    }
   },
   "wordType": {
-    "unknown":     "I don't know",
-    "noun":        "Noun",
-    "verb":        "Verb",
-    "adjective":   "Adjective",
-    "adverb":      "Adverb",
+    "unknown": "I don't know",
+    "noun": "Noun",
+    "verb": "Verb",
+    "adjective": "Adjective",
+    "adverb": "Adverb",
     "preposition": "Preposition",
     "conjunction": "Conjunction",
-    "pronoun":     "Pronoun",
-    "other":       "Other"
+    "pronoun": "Pronoun",
+    "other": "Other"
   },
   "detail": {
     "exampleSentences": "Example Sentences",
     "synonymsAntonyms": "Synonyms & Antonyms",
     "synonyms": "Synonyms",
     "antonyms": "Antonyms",
-    "learned": "Learned ✓",    "pronounce": "Pronounce",
-    "stammformen": "Principal Forms",    "delete": {
-      "header":  "Delete Vocabulary",
+    "learned": "Learned ✓",
+    "pronounce": "Pronounce",
+    "stammformen": "Principal Forms",
+    "delete": {
+      "header": "Delete Vocabulary",
       "message": "Are you sure you want to delete this vocabulary?",
-      "cancel":  "Cancel",
+      "cancel": "Cancel",
       "confirm": "Delete"
     },
     "regenerate": {
-      "header":  "Regenerate with AI",
+      "header": "Regenerate with AI",
       "message": "This will replace the current content with a new AI-generated entry. Continue?",
-      "cancel":  "Cancel",
+      "cancel": "Cancel",
       "confirm": "Regenerate",
       "success": "Vocabulary updated!",
-      "error":   "Regeneration failed. Please try again."
+      "error": "Regeneration failed. Please try again."
     }
   },
   "edit": {
-    "titleNew":  "Add Vocabulary",
+    "titleNew": "Add Vocabulary",
     "titleEdit": "Edit Vocabulary",
     "section": {
-      "basic":      "Basic Information",
-      "examples":   "Example Sentences (max 5)",
-      "noun":       "Noun Details",
-      "verb":       "Verb Details",
-      "adjective":  "Adjective Details"
+      "basic": "Basic Information",
+      "examples": "Example Sentences (max 5)",
+      "noun": "Noun Details",
+      "verb": "Verb Details",
+      "adjective": "Adjective Details"
     },
     "field": {
-      "german":       "German Word *",
-      "germanPh":     "e.g. der Hund",
-      "english":      "English Translation *",
-      "englishPh":    "e.g. dog",
-      "wordType":     "Part of Speech *",
-      "level":        "CEFR Level *",
-      "description":  "Description",
-      "descriptionPh":"Optional description...",
-      "learned":      "Already Learned",
-      "image":         "Image",
-      "imagePick":     "Tap to choose an image",
-      "article":      "Article",
-      "plural":       "Plural",
-      "separable":    "Separable",
-      "regular":      "Regular",
-      "reflexive":    "Reflexive",
-      "hilfsverb":    "Hilfsverb",
-      "komparativ":   "Komparativ",
-      "superlativ":   "Superlativ"
+      "german": "German Word *",
+      "germanPh": "e.g. der Hund",
+      "english": "English Translation *",
+      "englishPh": "e.g. dog",
+      "wordType": "Part of Speech *",
+      "level": "CEFR Level *",
+      "description": "Description",
+      "descriptionPh": "Optional description...",
+      "learned": "Already Learned",
+      "image": "Image",
+      "imagePick": "Tap to choose an image",
+      "article": "Article",
+      "plural": "Plural",
+      "separable": "Separable",
+      "regular": "Regular",
+      "reflexive": "Reflexive",
+      "hilfsverb": "Hilfsverb",
+      "komparativ": "Komparativ",
+      "superlativ": "Superlativ"
     },
     "duplicate": {
-      "title":   "Vocabulary Already Exists",
+      "title": "Vocabulary Already Exists",
       "message": "A vocabulary with this word and the same type already exists. Do you want to replace it or ignore?",
       "replace": "Replace",
-      "ignore":  "Ignore"
+      "ignore": "Ignore"
     },
     "example": {
-      "germanLabel":  "German",
-      "germanPh":     "German sentence",
+      "germanLabel": "German",
+      "germanPh": "German sentence",
       "englishLabel": "English",
-      "englishPh":    "English translation",
-      "remove":       "Remove",
-      "add":          "Add Example"
+      "englishPh": "English translation",
+      "remove": "Remove",
+      "add": "Add Example"
     }
   },
   "grammar": {
-    "nominativ":   "Nominativ",
-    "akkusativ":   "Akkusativ",
-    "genitiv":     "Genitiv",
-    "dativ":       "Dativ",
-    "bestimmt":    "Declension with definite article",
-    "unbestimmt":  "Declension with indefinite article",
-    "maskulin":    "Masculine (der)",
-    "feminin":     "Feminine (die)",
-    "neutral":     "Neuter (das)",
-    "plural":      "Plural (die)"
+    "nominativ": "Nominativ",
+    "akkusativ": "Akkusativ",
+    "genitiv": "Genitiv",
+    "dativ": "Dativ",
+    "bestimmt": "Declension with definite article",
+    "unbestimmt": "Declension with indefinite article",
+    "maskulin": "Masculine (der)",
+    "feminin": "Feminine (die)",
+    "neutral": "Neuter (das)",
+    "plural": "Plural (die)"
   },
   "noun": {
-    "title":     "Noun Details",
-    "article":   "Article",
-    "plural":    "Plural"
+    "title": "Noun Details",
+    "article": "Article",
+    "plural": "Plural"
   },
   "verb": {
-    "title":        "Verb Details",
+    "title": "Verb Details",
     "conjugations": "Conjugations",
-    "separable":   "Separable",
+    "separable": "Separable",
     "inseparable": "Inseparable",
-    "regular":     "Regular",
-    "irregular":   "Irregular",
-    "reflexive":   "Reflexive",
-    "present":     "Präsens (Present)",
-    "simplePast":  "Präteritum (Simple Past)",
-    "pastPerfect": "Perfekt (Past Perfect)",
-    "future":      "Futur I (Future)",
-    "imperative":  "Imperativ (Imperative)"
+    "regular": "Regular",
+    "irregular": "Irregular",
+    "reflexive": "Reflexive",
+    "present": "Present",
+    "simplePast": "Simple Past",
+    "pastPerfect": "Perfect",
+    "future": "Future",
+    "imperative": "Imperative"
   },
   "adjective": {
-    "title":      "Adjective Details",
+    "title": "Adjective Details",
     "komparativ": "Komparativ",
-    "superlativ":  "Superlativ"
+    "superlativ": "Superlativ"
   },
   "settings": {
-    "title":    "Settings",
+    "title": "Settings",
     "language": {
-      "label":  "App Language",
-      "en":     "English",
-      "de":     "Deutsch",
-      "tr":     "Türkçe",
-      "fa":     "فارسی"
+      "label": "App Language",
+      "en": "English",
+      "de": "Deutsch",
+      "tr": "Türkçe",
+      "fa": "فارسی"
     },
     "theme": {
       "label": "Dark Mode",
-      "on":    "On",
-      "off":   "Off"
+      "on": "On",
+      "off": "Off"
     },
     "data": {
-      "label":  "Data",
+      "label": "Data",
       "export": "Export Data",
       "import": "Import Data",
       "exportSuccess": "Exported {{count}} vocabularies",
@@ -179,7 +203,7 @@
       "importDupMsg": "{{count}} vocabularies already exist. What would you like to do with the duplicates?",
       "importDupReplace": "Replace existing",
       "importDupKeep": "Keep existing",
-      "clear":  "Clear all data",
+      "clear": "Clear all data",
       "erase": "Erase",
       "eraseVocabs": "Erase all vocabularies",
       "eraseVocabsTitle": "Erase all vocabularies?",
@@ -214,18 +238,18 @@
     "comingSoon": "More settings coming soon."
   },
   "about": {
-    "title":    "About",
+    "title": "About",
     "subtitle": "Learn German vocabulary — offline, always.",
-    "bio":      "Developed by Ramin Armanfar, a Senior Full-Stack Software Developer with a passion for building modern, user-friendly applications.",
+    "bio": "Developed by Ramin Armanfar, a Senior Full-Stack Software Developer with a passion for building modern, user-friendly applications.",
     "linkedin": "Connect on LinkedIn",
-    "github":   "GitHub Profile",
-    "email":    "Send Email",
+    "github": "GitHub Profile",
+    "email": "Send Email",
     "features": {
       "title": "Features",
-      "grammar":  "Full grammatical details for nouns, verbs & adjectives",
-      "offline":  "Works fully offline — data stored locally",
-      "cefr":     "CEFR levels A1–C2",
-      "tts":      "Text-to-speech pronunciation"
+      "grammar": "Full grammatical details for nouns, verbs & adjectives",
+      "offline": "Works fully offline — data stored locally",
+      "cefr": "CEFR levels A1–C2",
+      "tts": "Text-to-speech pronunciation"
     },
     "tech": {
       "title": "Built With",
@@ -247,8 +271,17 @@
     "sessions": "Sessions",
     "notFound": "Session not found.",
     "dailyBreakdown": "Daily Breakdown",
-    "tabs": { "calendar": "Daily Report", "monthly": "Monthly" },
-    "mon": "Mo", "tue": "Tu", "wed": "We", "thu": "Th", "fri": "Fr", "sat": "Sa", "sun": "Su"
+    "tabs": {
+      "calendar": "Daily Report",
+      "monthly": "Monthly"
+    },
+    "mon": "Mo",
+    "tue": "Tu",
+    "wed": "We",
+    "thu": "Th",
+    "fri": "Fr",
+    "sat": "Sa",
+    "sun": "Su"
   },
   "train": {
     "title": "Train",
@@ -335,62 +368,64 @@
     }
   },
   "qr": {
-    "title":        "Share Vocabularies via QR Code",
-    "tabShare":     "Share",
-    "tabScan":      "Receive (Scan)",
-    "fabTooltip":   "Share via QR",
+    "title": "Share Vocabularies via QR Code",
+    "tabShare": "Share",
+    "tabScan": "Receive (Scan)",
+    "fabTooltip": "Share via QR",
     "generateHint": "Tap to upload your vocabularies and generate a QR code.",
-    "generate":     "Generate QR Code",
-    "uploading":    "Uploading vocabularies…",
-    "shareSubtitle":"{{count}} vocabularies ready to share",
-    "shareHint":    "Show this QR code to the other device to scan.",
-    "expiryHint":   "This code expires after 24 hours or after first use.",
-    "uploadError":  "Upload failed. Please check your connection and try again.",
-    "scanPrompt":   "Tap to open the camera and scan the QR code from the other device.",
-    "startCamera":  "Open Camera",
-    "scanHint":     "Point the camera at the QR code.",
-    "downloading":  "Downloading vocabularies…",
-    "importSuccess":"Imported {{count}} vocabularies",
-    "importError":  "Import failed — invalid QR data.",
+    "generate": "Generate QR Code",
+    "uploading": "Uploading vocabularies…",
+    "shareSubtitle": "{{count}} vocabularies ready to share",
+    "shareHint": "Show this QR code to the other device to scan.",
+    "expiryHint": "This code expires after 24 hours or after first use.",
+    "uploadError": "Upload failed. Please check your connection and try again.",
+    "scanPrompt": "Tap to open the camera and scan the QR code from the other device.",
+    "startCamera": "Open Camera",
+    "scanHint": "Point the camera at the QR code.",
+    "downloading": "Downloading vocabularies…",
+    "importSuccess": "Imported {{count}} vocabularies",
+    "importError": "Import failed — invalid QR data.",
     "expiredError": "This QR code has already been used or has expired.",
-    "downloadError":"Download failed. Please try scanning again.",
-    "cameraError":  "Camera access denied or unavailable.",
-    "tryAgain":     "Try Again"
+    "downloadError": "Download failed. Please try scanning again.",
+    "cameraError": "Camera access denied or unavailable.",
+    "tryAgain": "Try Again"
   },
   "common": {
     "cancel": "Cancel",
     "delete": "Delete"
   },
   "ai": {
-    "fab": { "tooltip": "Add with AI" },
+    "fab": {
+      "tooltip": "Add with AI"
+    },
     "modal": {
-      "title":          "AI Vocabulary",
-      "hint":           "Enter a German word. Select a type if you know it — otherwise choose \"I don't know\" and the AI will detect it.",
-      "wordLabel":      "German Word",
-      "wordPlaceholder":"e.g. laufen",
-      "typeLabel":      "Part of Speech",
-      "generate":       "Generate",
-      "generating":     "Generating vocabulary…",
-      "retry":          "Try Again",
-      "save":           "Save to Library",
-      "saving":         "Saving…",
-      "voiceHint":      "Tap the mic to say the German word",
-      "listening":      "Listening… speak now",
-      "examples":       "Example Sentences",
-      "bestimmt":       "Definite article declension",
-      "unbestimmt":     "Indefinite article declension",
-      "present":        "Präsens (Present Tense)"
+      "title": "AI Vocabulary",
+      "hint": "Enter a German word. Select a type if you know it — otherwise choose \"I don't know\" and the AI will detect it.",
+      "wordLabel": "German Word",
+      "wordPlaceholder": "e.g. laufen",
+      "typeLabel": "Part of Speech",
+      "generate": "Generate",
+      "generating": "Generating vocabulary…",
+      "retry": "Try Again",
+      "save": "Save to Library",
+      "saving": "Saving…",
+      "voiceHint": "Tap the mic to say the German word",
+      "listening": "Listening… speak now",
+      "examples": "Example Sentences",
+      "bestimmt": "Definite article declension",
+      "unbestimmt": "Indefinite article declension",
+      "present": "Präsens (Present Tense)"
     },
     "error": {
-      "unknown":       "An unexpected error occurred. Please try again.",
-      "saveFailed":    "Failed to save the vocabulary. Please try again.",
+      "unknown": "An unexpected error occurred. Please try again.",
+      "saveFailed": "Failed to save the vocabulary. Please try again.",
       "notGermanWord": "This doesn't appear to be a German word. Please enter a valid German vocabulary.",
-      "misspelled":    "\"{{correction}}\" — did you mean this? Please correct the spelling and try again."
+      "misspelled": "\"{{correction}}\" — did you mean this? Please correct the spelling and try again."
     },
     "duplicate": {
-      "header":  "Word Already Exists",
+      "header": "Word Already Exists",
       "message": "\"{{word}}\" is already in your library. Do you want to replace it with the new AI-generated entry?",
-      "cancel":  "Keep Existing",
+      "cancel": "Keep Existing",
       "replace": "Replace"
     }
   },

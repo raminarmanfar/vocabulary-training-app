@@ -1,6 +1,6 @@
 """
 Lambda handler: receives a German word + word type, calls AWS Bedrock
-(Claude 3.5 Haiku) and returns a fully structured Vocabulary JSON object
+(Claude Sonnet 4) and returns a fully structured Vocabulary JSON object
 matching the VocabTrainer app data model.
 
 Also handles POST /share and GET /share/{token} for temporary
@@ -15,7 +15,7 @@ from botocore.exceptions import ClientError
 BEDROCK_CLIENT = boto3.client("bedrock-runtime", region_name=os.environ.get("AWS_REGION", "eu-central-1"))
 S3_CLIENT      = boto3.client("s3",              region_name=os.environ.get("AWS_REGION", "eu-central-1"))
 
-MODEL_ID     = os.environ.get("BEDROCK_MODEL_ID", "eu.anthropic.claude-3-5-haiku-20241022-v1:0")
+MODEL_ID     = os.environ.get("BEDROCK_MODEL_ID", "eu.anthropic.claude-sonnet-4-20250514-v1:0")
 SHARE_BUCKET = os.environ.get("SHARE_BUCKET", "")
 SHARE_PREFIX = "shares/"
 
@@ -70,7 +70,7 @@ def build_user_prompt(word: str, word_type: str | None) -> str:
 
 Important normalization rule before generating the entry:
 - Convert the input to its canonical dictionary form based on part of speech.
-- Verb: infinitive form (e.g. "muss" -> "müssen", "ging" -> "gehen").
+- Verb: infinitive form. If the verb can be used reflexively in normal dictionary usage, prefer the reflexive lemma and return it as "sich + infinitive" (e.g. "erinnert" -> "sich erinnern").
 - Noun: singular nominative without article (e.g. "Bücher" -> "Buch").
 - Adjective/Adverb: positive/base form (e.g. "besser" -> "gut").
 - Use this normalized form as the final vocabulary target.
@@ -200,8 +200,9 @@ Rules:
 - All string values must be properly escaped JSON strings.
 - Normalize the input first and generate the full entry for that normalized form.
 - For verbs, decide "isSeparable" and "isReflexive" from the actual dictionary lemma, not from a superficial prefix guess.
+- Reflexive preference rule: if a verb has a valid reflexive usage in standard dictionary usage, return the reflexive variant as the main target ("german": "sich <infinitive>") and set "isReflexive" to true.
+- Only keep a non-reflexive target when there is no valid reflexive usage.
 - Be strict about separable verbs: only mark a verb as separable if the separable prefix is genuinely detachable in standard usage.
-- Be strict about reflexive verbs: only mark "isReflexive" true when the verb genuinely requires a reflexive pronoun in dictionary usage.
 - Do not mark a verb reflexive just because one example sentence uses "sich" or separable just because it starts with a common prefix.
 - Re-check borderline verbs such as an-, auf-, aus-, ein-, mit-, nach-, vor-, weg-, weiter-, wieder-, zu-, zurück-, zusammen- before finalizing the flags.
 - "english", "turkish", and "persian" fields must always be filled with accurate translations.
