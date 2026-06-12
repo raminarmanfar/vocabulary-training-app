@@ -1,26 +1,60 @@
-import { Component, OnInit, OnDestroy, inject, signal, computed, ViewChild, Input } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
-  IonButton, IonIcon, IonChip, IonLabel, IonBadge, IonCard, IonCardHeader,
-  IonCardTitle, IonCardContent, IonItem, IonAccordionGroup, IonAccordion,
-  IonImg, IonSpinner, ModalController
-} from '@ionic/angular/standalone';
+  Component,
+  computed,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  signal,
+  ViewChild,
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, ToastController, ViewWillEnter } from '@ionic/angular';
-import { TranslatePipe } from '@ngx-translate/core';
-import { TranslateService } from '@ngx-translate/core';
+import {
+  IonAccordion,
+  IonAccordionGroup,
+  IonBackButton,
+  IonBadge,
+  IonButton,
+  IonButtons,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonChip,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonImg,
+  IonItem,
+  IonLabel,
+  IonSpinner,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular/standalone';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { close, create, trash, volumeHigh, checkmarkCircle, ellipseOutline, imageOutline, sparkles } from 'ionicons/icons';
-import { VocabularyService } from '../../services/vocabulary.service';
-import { TtsService } from '../../services/tts.service';
-import { VocabAiService } from '../../services/vocab-ai.service';
-import { LanguageService } from '../../services/language.service';
-import { Vocabulary, WordType } from '../../models/vocabulary.model';
-import { NounDetailComponent } from '../../components/noun-detail/noun-detail.component';
-import { VerbDetailComponent } from '../../components/verb-detail/verb-detail.component';
+import {
+  checkmarkCircle,
+  close,
+  create,
+  ellipseOutline,
+  imageOutline,
+  sparkles,
+  trash,
+  volumeHigh,
+} from 'ionicons/icons';
+import { Subscription } from 'rxjs';
 import { AdjectiveDetailComponent } from '../../components/adjective-detail/adjective-detail.component';
 import { AiVocabModalComponent } from '../../components/ai-vocab-modal/ai-vocab-modal.component';
+import { NounDetailComponent } from '../../components/noun-detail/noun-detail.component';
+import { VerbDetailComponent } from '../../components/verb-detail/verb-detail.component';
+import { Vocabulary, WordType } from '../../models/vocabulary.model';
+import { LanguageService } from '../../services/language.service';
+import { TtsService } from '../../services/tts.service';
+import { VocabAiService } from '../../services/vocab-ai.service';
+import { VocabularyService } from '../../services/vocabulary.service';
 
 @Component({
   selector: 'app-vocabulary-details',
@@ -28,13 +62,31 @@ import { AiVocabModalComponent } from '../../components/ai-vocab-modal/ai-vocab-
   styleUrls: ['./vocabulary-details.page.scss'],
   standalone: true,
   imports: [
-    IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton,
-    IonButton, IonIcon, IonChip, IonLabel, IonBadge, IonCard, IonCardHeader,
-    IonCardTitle, IonCardContent, IonItem, IonAccordionGroup, IonAccordion,
-    IonImg, IonSpinner,
-    NounDetailComponent, VerbDetailComponent, AdjectiveDetailComponent,
-    TranslatePipe
-  ]
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonButtons,
+    IonBackButton,
+    IonButton,
+    IonIcon,
+    IonChip,
+    IonLabel,
+    IonBadge,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonItem,
+    IonAccordionGroup,
+    IonAccordion,
+    IonImg,
+    IonSpinner,
+    NounDetailComponent,
+    VerbDetailComponent,
+    AdjectiveDetailComponent,
+    TranslatePipe,
+  ],
 })
 export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
   private route = inject(ActivatedRoute);
@@ -74,7 +126,16 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
   }
 
   constructor() {
-    addIcons({ close, create, trash, volumeHigh, checkmarkCircle, ellipseOutline, imageOutline, sparkles });
+    addIcons({
+      close,
+      create,
+      trash,
+      volumeHigh,
+      checkmarkCircle,
+      ellipseOutline,
+      imageOutline,
+      sparkles,
+    });
   }
 
   async ngOnInit() {
@@ -86,7 +147,7 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
       return;
     }
 
-    this.paramSub = this.route.paramMap.subscribe(async params => {
+    this.paramSub = this.route.paramMap.subscribe(async (params) => {
       const id = params.get('id')!;
       const v = await this.vocabService.getById(id);
       this.vocab.set(v);
@@ -149,9 +210,9 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
         { text: this.translate.instant('detail.regenerate.cancel'), role: 'cancel' },
         {
           text: this.translate.instant('detail.regenerate.confirm'),
-          handler: () => this.regenerate()
-        }
-      ]
+          handler: () => this.regenerate(),
+        },
+      ],
     });
     await alert.present();
   }
@@ -160,25 +221,25 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
     const v = this.vocab();
     if (!v) return;
     this.regenerating.set(true);
-    const wordType = (v.wordType === 'unknown' as WordType) ? undefined : v.wordType;
-    this.aiService.generate(v.german, wordType).subscribe({
+    const wordType = v.wordType === ('unknown' as WordType) ? undefined : v.wordType;
+    this.aiService.generate(v.german, { wordType }).subscribe({
       next: async (response) => {
         const updated: Vocabulary = {
           ...v,
-          english:          response.english,
-          wordType:         response.wordType,
-          level:            response.level as Vocabulary['level'],
-          description:      response.description ?? undefined,
-          examples:         response.examples ?? [],
-          nounDetails:      response.nounDetails ?? undefined,
-          verbDetails:      response.verbDetails ?? undefined,
+          english: response.english,
+          wordType: response.wordType,
+          level: response.level as Vocabulary['level'],
+          description: response.description ?? undefined,
+          examples: response.examples ?? [],
+          nounDetails: response.nounDetails ?? undefined,
+          verbDetails: response.verbDetails ?? undefined,
           adjectiveDetails: response.adjectiveDetails ?? undefined,
-          turkish:          response.turkish ?? undefined,
-          persian:          response.persian ?? undefined,
-          synonyms:         response.synonyms ?? [],
-          antonyms:         response.antonyms ?? [],
-          aiGenerated:      true,
-          updatedAt:        new Date().toISOString(),
+          turkish: response.turkish ?? undefined,
+          persian: response.persian ?? undefined,
+          synonyms: response.synonyms ?? [],
+          antonyms: response.antonyms ?? [],
+          aiGenerated: true,
+          updatedAt: new Date().toISOString(),
         };
         await this.vocabService.save(updated);
         this.vocab.set(updated);
@@ -187,7 +248,7 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
           message: this.translate.instant('detail.regenerate.success'),
           duration: 2000,
           color: 'success',
-          position: 'bottom'
+          position: 'bottom',
         });
         await toast.present();
       },
@@ -197,10 +258,10 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
           message: this.translate.instant('detail.regenerate.error'),
           duration: 3000,
           color: 'danger',
-          position: 'bottom'
+          position: 'bottom',
         });
         await toast.present();
-      }
+      },
     });
   }
 
@@ -213,9 +274,9 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
         {
           text: this.translate.instant('detail.delete.confirm'),
           role: 'destructive',
-          handler: () => this.deleteVocab()
-        }
-      ]
+          handler: () => this.deleteVocab(),
+        },
+      ],
     });
     await alert.present();
   }
@@ -237,16 +298,21 @@ export class VocabularyDetailsPage implements OnInit, OnDestroy, ViewWillEnter {
 
   wordTypeColor(type: string): string {
     const map: Record<string, string> = {
-      noun: 'primary', verb: 'success', adjective: 'warning',
-      adverb: 'tertiary', preposition: 'medium', conjunction: 'dark',
-      pronoun: 'secondary', other: 'light'
+      noun: 'primary',
+      verb: 'success',
+      adjective: 'warning',
+      adverb: 'tertiary',
+      preposition: 'medium',
+      conjunction: 'dark',
+      pronoun: 'secondary',
+      other: 'light',
     };
     return map[type] || 'medium';
   }
 
   async onWordChipClick(word: string) {
     const vocabs = this.vocabService.vocabsSubject.value;
-    const found = vocabs.find(v => v.german.trim().toLowerCase() === word.trim().toLowerCase());
+    const found = vocabs.find((v) => v.german.trim().toLowerCase() === word.trim().toLowerCase());
     if (found) {
       this.router.navigate(['/vocabulary-details', found._id]);
       return;

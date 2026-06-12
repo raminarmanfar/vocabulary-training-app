@@ -36,6 +36,7 @@ import {
   micOutline,
   refreshOutline,
   save,
+  shuffle,
   sparkles,
   volumeHigh,
 } from 'ionicons/icons';
@@ -94,6 +95,8 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
   step = signal<ModalStep>('input');
   word = signal('');
   wordType = signal<WordType | 'unknown'>('unknown');
+  randomLevel = signal<CefrLevel | 'any'>('any');
+  randomWordType = signal<WordType | 'any'>('any');
   result = signal<AiVocabResponse | null>(null);
   errorMsg = signal('');
   conjugationTab = signal<ConjugationTab>('present');
@@ -123,6 +126,20 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
     C2: 'danger',
   };
 
+  readonly cefrLevels: CefrLevel[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+
+  readonly randomWordTypes: Array<{ value: WordType | 'any'; labelKey: string }> = [
+    { value: 'any', labelKey: 'ai.modal.randomAnyType' },
+    { value: 'noun', labelKey: 'wordType.noun' },
+    { value: 'verb', labelKey: 'wordType.verb' },
+    { value: 'adjective', labelKey: 'wordType.adjective' },
+    { value: 'adverb', labelKey: 'wordType.adverb' },
+    { value: 'preposition', labelKey: 'wordType.preposition' },
+    { value: 'conjunction', labelKey: 'wordType.conjunction' },
+    { value: 'pronoun', labelKey: 'wordType.pronoun' },
+    { value: 'other', labelKey: 'wordType.other' },
+  ];
+
   canGenerate = computed(() => this.word().trim().length > 0);
 
   nativeTranslation = computed(() => {
@@ -149,6 +166,7 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
       checkmarkCircle,
       micOutline,
       mic,
+      shuffle,
       volumeHigh,
     });
   }
@@ -255,7 +273,7 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
     this.errorMsg.set('');
 
     const wt = this.wordType() === 'unknown' ? undefined : (this.wordType() as WordType);
-    this.aiService.generate(this.word(), wt).subscribe({
+    this.aiService.generate(this.word(), { wordType: wt }).subscribe({
       next: (res) => {
         this.result.set(res);
         this.conjugationTab.set('present');
@@ -274,6 +292,42 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
         this.step.set('input');
       },
     });
+  }
+
+  async generateRandom() {
+    this.step.set('loading');
+    this.errorMsg.set('');
+
+    const selectedLevel = this.randomLevel();
+    const selectedWordType = this.randomWordType();
+    const level = selectedLevel === 'any' ? undefined : selectedLevel;
+    const wordType = selectedWordType === 'any' ? undefined : selectedWordType;
+
+    this.aiService
+      .generate('', {
+        random: true,
+        level,
+        wordType,
+      })
+      .subscribe({
+        next: (res) => {
+          this.result.set(res);
+          this.conjugationTab.set('present');
+          this.step.set('preview');
+        },
+        error: (err) => {
+          const code = err?.error?.error;
+          const correction = err?.error?.correction;
+          if (code === 'NOT_GERMAN_WORD') {
+            this.errorMsg.set(this.translate.instant('ai.error.notGermanWord'));
+          } else if (code === 'WORD_MISSPELLED' && correction) {
+            this.errorMsg.set(this.translate.instant('ai.error.misspelled', { correction }));
+          } else {
+            this.errorMsg.set(this.translate.instant(code ?? 'ai.error.unknown'));
+          }
+          this.step.set('input');
+        },
+      });
   }
 
   reset() {

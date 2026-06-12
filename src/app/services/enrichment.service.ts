@@ -1,19 +1,19 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
-import { VocabularyService } from './vocabulary.service';
+import { Vocabulary } from '../models/vocabulary.model';
 import { DatabaseService } from './database.service';
 import { VocabAiService } from './vocab-ai.service';
-import { Vocabulary } from '../models/vocabulary.model';
+import { VocabularyService } from './vocabulary.service';
 
 @Injectable({ providedIn: 'root' })
 export class EnrichmentService {
   private vocabService = inject(VocabularyService);
-  private dbService   = inject(DatabaseService);
-  private aiService   = inject(VocabAiService);
-  private translate   = inject(TranslateService);
+  private dbService = inject(DatabaseService);
+  private aiService = inject(VocabAiService);
+  private translate = inject(TranslateService);
 
-  readonly enriching   = signal(false);
+  readonly enriching = signal(false);
   readonly enrichCount = signal(0);
   readonly enrichTotal = signal(0);
   /** Toast notification to show — consumed by the settings page. */
@@ -39,24 +39,34 @@ export class EnrichmentService {
       this.enrichCount.set(i + 1);
       try {
         const response = await firstValueFrom(
-          this.aiService.generate(vocab.german, vocab.wordType !== 'unknown' ? vocab.wordType : undefined)
+          this.aiService.generate(vocab.german, {
+            wordType: vocab.wordType !== 'unknown' ? vocab.wordType : undefined,
+          }),
         );
         const updated: Vocabulary = { ...vocab };
         if (!updated.turkish && response.turkish) updated.turkish = response.turkish;
         if (!updated.persian && response.persian) updated.persian = response.persian;
-        if (!updated.synonyms?.length && response.synonyms?.length) updated.synonyms = response.synonyms;
-        if (!updated.antonyms?.length && response.antonyms?.length) updated.antonyms = response.antonyms;
+        if (!updated.synonyms?.length && response.synonyms?.length)
+          updated.synonyms = response.synonyms;
+        if (!updated.antonyms?.length && response.antonyms?.length)
+          updated.antonyms = response.antonyms;
         if (updated.examples?.length && response.examples?.length) {
           updated.examples = updated.examples.map((ex, idx) => {
             const aiEx = response.examples[idx];
             if (!aiEx) return ex;
-            return { ...ex, turkish: ex.turkish ?? aiEx.turkish, persian: ex.persian ?? aiEx.persian };
+            return {
+              ...ex,
+              turkish: ex.turkish ?? aiEx.turkish,
+              persian: ex.persian ?? aiEx.persian,
+            };
           });
         }
         await this.dbService.bulkSave([{ ...updated, aiEnriched: true }]);
         enrichedCount++;
-      } catch { /* skip failed */ }
-      await new Promise(r => setTimeout(r, 100));
+      } catch {
+        /* skip failed */
+      }
+      await new Promise((r) => setTimeout(r, 100));
     }
 
     await this.vocabService.load();
@@ -70,7 +80,7 @@ export class EnrichmentService {
       message: wasCancelled
         ? this.translate.instant('settings.data.enrichCancelled', { count: enrichedCount })
         : this.translate.instant('settings.data.enrichDone', { count: enrichedCount }),
-      color: wasCancelled ? 'warning' : 'success'
+      color: wasCancelled ? 'warning' : 'success',
     });
   }
 }

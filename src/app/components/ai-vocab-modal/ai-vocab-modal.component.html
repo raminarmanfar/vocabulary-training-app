@@ -32,6 +32,10 @@
         <ion-input [value]="word()" (ionInput)="word.set($any($event).detail.value)"
           [placeholder]="'ai.modal.wordPlaceholder' | translate" clearInput="true" (keyup.enter)="generate()">
         </ion-input>
+        <ion-button slot="end" fill="clear" color="primary" (click)="generateRandom()" class="random-btn"
+          [title]="'ai.modal.generateRandom' | translate">
+          <ion-icon name="shuffle" slot="icon-only"></ion-icon>
+        </ion-button>
         @if (speechSupported()) {
         <ion-button slot="end" [fill]="recording() ? 'solid' : 'clear'" [color]="recording() ? 'danger' : 'secondary'"
           (click)="toggleRecording()" class="mic-btn">
@@ -49,6 +53,27 @@
           }
         </ion-select>
       </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{ 'ai.modal.randomLevelLabel' | translate }}</ion-label>
+        <ion-select [value]="randomLevel()" (ionChange)="randomLevel.set($any($event).detail.value)"
+          interface="popover">
+          <ion-select-option value="any">{{ 'ai.modal.randomAnyLevel' | translate }}</ion-select-option>
+          @for (level of cefrLevels; track level) {
+          <ion-select-option [value]="level">{{ level }}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{ 'ai.modal.randomTypeLabel' | translate }}</ion-label>
+        <ion-select [value]="randomWordType()" (ionChange)="randomWordType.set($any($event).detail.value)"
+          interface="popover">
+          @for (type of randomWordTypes; track type.value) {
+          <ion-select-option [value]="type.value">{{ type.labelKey | translate }}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
     </ion-list>
 
     @if (errorMsg()) {
@@ -58,6 +83,10 @@
     <ion-button expand="block" class="generate-btn" [disabled]="!canGenerate()" (click)="generate()">
       <ion-icon name="sparkles" slot="start"></ion-icon>
       {{ 'ai.modal.generate' | translate }}
+    </ion-button>
+    <ion-button expand="block" fill="outline" class="generate-random-btn" (click)="generateRandom()">
+      <ion-icon name="shuffle" slot="start"></ion-icon>
+      {{ 'ai.modal.generateRandom' | translate }}
     </ion-button>
   </div>
   }

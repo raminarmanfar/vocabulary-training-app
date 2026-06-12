@@ -6,17 +6,37 @@
     "welcome": "Willkommen!",
     "subtitle": "Deine Deutsche Vokabeltrainer-App",
     "tiles": {
-      "vocabularies": { "label": "Vokabeln",      "description": "Wortliste durchsuchen & verwalten" },
-      "sentences":    { "label": "Sätze",          "description": "Deutsche Sätze mit KI analysieren und lernen" },
-      "train":        { "label": "Trainieren",    "description": "Karteikarten üben, um Wörter zu lernen" },
-      "quiz":         { "label": "Quiz",          "description": "Wissen mit Multiple-Choice testen" },
-      "about":        { "label": "Über mich",      "description": "Über diese App" },
-      "settings":     { "label": "Einstellungen", "description": "App-Einstellungen & Datenverwaltung" }
+      "vocabularies": {
+        "label": "Vokabeln",
+        "description": "Wortliste durchsuchen & verwalten"
+      },
+      "sentences": {
+        "label": "Sätze",
+        "description": "Deutsche Sätze mit KI analysieren und lernen"
+      },
+      "train": {
+        "label": "Trainieren",
+        "description": "Karteikarten üben, um Wörter zu lernen"
+      },
+      "quiz": {
+        "label": "Quiz",
+        "description": "Wissen mit Multiple-Choice testen"
+      },
+      "about": {
+        "label": "Über mich",
+        "description": "Über diese App"
+      },
+      "settings": {
+        "label": "Einstellungen",
+        "description": "App-Einstellungen & Datenverwaltung"
+      }
     }
   },
   "home": {
     "title": "Vokabeln",
-    "search": { "placeholder": "Auf Deutsch oder Englisch suchen..." },
+    "search": {
+      "placeholder": "Auf Deutsch oder Englisch suchen..."
+    },
     "filter": {
       "typePlaceholder": "Wortart",
       "levelPlaceholder": "Niveau",
@@ -27,144 +47,148 @@
       "unlearned": "Ungelernt"
     },
     "sort": {
-      "date":    "Hinzugefügt",
-      "alpha":   "Alphabetisch",
-      "type":    "Wortart",
+      "date": "Hinzugefügt",
+      "alpha": "Alphabetisch",
+      "type": "Wortart",
       "learned": "Lernstatus"
     },
     "empty": "Keine Vokabeln gefunden.",
-    "footer": { "count": "{{count}} von {{total}} Vokabeln" }
+    "footer": {
+      "count": "{{count}} von {{total}} Vokabeln"
+    }
   },
   "wordType": {
-    "unknown":     "Weiß ich nicht",
-    "noun":        "Nomen",
-    "verb":        "Verb",
-    "adjective":   "Adjektiv",
-    "adverb":      "Adverb",
+    "unknown": "Weiß ich nicht",
+    "noun": "Nomen",
+    "verb": "Verb",
+    "adjective": "Adjektiv",
+    "adverb": "Adverb",
     "preposition": "Präposition",
     "conjunction": "Konjunktion",
-    "pronoun":     "Pronomen",
-    "other":       "Andere"
+    "pronoun": "Pronomen",
+    "other": "Andere"
   },
   "detail": {
     "exampleSentences": "Beispielsätze",
     "synonymsAntonyms": "Synonyme & Antonyme",
     "synonyms": "Synonyme",
     "antonyms": "Antonyme",
-    "learned": "Gelernt ✓",    "pronounce": "Aussprechen",
-    "stammformen": "Stammformen",    "delete": {
-      "header":  "Vokabel löschen",
+    "learned": "Gelernt ✓",
+    "pronounce": "Aussprechen",
+    "stammformen": "Stammformen",
+    "delete": {
+      "header": "Vokabel löschen",
       "message": "Bist du sicher, dass du diese Vokabel löschen möchtest?",
-      "cancel":  "Abbrechen",
+      "cancel": "Abbrechen",
       "confirm": "Löschen"
     },
     "regenerate": {
-      "header":  "Mit KI neu generieren",
+      "header": "Mit KI neu generieren",
       "message": "Der aktuelle Inhalt wird durch einen neuen KI-generierten Eintrag ersetzt. Fortfahren?",
-      "cancel":  "Abbrechen",
+      "cancel": "Abbrechen",
       "confirm": "Neu generieren",
       "success": "Vokabel aktualisiert!",
-      "error":   "Generierung fehlgeschlagen. Bitte versuche es erneut."
+      "error": "Generierung fehlgeschlagen. Bitte versuche es erneut."
     }
   },
   "edit": {
-    "titleNew":  "Vokabel hinzufügen",
+    "titleNew": "Vokabel hinzufügen",
     "titleEdit": "Vokabel bearbeiten",
     "section": {
-      "basic":      "Grundinformationen",
-      "examples":   "Beispielsätze (max. 5)",
-      "noun":       "Nomendetails",
-      "verb":       "Verbdetails",
-      "adjective":  "Adjektivdetails"
+      "basic": "Grundinformationen",
+      "examples": "Beispielsätze (max. 5)",
+      "noun": "Nomendetails",
+      "verb": "Verbdetails",
+      "adjective": "Adjektivdetails"
     },
     "field": {
-      "german":       "Deutsches Wort *",
-      "germanPh":     "z.B. der Hund",
-      "english":      "Englische Übersetzung *",
-      "englishPh":    "z.B. dog",
-      "wordType":     "Wortart *",
-      "level":        "CEFR-Niveau *",
-      "description":  "Beschreibung",
-      "descriptionPh":"Optionale Beschreibung...",
-      "learned":      "Bereits gelernt",
-      "image":         "Bild",
-      "imagePick":     "Bild auswählen",
-      "article":      "Artikel",
-      "plural":       "Plural",
-      "separable":    "Trennbar",
-      "regular":      "Regelmäßig",
-      "reflexive":    "Reflexiv",
-      "hilfsverb":    "Hilfsverb",
-      "komparativ":   "Komparativ",
-      "superlativ":   "Superlativ"
+      "german": "Deutsches Wort *",
+      "germanPh": "z.B. der Hund",
+      "english": "Englische Übersetzung *",
+      "englishPh": "z.B. dog",
+      "wordType": "Wortart *",
+      "level": "CEFR-Niveau *",
+      "description": "Beschreibung",
+      "descriptionPh": "Optionale Beschreibung...",
+      "learned": "Bereits gelernt",
+      "image": "Bild",
+      "imagePick": "Bild auswählen",
+      "article": "Artikel",
+      "plural": "Plural",
+      "separable": "Trennbar",
+      "regular": "Regelmäßig",
+      "reflexive": "Reflexiv",
+      "hilfsverb": "Hilfsverb",
+      "komparativ": "Komparativ",
+      "superlativ": "Superlativ"
     },
     "duplicate": {
-      "title":   "Vokabel existiert bereits",
+      "title": "Vokabel existiert bereits",
       "message": "Eine Vokabel mit diesem Wort und derselben Wortart existiert bereits. Ersetzen oder ignorieren?",
       "replace": "Ersetzen",
-      "ignore":  "Ignorieren"
+      "ignore": "Ignorieren"
     },
     "example": {
-      "germanLabel":  "Deutsch",
-      "germanPh":     "Deutscher Satz",
+      "germanLabel": "Deutsch",
+      "germanPh": "Deutscher Satz",
       "englishLabel": "Englisch",
-      "englishPh":    "Englische Übersetzung",
-      "remove":       "Entfernen",
-      "add":          "Beispiel hinzufügen"
+      "englishPh": "Englische Übersetzung",
+      "remove": "Entfernen",
+      "add": "Beispiel hinzufügen"
     }
   },
   "grammar": {
-    "nominativ":   "Nominativ",
-    "akkusativ":   "Akkusativ",
-    "genitiv":     "Genitiv",
-    "dativ":       "Dativ",
-    "bestimmt":    "Deklination mit bestimmtem Artikel",
-    "unbestimmt":  "Deklination mit unbestimmtem Artikel",
-    "maskulin":    "Maskulin (der)",
-    "feminin":     "Feminin (die)",
-    "neutral":     "Neutral (das)",
-    "plural":      "Plural (die)"
+    "nominativ": "Nominativ",
+    "akkusativ": "Akkusativ",
+    "genitiv": "Genitiv",
+    "dativ": "Dativ",
+    "bestimmt": "Deklination mit bestimmtem Artikel",
+    "unbestimmt": "Deklination mit unbestimmtem Artikel",
+    "maskulin": "Maskulin (der)",
+    "feminin": "Feminin (die)",
+    "neutral": "Neutral (das)",
+    "plural": "Plural (die)"
   },
   "noun": {
-    "title":     "Nomendetails",
-    "article":   "Artikel",
-    "plural":    "Plural"
+    "title": "Nomendetails",
+    "article": "Artikel",
+    "plural": "Plural"
   },
   "verb": {
-    "title":        "Verbdetails",
+    "title": "Verbdetails",
     "conjugations": "Konjugationen",
-    "separable":   "Trennbar",
+    "separable": "Trennbar",
     "inseparable": "Untrennbar",
-    "regular":     "Regelmäßig",
-    "irregular":   "Unregelmäßig",
-    "reflexive":   "Reflexiv",
-    "present":     "Präsens",
-    "simplePast":  "Präteritum",
+    "regular": "Regelmäßig",
+    "irregular": "Unregelmäßig",
+    "reflexive": "Reflexiv",
+    "present": "Präsens",
+    "simplePast": "Präteritum",
     "pastPerfect": "Perfekt",
-    "future":      "Futur I",
-    "imperative":  "Imperativ"
+    "future": "Futur I",
+    "imperative": "Imperativ"
   },
   "adjective": {
-    "title":      "Adjektivdetails",
+    "title": "Adjektivdetails",
     "komparativ": "Komparativ",
-    "superlativ":  "Superlativ"
+    "superlativ": "Superlativ"
   },
   "settings": {
-    "title":    "Einstellungen",
+    "title": "Einstellungen",
     "language": {
-      "label":  "App-Sprache",
-      "en":     "English",
-      "de":     "Deutsch",
-      "tr":     "Türkçe",
-      "fa":     "فارسی"
+      "label": "App-Sprache",
+      "en": "English",
+      "de": "Deutsch",
+      "tr": "Türkçe",
+      "fa": "فارسی"
     },
     "theme": {
       "label": "Dunkelmodus",
-      "on":    "An",
-      "off":   "Aus"
+      "on": "An",
+      "off": "Aus"
     },
     "data": {
-      "label":  "Daten",
+      "label": "Daten",
       "export": "Daten exportieren",
       "import": "Daten importieren",
       "exportSuccess": "{{count}} Vokabeln exportiert",
@@ -179,7 +203,7 @@
       "importDupMsg": "{{count}} Vokabeln existieren bereits. Was soll mit Duplikaten geschehen?",
       "importDupReplace": "Vorhandene ersetzen",
       "importDupKeep": "Vorhandene behalten",
-      "clear":  "Alle Daten löschen",
+      "clear": "Alle Daten löschen",
       "erase": "Löschen",
       "eraseVocabs": "Alle Vokabeln löschen",
       "eraseVocabsTitle": "Alle Vokabeln löschen?",
@@ -214,18 +238,18 @@
     "comingSoon": "Weitere Einstellungen folgen bald."
   },
   "about": {
-    "title":    "Über mich",
+    "title": "Über mich",
     "subtitle": "Lerne Deutsche Vokabeln – offline, immer.",
-    "bio":      "Entwickelt von Ramin Armanfar, einem Senior Full-Stack-Softwareentwickler mit Leidenschaft für moderne, benutzerfreundliche Anwendungen.",
+    "bio": "Entwickelt von Ramin Armanfar, einem Senior Full-Stack-Softwareentwickler mit Leidenschaft für moderne, benutzerfreundliche Anwendungen.",
     "linkedin": "Auf LinkedIn vernetzen",
-    "github":   "GitHub-Profil",
-    "email":    "E-Mail senden",
+    "github": "GitHub-Profil",
+    "email": "E-Mail senden",
     "features": {
       "title": "Funktionen",
-      "grammar":  "Vollständige Grammatikdetails für Nomen, Verben & Adjektive",
-      "offline":  "Vollständig offline – Daten werden lokal gespeichert",
-      "cefr":     "CEFR-Niveaus A1–C2",
-      "tts":      "Text-to-Speech-Aussprache"
+      "grammar": "Vollständige Grammatikdetails für Nomen, Verben & Adjektive",
+      "offline": "Vollständig offline – Daten werden lokal gespeichert",
+      "cefr": "CEFR-Niveaus A1–C2",
+      "tts": "Text-to-Speech-Aussprache"
     },
     "tech": {
       "title": "Erstellt mit",
@@ -247,8 +271,17 @@
     "sessions": "Sitzungen",
     "notFound": "Sitzung nicht gefunden.",
     "dailyBreakdown": "Tagesübersicht",
-    "tabs": { "calendar": "Tagesbericht", "monthly": "Monatsbericht" },
-    "mon": "Mo", "tue": "Di", "wed": "Mi", "thu": "Do", "fri": "Fr", "sat": "Sa", "sun": "So"
+    "tabs": {
+      "calendar": "Tagesbericht",
+      "monthly": "Monatsbericht"
+    },
+    "mon": "Mo",
+    "tue": "Di",
+    "wed": "Mi",
+    "thu": "Do",
+    "fri": "Fr",
+    "sat": "Sa",
+    "sun": "So"
   },
   "train": {
     "title": "Trainieren",
@@ -335,62 +368,69 @@
     }
   },
   "qr": {
-    "title":        "Vokabeln per QR-Code teilen",
-    "tabShare":     "Teilen",
-    "tabScan":      "Empfangen (Scan)",
-    "fabTooltip":   "Per QR teilen",
+    "title": "Vokabeln per QR-Code teilen",
+    "tabShare": "Teilen",
+    "tabScan": "Empfangen (Scan)",
+    "fabTooltip": "Per QR teilen",
     "generateHint": "Tippe, um Vokabeln hochzuladen und einen QR-Code zu erstellen.",
-    "generate":     "QR-Code erstellen",
-    "uploading":    "Vokabeln werden hochgeladen…",
-    "shareSubtitle":"{{count}} Vokabeln bereit zum Teilen",
-    "shareHint":    "Zeige diesen QR-Code dem anderen Gerät zum Scannen.",
-    "expiryHint":   "Dieser Code verfällt nach 24 Stunden oder nach erster Nutzung.",
-    "uploadError":  "Upload fehlgeschlagen. Bitte Verbindung prüfen und erneut versuchen.",
-    "scanPrompt":   "Tippe, um die Kamera zu öffnen und den QR-Code vom anderen Gerät zu scannen.",
-    "startCamera":  "Kamera öffnen",
-    "scanHint":     "Kamera auf den QR-Code richten.",
-    "downloading":  "Vokabeln werden heruntergeladen…",
-    "importSuccess":"{{count}} Vokabeln importiert",
-    "importError":  "Import fehlgeschlagen – ungültige QR-Daten.",
+    "generate": "QR-Code erstellen",
+    "uploading": "Vokabeln werden hochgeladen…",
+    "shareSubtitle": "{{count}} Vokabeln bereit zum Teilen",
+    "shareHint": "Zeige diesen QR-Code dem anderen Gerät zum Scannen.",
+    "expiryHint": "Dieser Code verfällt nach 24 Stunden oder nach erster Nutzung.",
+    "uploadError": "Upload fehlgeschlagen. Bitte Verbindung prüfen und erneut versuchen.",
+    "scanPrompt": "Tippe, um die Kamera zu öffnen und den QR-Code vom anderen Gerät zu scannen.",
+    "startCamera": "Kamera öffnen",
+    "scanHint": "Kamera auf den QR-Code richten.",
+    "downloading": "Vokabeln werden heruntergeladen…",
+    "importSuccess": "{{count}} Vokabeln importiert",
+    "importError": "Import fehlgeschlagen – ungültige QR-Daten.",
     "expiredError": "Dieser QR-Code wurde bereits verwendet oder ist abgelaufen.",
-    "downloadError":"Download fehlgeschlagen. Bitte erneut scannen.",
-    "cameraError":  "Kamerazugriff verweigert oder nicht verfügbar.",
-    "tryAgain":     "Erneut versuchen"
+    "downloadError": "Download fehlgeschlagen. Bitte erneut scannen.",
+    "cameraError": "Kamerazugriff verweigert oder nicht verfügbar.",
+    "tryAgain": "Erneut versuchen"
   },
   "common": {
     "cancel": "Abbrechen",
     "delete": "Löschen"
   },
   "ai": {
-    "fab": { "tooltip": "Mit KI hinzufügen" },
+    "fab": {
+      "tooltip": "Mit KI hinzufügen"
+    },
     "modal": {
-      "title":          "KI-Vokabel",
-      "hint":           "Gib ein deutsches Wort ein. Wähle eine Wortart, falls du sie kennst – sonst wähle \"Weiß ich nicht\" und die KI erkennt sie automatisch.",
-      "wordLabel":      "Deutsches Wort",
-      "wordPlaceholder":"z.B. laufen",
-      "typeLabel":      "Wortart",
-      "generate":       "Generieren",
-      "generating":     "Vokabel wird generiert…",
-      "retry":          "Erneut versuchen",
-      "save":           "In Bibliothek speichern",
-      "saving":         "Wird gespeichert…",
-      "voiceHint":      "Mikrofon antippen und das deutsche Wort sprechen",
-      "listening":      "Höre zu… jetzt sprechen",
-      "examples":       "Beispielsätze",
-      "bestimmt":       "Deklination mit bestimmtem Artikel",
-      "unbestimmt":     "Deklination mit unbestimmtem Artikel",
-      "present":        "Präsens"
+      "title": "KI-Vokabel",
+      "hint": "Gib ein deutsches Wort ein. Wähle eine Wortart, falls du sie kennst – sonst wähle \"Weiß ich nicht\" und die KI erkennt sie automatisch.",
+      "wordLabel": "Deutsches Wort",
+      "wordPlaceholder": "z.B. laufen",
+      "typeLabel": "Wortart",
+      "randomLevelLabel": "Zufallsniveau (optional)",
+      "randomTypeLabel": "Zufalls-Wortart (optional)",
+      "randomAnyLevel": "Beliebiges Niveau",
+      "randomAnyType": "Beliebige Wortart",
+      "generate": "Generieren",
+      "generateRandom": "Zufällig generieren",
+      "generating": "Vokabel wird generiert…",
+      "retry": "Erneut versuchen",
+      "save": "In Bibliothek speichern",
+      "saving": "Wird gespeichert…",
+      "voiceHint": "Mikrofon antippen und das deutsche Wort sprechen",
+      "listening": "Höre zu… jetzt sprechen",
+      "examples": "Beispielsätze",
+      "bestimmt": "Deklination mit bestimmtem Artikel",
+      "unbestimmt": "Deklination mit unbestimmtem Artikel",
+      "present": "Präsens"
     },
     "error": {
-      "unknown":       "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
-      "saveFailed":    "Speichern fehlgeschlagen. Bitte versuche es erneut.",
+      "unknown": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
+      "saveFailed": "Speichern fehlgeschlagen. Bitte versuche es erneut.",
       "notGermanWord": "Dies scheint kein deutsches Wort zu sein. Bitte gib ein gültiges deutsches Wort ein.",
-      "misspelled":    "Meintest du \"{{correction}}\"? Bitte korrigiere die Schreibweise und versuche es erneut."
+      "misspelled": "Meintest du \"{{correction}}\"? Bitte korrigiere die Schreibweise und versuche es erneut."
     },
     "duplicate": {
-      "header":  "Wort existiert bereits",
+      "header": "Wort existiert bereits",
       "message": "\"{{word}}\" ist bereits in deiner Bibliothek. Möchtest du es durch den neuen KI-generierten Eintrag ersetzen?",
-      "cancel":  "Bestehenden behalten",
+      "cancel": "Bestehenden behalten",
       "replace": "Ersetzen"
     }
   },

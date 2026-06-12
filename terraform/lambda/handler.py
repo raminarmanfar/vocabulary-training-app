@@ -25,13 +25,32 @@ CEFR_LEVELS = {"A1", "A2", "B1", "B2", "C1", "C2"}
 SYSTEM_PROMPT = """You are a German language expert. When given a German word,
 you respond ONLY with a single valid JSON object — no markdown, no explanation, just raw JSON.
 
+If the user asks for a random vocabulary entry, generate a random valid German vocabulary entry
+and skip the input-word validation checks below.
+
 IMPORTANT: First check if the input is a real, correctly-spelled German word.
 - If the input is NOT German (e.g. English, French, etc.), return ONLY: {"_isValidGerman": false, "_correction": null}
 - If the input is a misspelling of a German word, return ONLY: {"_isValidGerman": false, "_correction": "<corrected German word>"}
 - If the input IS a valid German word, return the full vocabulary JSON described in the user message."""
 
-def build_user_prompt(word: str, word_type: str | None) -> str:
-    if word_type:
+def build_user_prompt(
+    word: str,
+    word_type: str | None,
+    level: str | None = None,
+    random_mode: bool = False,
+) -> str:
+    level_instruction = (
+        f'Use CEFR level "{level}" for this entry.' if level else "Choose the most suitable CEFR level."
+    )
+
+    if random_mode:
+        if word_type:
+            type_instruction = f'word type: {word_type}'
+            type_field_note = f'"wordType": "{word_type}"'
+        else:
+            type_instruction = 'word type: choose randomly'
+            type_field_note = '"wordType": "<choose one: noun | verb | adjective | adverb | preposition | conjunction | pronoun | other>"'
+    elif word_type:
         type_instruction = f'word type: {word_type}'
         type_field_note = f'"wordType": "{word_type}"'
     else:
@@ -39,7 +58,7 @@ def build_user_prompt(word: str, word_type: str | None) -> str:
         type_field_note = '"wordType": "<detect the correct type: noun | verb | adjective | adverb | preposition | conjunction | pronoun | other>"'
 
     is_verb = word_type == "verb"
-    is_auto = word_type is None
+    is_auto = word_type is None and not random_mode
 
     if is_verb:
         examples_schema = """[
@@ -66,7 +85,16 @@ def build_user_prompt(word: str, word_type: str | None) -> str:
     { "german": "<example sentence 3>", "english": "<English translation>", "turkish": "<Turkish translation>", "persian": "<Persian/Farsi translation>" }
   ]"""
 
-    base = f"""Generate a complete vocabulary entry for the German word "{word}" ({type_instruction}).
+    if random_mode:
+        base = f"""Generate one random German vocabulary entry ({type_instruction}).
+
+Requirements:
+- Pick a single realistic, useful German vocabulary item.
+- {level_instruction}
+- Ensure all fields are fully populated as requested below.
+"""
+    else:
+        base = f"""Generate a complete vocabulary entry for the German word "{word}" ({type_instruction}).
 
 Important normalization rule before generating the entry:
 - Convert the input to its canonical dictionary form based on part of speech.
@@ -74,8 +102,11 @@ Important normalization rule before generating the entry:
 - Noun: singular nominative without article (e.g. "Bücher" -> "Buch").
 - Adjective/Adverb: positive/base form (e.g. "besser" -> "gut").
 - Use this normalized form as the final vocabulary target.
+ - {level_instruction}
 
-Return a JSON object with exactly these fields:
+"""
+
+    base += f"""Return a JSON object with exactly these fields:
 
 {{
     "german": "<the normalized canonical German word, capitalised if noun>",
@@ -219,8 +250,13 @@ Rules:
     return base
 
 
-def invoke_bedrock(word: str, word_type: str) -> dict:
-    prompt = build_user_prompt(word, word_type)
+def invoke_bedrock(
+    word: str,
+    word_type: str | None,
+    level: str | None = None,
+    random_mode: bool = False,
+) -> dict:
+    prompt = build_user_prompt(word, word_type, level=level, random_mode=random_mode)
     body = {
         "anthropic_version": "bedrock-2023-05-31",
         "max_tokens": 2048,
@@ -267,8 +303,15 @@ def handle_generate(event, context):
         }
 
     word = (body.get("word") or "").strip()
+    random_mode = bool(body.get("random") or body.get("generateRandom"))
     raw_type = (body.get("wordType") or "").strip().lower()
     word_type = raw_type if raw_type in WORD_TYPES else None  # None → auto-detect
+    raw_level = (body.get("level") or "").strip().upper()
+    level = raw_level if raw_level in CEFR_LEVELS else None
+
+    if random_mode and not word:
+        # Placeholder token; prompt explains this is random mode.
+        word = "__RANDOM__"
 
     if not word:
         return {
@@ -278,7 +321,7 @@ def handle_generate(event, context):
         }
 
     try:
-        vocab = invoke_bedrock(word, word_type)
+        vocab = invoke_bedrock(word, word_type, level=level, random_mode=random_mode)
     except json.JSONDecodeError as exc:
         return {
             "statusCode": 502,

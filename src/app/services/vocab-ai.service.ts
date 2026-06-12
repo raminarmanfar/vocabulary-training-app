@@ -1,9 +1,14 @@
-import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
-  Vocabulary, WordType, NounDetails, VerbDetails, AdjectiveDetails
+  AdjectiveDetails,
+  CefrLevel,
+  NounDetails,
+  VerbDetails,
+  Vocabulary,
+  WordType,
 } from '../models/vocabulary.model';
 
 /** Shape of the JSON object returned by the Lambda/Bedrock endpoint. */
@@ -23,14 +28,28 @@ export interface AiVocabResponse {
   antonyms?: string[];
 }
 
+export interface GenerateVocabOptions {
+  wordType?: WordType;
+  level?: CefrLevel;
+  random?: boolean;
+}
+
 @Injectable({ providedIn: 'root' })
 export class VocabAiService {
   private http = inject(HttpClient);
 
-  generate(word: string, wordType?: WordType): Observable<AiVocabResponse> {
+  generate(word: string, options?: GenerateVocabOptions): Observable<AiVocabResponse> {
     const headers = new HttpHeaders({ 'x-api-key': environment.bedrockApiKey });
-    const body: Record<string, string> = { word: word.trim() };
-    if (wordType) body['wordType'] = wordType;
+    const body: Record<string, string | boolean> = {};
+
+    const normalizedWord = word.trim();
+    if (normalizedWord.length > 0) {
+      body['word'] = normalizedWord;
+    }
+    if (options?.wordType) body['wordType'] = options.wordType;
+    if (options?.level) body['level'] = options.level;
+    if (options?.random) body['random'] = true;
+
     return this.http.post<AiVocabResponse>(environment.bedrockApiUrl, body, { headers });
   }
 
@@ -41,7 +60,7 @@ export class VocabAiService {
   toVocabulary(response: AiVocabResponse): Vocabulary {
     const now = new Date().toISOString();
     return {
-      _id: '',           // assigned by DatabaseService on first save
+      _id: '', // assigned by DatabaseService on first save
       german: response.german,
       english: response.english,
       wordType: response.wordType,
