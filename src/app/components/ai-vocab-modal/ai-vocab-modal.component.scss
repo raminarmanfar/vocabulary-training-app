@@ -46,18 +46,6 @@
   }
 }
 
-.random-btn {
-  align-self: center;
-  --padding-start: 8px;
-  --padding-end: 8px;
-  width: 42px;
-  height: 42px;
-
-  ion-icon {
-    font-size: 22px;
-  }
-}
-
 @keyframes mic-pulse {
 
   0%,
@@ -84,10 +72,6 @@
 
 .generate-btn {
   margin-top: 8px;
-}
-
-.generate-random-btn {
-  margin-top: 10px;
 }
 
 // ── Loading / Saving step ──────────────────────────────────────────────────

@@ -107,6 +107,15 @@ resource "aws_apigatewayv2_route" "generate" {
   authorizer_id      = aws_apigatewayv2_authorizer.api_key.id
 }
 
+# POST /generate-random — dedicated random vocabulary generation, protected by API key
+resource "aws_apigatewayv2_route" "generate_random" {
+  api_id             = aws_apigatewayv2_api.vocab_ai.id
+  route_key          = "POST /generate-random"
+  target             = "integrations/${aws_apigatewayv2_integration.vocab_ai.id}"
+  authorization_type = "CUSTOM"
+  authorizer_id      = aws_apigatewayv2_authorizer.api_key.id
+}
+
 # POST /share — upload vocabs, protected by API key
 resource "aws_apigatewayv2_route" "share_upload" {
   api_id             = aws_apigatewayv2_api.vocab_ai.id

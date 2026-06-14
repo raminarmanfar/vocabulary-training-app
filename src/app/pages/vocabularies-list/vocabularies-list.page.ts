@@ -1,22 +1,56 @@
-import { Component, OnInit, OnDestroy, inject, signal, computed, effect } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { SpeechRecognition } from '@capacitor-community/speech-recognition';
+import { Capacitor } from '@capacitor/core';
 import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel,
-  IonBadge, IonIcon, IonFab, IonFabButton, IonFabList, IonSearchbar,
-  IonPopover, IonCheckbox, IonButton, IonItemSliding, IonItemOptions, IonItemOption,
-  IonButtons, IonBackButton, IonFooter,
-  ModalController, ToastController, AlertController
+  AlertController,
+  IonBackButton,
+  IonBadge,
+  IonButton,
+  IonButtons,
+  IonCheckbox,
+  IonContent,
+  IonFab,
+  IonFabButton,
+  IonFabList,
+  IonFooter,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonItemOption,
+  IonItemOptions,
+  IonItemSliding,
+  IonLabel,
+  IonList,
+  IonPopover,
+  IonSearchbar,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+  ToastController,
 } from '@ionic/angular/standalone';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { add, create, trash, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline } from 'ionicons/icons';
-import { SpeechRecognition } from '@capacitor-community/speech-recognition';
-import { Capacitor } from '@capacitor/core';
-import { VocabularyService } from '../../services/vocabulary.service';
-import { Vocabulary, WordType, CefrLevel } from '../../models/vocabulary.model';
+import {
+  add,
+  arrowDownOutline,
+  arrowUpOutline,
+  checkmarkCircle,
+  chevronDownOutline,
+  create,
+  ellipseOutline,
+  mic,
+  micOutline,
+  shuffle,
+  sparkles,
+  trash,
+} from 'ionicons/icons';
 import { AiVocabModalComponent } from '../../components/ai-vocab-modal/ai-vocab-modal.component';
+import { VocabRandomOptionsModalComponent } from '../../components/vocab-random-options-modal/vocab-random-options-modal.component';
+import { CefrLevel, Vocabulary, WordType } from '../../models/vocabulary.model';
+import { VocabularyService } from '../../services/vocabulary.service';
 
 type SortField = 'date' | 'alpha' | 'type' | 'learned';
 
@@ -27,12 +61,30 @@ type SortField = 'date' | 'alpha' | 'type' | 'learned';
   standalone: true,
   imports: [
     FormsModule,
-    IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel,
-    IonBadge, IonIcon, IonFab, IonFabButton, IonFabList, IonSearchbar,
-    IonPopover, IonCheckbox, IonButton, IonItemSliding, IonItemOptions, IonItemOption,
-    IonButtons, IonBackButton, IonFooter,
-    TranslatePipe
-  ]
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonBadge,
+    IonIcon,
+    IonFab,
+    IonFabButton,
+    IonFabList,
+    IonSearchbar,
+    IonPopover,
+    IonCheckbox,
+    IonButton,
+    IonItemSliding,
+    IonItemOptions,
+    IonItemOption,
+    IonButtons,
+    IonBackButton,
+    IonFooter,
+    TranslatePipe,
+  ],
 })
 export class VocabulariesListPage implements OnInit, OnDestroy {
   private router = inject(Router);
@@ -42,7 +94,16 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
   private alertCtrl = inject(AlertController);
   private translate = inject(TranslateService);
 
-  readonly allWordTypeValues: WordType[] = ['noun', 'verb', 'adjective', 'adverb', 'preposition', 'conjunction', 'pronoun', 'other'];
+  readonly allWordTypeValues: WordType[] = [
+    'noun',
+    'verb',
+    'adjective',
+    'adverb',
+    'preposition',
+    'conjunction',
+    'pronoun',
+    'other',
+  ];
   readonly allLevelValues: CefrLevel[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
   private loadTypes(): WordType[] {
@@ -82,9 +143,9 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
   filterLearned = signal<'all' | 'learned' | 'unlearned'>(this.loadLearned());
 
   readonly sortFieldValues: Array<{ value: SortField; labelKey: string }> = [
-    { value: 'date',    labelKey: 'home.sort.date' },
-    { value: 'alpha',   labelKey: 'home.sort.alpha' },
-    { value: 'type',    labelKey: 'home.sort.type' },
+    { value: 'date', labelKey: 'home.sort.date' },
+    { value: 'alpha', labelKey: 'home.sort.alpha' },
+    { value: 'type', labelKey: 'home.sort.type' },
     { value: 'learned', labelKey: 'home.sort.learned' },
   ];
 
@@ -100,22 +161,22 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
     const learned = this.filterLearned();
     const activeTypes = this.isAllTypesSelected() ? [] : this.filterTypes();
     const activeLevels = this.isAllLevelsSelected() ? [] : this.filterLevels();
-    const filtered = this.vocabService.filter(
-      this.allVocabs(),
-      activeTypes,
-      activeLevels,
-      this.searchTerm()
-    ).filter(v =>
-      learned === 'all' ? true :
-      learned === 'learned' ? v.learned :
-      !v.learned
-    );
+    const filtered = this.vocabService
+      .filter(this.allVocabs(), activeTypes, activeLevels, this.searchTerm())
+      .filter((v) => (learned === 'all' ? true : learned === 'learned' ? v.learned : !v.learned));
 
     const field = this.sortField();
     const mult = this.sortDir() === 'asc' ? 1 : -1;
     const typeOrder: Record<string, number> = {
-      noun: 0, verb: 1, adjective: 2, adverb: 3,
-      preposition: 4, conjunction: 5, pronoun: 6, other: 7, unknown: 8
+      noun: 0,
+      verb: 1,
+      adjective: 2,
+      adverb: 3,
+      preposition: 4,
+      conjunction: 5,
+      pronoun: 6,
+      other: 7,
+      unknown: 8,
     };
 
     return filtered.slice().sort((a, b) => {
@@ -138,14 +199,14 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
   toggleType(type: WordType) {
     const current = this.filterTypes();
     if (current.includes(type) && current.length === 1) return;
-    const next = current.includes(type) ? current.filter(t => t !== type) : [...current, type];
+    const next = current.includes(type) ? current.filter((t) => t !== type) : [...current, type];
     this.filterTypes.set(next);
   }
 
   toggleLevel(level: CefrLevel) {
     const current = this.filterLevels();
     if (current.includes(level) && current.length === 1) return;
-    const next = current.includes(level) ? current.filter(l => l !== level) : [...current, level];
+    const next = current.includes(level) ? current.filter((l) => l !== level) : [...current, level];
     this.filterLevels.set(next);
   }
 
@@ -159,24 +220,40 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
   }
 
   wordTypes: Array<{ value: WordType; labelKey: string }> = [
-    { value: 'noun',        labelKey: 'wordType.noun' },
-    { value: 'verb',        labelKey: 'wordType.verb' },
-    { value: 'adjective',   labelKey: 'wordType.adjective' },
-    { value: 'adverb',      labelKey: 'wordType.adverb' },
+    { value: 'noun', labelKey: 'wordType.noun' },
+    { value: 'verb', labelKey: 'wordType.verb' },
+    { value: 'adjective', labelKey: 'wordType.adjective' },
+    { value: 'adverb', labelKey: 'wordType.adverb' },
     { value: 'preposition', labelKey: 'wordType.preposition' },
     { value: 'conjunction', labelKey: 'wordType.conjunction' },
-    { value: 'pronoun',     labelKey: 'wordType.pronoun' },
-    { value: 'other',       labelKey: 'wordType.other' }
+    { value: 'pronoun', labelKey: 'wordType.pronoun' },
+    { value: 'other', labelKey: 'wordType.other' },
   ];
 
   levels: Array<{ value: CefrLevel; label: string }> = [
-    { value: 'A1', label: 'A1' }, { value: 'A2', label: 'A2' },
-    { value: 'B1', label: 'B1' }, { value: 'B2', label: 'B2' },
-    { value: 'C1', label: 'C1' }, { value: 'C2', label: 'C2' }
+    { value: 'A1', label: 'A1' },
+    { value: 'A2', label: 'A2' },
+    { value: 'B1', label: 'B1' },
+    { value: 'B2', label: 'B2' },
+    { value: 'C1', label: 'C1' },
+    { value: 'C2', label: 'C2' },
   ];
 
   constructor() {
-    addIcons({ add, create, trash, checkmarkCircle, ellipseOutline, chevronDownOutline, sparkles, mic, micOutline, arrowUpOutline, arrowDownOutline });
+    addIcons({
+      add,
+      create,
+      trash,
+      checkmarkCircle,
+      ellipseOutline,
+      chevronDownOutline,
+      sparkles,
+      mic,
+      micOutline,
+      arrowUpOutline,
+      arrowDownOutline,
+      shuffle,
+    });
     effect(() => localStorage.setItem('filter_types', JSON.stringify(this.filterTypes())));
     effect(() => localStorage.setItem('filter_levels', JSON.stringify(this.filterLevels())));
     effect(() => localStorage.setItem('filter_learned', this.filterLearned()));
@@ -203,15 +280,17 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
         };
         this.webRecognition.onerror = (event: any) => {
           this.recording.set(false);
-          const msg = event.error === 'not-allowed'
-            ? 'Microphone permission denied'
-            : event.error === 'network'
-            ? 'Speech recognition requires internet (Chrome only)'
-            : `Speech error: ${event.error}`;
-          this.toastCtrl.create({ message: msg, duration: 3000, color: 'warning', position: 'bottom' })
-            .then(t => t.present());
+          const msg =
+            event.error === 'not-allowed'
+              ? 'Microphone permission denied'
+              : event.error === 'network'
+                ? 'Speech recognition requires internet (Chrome only)'
+                : `Speech error: ${event.error}`;
+          this.toastCtrl
+            .create({ message: msg, duration: 3000, color: 'warning', position: 'bottom' })
+            .then((t) => t.present());
         };
-        this.webRecognition.onend   = () => this.recording.set(false);
+        this.webRecognition.onend = () => this.recording.set(false);
       }
     }
   }
@@ -242,7 +321,9 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
           popup: true,
         });
         if (result.matches?.length) this.searchTerm.set(result.matches[0]);
-      } catch { /* cancelled */ }
+      } catch {
+        /* cancelled */
+      }
       this.recording.set(false);
     } else {
       this.webRecognition?.start();
@@ -280,9 +361,9 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
           role: 'destructive',
           handler: async () => {
             await this.vocabService.delete(vocab);
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
     await alert.present();
   }
@@ -305,15 +386,35 @@ export class VocabulariesListPage implements OnInit, OnDestroy {
     }
   }
 
+  async addWithAiRandom() {
+    const optionsModal = await this.modalCtrl.create({
+      component: VocabRandomOptionsModalComponent,
+      breakpoints: [0, 0.75, 1],
+      initialBreakpoint: 0.75,
+      handleBehavior: 'cycle',
+    });
+    await optionsModal.present();
+    const { data, role } = await optionsModal.onWillDismiss();
+    if (role === 'saved' && data?._id) {
+      this.router.navigate(['/vocabulary-details', data._id]);
+    }
+  }
+
   goBack() {
     this.router.navigate(['/dashboard']);
   }
 
   wordTypeColor(type: WordType): string {
     const map: Record<WordType, string> = {
-      noun: 'primary', verb: 'success', adjective: 'warning',
-      adverb: 'tertiary', preposition: 'medium', conjunction: 'dark',
-      pronoun: 'secondary', other: 'light', unknown: 'medium'
+      noun: 'primary',
+      verb: 'success',
+      adjective: 'warning',
+      adverb: 'tertiary',
+      preposition: 'medium',
+      conjunction: 'dark',
+      pronoun: 'secondary',
+      other: 'light',
+      unknown: 'medium',
     };
     return map[type] || 'medium';
   }

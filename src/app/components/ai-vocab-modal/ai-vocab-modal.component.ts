@@ -36,7 +36,6 @@ import {
   micOutline,
   refreshOutline,
   save,
-  shuffle,
   sparkles,
   volumeHigh,
 } from 'ionicons/icons';
@@ -60,11 +59,11 @@ type ConjugationTab = 'present' | 'simplePast' | 'pastPerfect' | 'future';
     IonToolbar,
     IonTitle,
     IonContent,
+    IonInput,
     IonItem,
     IonLabel,
-    IonInput,
-    IonSelect,
     IonSelectOption,
+    IonSelect,
     IonButton,
     IonButtons,
     IonIcon,
@@ -91,12 +90,13 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
 
   @Input() initialWord?: string;
   @Input() initialWordType?: WordType | 'unknown';
+  @Input() initialRandom = false;
+  @Input() initialRandomLevel?: CefrLevel | 'any';
 
   step = signal<ModalStep>('input');
   word = signal('');
   wordType = signal<WordType | 'unknown'>('unknown');
   randomLevel = signal<CefrLevel | 'any'>('any');
-  randomWordType = signal<WordType | 'any'>('any');
   result = signal<AiVocabResponse | null>(null);
   errorMsg = signal('');
   conjugationTab = signal<ConjugationTab>('present');
@@ -128,17 +128,42 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
 
   readonly cefrLevels: CefrLevel[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
-  readonly randomWordTypes: Array<{ value: WordType | 'any'; labelKey: string }> = [
-    { value: 'any', labelKey: 'ai.modal.randomAnyType' },
-    { value: 'noun', labelKey: 'wordType.noun' },
-    { value: 'verb', labelKey: 'wordType.verb' },
-    { value: 'adjective', labelKey: 'wordType.adjective' },
-    { value: 'adverb', labelKey: 'wordType.adverb' },
-    { value: 'preposition', labelKey: 'wordType.preposition' },
-    { value: 'conjunction', labelKey: 'wordType.conjunction' },
-    { value: 'pronoun', labelKey: 'wordType.pronoun' },
-    { value: 'other', labelKey: 'wordType.other' },
-  ];
+  // Guardrail list to avoid obviously beginner words when user requests higher CEFR levels.
+  private readonly basicWordsForHigherLevels = new Set<string>([
+    'gehen',
+    'machen',
+    'lernen',
+    'sprechen',
+    'finden',
+    'haus',
+    'buch',
+    'stadt',
+    'freund',
+    'arbeit',
+    'groß',
+    'schnell',
+    'wichtig',
+    'freundlich',
+    'neu',
+    'heute',
+    'morgen',
+    'oft',
+    'gern',
+    'dort',
+    'mit',
+    'für',
+    'ohne',
+    'gegen',
+    'zwischen',
+    'weil',
+    'und',
+    'oder',
+    'denn',
+    'ich',
+    'du',
+    'wir',
+    'sie',
+  ]);
 
   canGenerate = computed(() => this.word().trim().length > 0);
 
@@ -166,7 +191,6 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
       checkmarkCircle,
       micOutline,
       mic,
-      shuffle,
       volumeHigh,
     });
   }
@@ -208,6 +232,13 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
     }
     if (this.initialWordType) {
       this.wordType.set(this.initialWordType);
+    }
+    if (this.initialRandomLevel) {
+      this.randomLevel.set(this.initialRandomLevel);
+    }
+    if (this.initialRandom) {
+      this.generateRandom();
+      return;
     }
     if (this.initialWord) {
       this.word.set(this.initialWord);
@@ -299,35 +330,69 @@ export class AiVocabModalComponent implements OnInit, OnDestroy {
     this.errorMsg.set('');
 
     const selectedLevel = this.randomLevel();
-    const selectedWordType = this.randomWordType();
     const level = selectedLevel === 'any' ? undefined : selectedLevel;
-    const wordType = selectedWordType === 'any' ? undefined : selectedWordType;
+    const selectedWordType = this.wordType();
+    const wordType = selectedWordType === 'unknown' ? undefined : selectedWordType;
 
+    this.requestRandomWithLevelGuard(level, wordType, 3);
+  }
+
+  private requestRandomWithLevelGuard(
+    level: CefrLevel | undefined,
+    wordType: WordType | undefined,
+    retriesLeft: number,
+  ) {
     this.aiService
-      .generate('', {
-        random: true,
+      .generateRandom({
         level,
         wordType,
       })
       .subscribe({
         next: (res) => {
+          if (
+            level &&
+            this.isClearlyTooBasicForSelectedLevel(res.german, level) &&
+            retriesLeft > 0
+          ) {
+            this.requestRandomWithLevelGuard(level, wordType, retriesLeft - 1);
+            return;
+          }
+
           this.result.set(res);
           this.conjugationTab.set('present');
           this.step.set('preview');
         },
         error: (err) => {
           const code = err?.error?.error;
-          const correction = err?.error?.correction;
-          if (code === 'NOT_GERMAN_WORD') {
-            this.errorMsg.set(this.translate.instant('ai.error.notGermanWord'));
-          } else if (code === 'WORD_MISSPELLED' && correction) {
-            this.errorMsg.set(this.translate.instant('ai.error.misspelled', { correction }));
+
+          // Random mode should never ask the user to enter a German word.
+          // If the model returns validation-style errors, retry automatically.
+          if ((code === 'NOT_GERMAN_WORD' || code === 'WORD_MISSPELLED') && retriesLeft > 0) {
+            this.requestRandomWithLevelGuard(level, wordType, retriesLeft - 1);
+            return;
+          }
+
+          if (code === 'NOT_GERMAN_WORD' || code === 'WORD_MISSPELLED') {
+            this.errorMsg.set(
+              'Could not generate a random vocabulary right now. Please try again.',
+            );
           } else {
             this.errorMsg.set(this.translate.instant(code ?? 'ai.error.unknown'));
           }
           this.step.set('input');
         },
       });
+  }
+
+  private isClearlyTooBasicForSelectedLevel(germanWord: string, level: CefrLevel): boolean {
+    if (level === 'A1' || level === 'A2') return false;
+
+    const normalized = germanWord
+      .trim()
+      .toLowerCase()
+      .replace(/^sich\s+/, '');
+
+    return this.basicWordsForHigherLevels.has(normalized);
   }
 
   reset() {

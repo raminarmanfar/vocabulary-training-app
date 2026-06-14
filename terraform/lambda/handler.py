@@ -8,6 +8,7 @@ cross-device vocabulary sharing via S3.
 """
 import json
 import os
+import re
 import uuid
 import boto3
 from botocore.exceptions import ClientError
@@ -22,6 +23,13 @@ SHARE_PREFIX = "shares/"
 WORD_TYPES = {"noun", "verb", "adjective", "adverb", "preposition", "conjunction", "pronoun", "other"}
 CEFR_LEVELS = {"A1", "A2", "B1", "B2", "C1", "C2"}
 
+# Pragmatic guardrail: common beginner verbs that should not be served for B1+ requests.
+BEGINNER_VERB_LEMMAS = {
+    "sein", "haben", "machen", "gehen", "kommen", "sehen", "essen", "trinken",
+    "lernen", "sprechen", "fragen", "sagen", "geben", "nehmen", "wohnen", "arbeiten",
+    "spielen", "lesen", "schreiben", "hoeren", "hören", "besuchen", "vorstellen",
+}
+
 SYSTEM_PROMPT = """You are a German language expert. When given a German word,
 you respond ONLY with a single valid JSON object — no markdown, no explanation, just raw JSON.
 
@@ -33,6 +41,14 @@ IMPORTANT: First check if the input is a real, correctly-spelled German word.
 - If the input is a misspelling of a German word, return ONLY: {"_isValidGerman": false, "_correction": "<corrected German word>"}
 - If the input IS a valid German word, return the full vocabulary JSON described in the user message."""
 
+SYSTEM_PROMPT_RANDOM = """You are a German language expert. Generate a random German vocabulary entry.
+You respond ONLY with a single valid JSON object — no markdown, no explanation, just raw JSON.
+Do not return validation helper fields like _isValidGerman or _correction."""
+
+SYSTEM_PROMPT_CEFR_CHECK = """You are a strict German CEFR classifier.
+Return ONLY one token from this exact set: A1, A2, B1, B2, C1, C2.
+No explanation, no punctuation, no extra text."""
+
 def build_user_prompt(
     word: str,
     word_type: str | None,
@@ -40,7 +56,7 @@ def build_user_prompt(
     random_mode: bool = False,
 ) -> str:
     level_instruction = (
-        f'Use CEFR level "{level}" for this entry.' if level else "Choose the most suitable CEFR level."
+        f'Use CEFR level "{level}" for this entry. This is mandatory: set "level" to exactly "{level}" and keep sentence complexity/vocabulary consistent with {level}.' if level else "Choose the most suitable CEFR level."
     )
 
     if random_mode:
@@ -238,6 +254,7 @@ Rules:
 - Re-check borderline verbs such as an-, auf-, aus-, ein-, mit-, nach-, vor-, weg-, weiter-, wieder-, zu-, zurück-, zusammen- before finalizing the flags.
 - "english", "turkish", and "persian" fields must always be filled with accurate translations.
 - "level" must be one of: A1, A2, B1, B2, C1, C2 — choose based on typical learner exposure.
+- If the request specifies a CEFR level, the output "level" must match that exact level.
 - For verbs, provide exactly 3 example sentences: one in Präsens, one in Präteritum, one in Perfekt.
 - For nouns, provide exactly 3 example sentences: at least one must use the plural form of the noun.
 - For all other word types, provide exactly 3 natural example sentences.
@@ -278,6 +295,63 @@ def invoke_bedrock(
             text = text[4:]
         text = text.strip()
     return json.loads(text)
+
+
+def invoke_bedrock_random(word_type: str | None, level: str | None = None) -> dict:
+    prompt = build_user_prompt("__RANDOM__", word_type, level=level, random_mode=True)
+    body = {
+        "anthropic_version": "bedrock-2023-05-31",
+        "max_tokens": 2048,
+        "system": SYSTEM_PROMPT_RANDOM,
+        "messages": [{"role": "user", "content": prompt}]
+    }
+    response = BEDROCK_CLIENT.invoke_model(
+        modelId=MODEL_ID,
+        contentType="application/json",
+        accept="application/json",
+        body=json.dumps(body)
+    )
+    result = json.loads(response["body"].read())
+    text = result["content"][0]["text"].strip()
+    if text.startswith("```"):
+        text = text.split("```")[1]
+        if text.startswith("json"):
+            text = text[4:]
+        text = text.strip()
+    return json.loads(text)
+
+
+def classify_cefr_level(word: str, word_type: str | None = None) -> str | None:
+    type_hint = f"Word type hint: {word_type}." if word_type else "Word type hint: unknown."
+    prompt = (
+        "Classify the CEFR level of this German vocabulary item for typical learners. "
+        "Consider common exposure and teaching progression. "
+        f'{type_hint} Word: "{word}".'
+    )
+
+    body = {
+        "anthropic_version": "bedrock-2023-05-31",
+        "max_tokens": 16,
+        "system": SYSTEM_PROMPT_CEFR_CHECK,
+        "messages": [{"role": "user", "content": prompt}],
+    }
+    response = BEDROCK_CLIENT.invoke_model(
+        modelId=MODEL_ID,
+        contentType="application/json",
+        accept="application/json",
+        body=json.dumps(body),
+    )
+    result = json.loads(response["body"].read())
+    text = result["content"][0]["text"].strip().upper()
+    match = re.search(r"\b(A1|A2|B1|B2|C1|C2)\b", text)
+    return match.group(1) if match else None
+
+
+def normalize_lemma(word: str) -> str:
+    normalized = (word or "").strip().lower()
+    # Strip reflexive/articles to compare the actual lemma only.
+    normalized = re.sub(r"^(sich|der|die|das|ein|eine|einer|einem|einen)\s+", "", normalized)
+    return normalized
 
 
 def cors_headers() -> dict:
@@ -358,11 +432,90 @@ def handle_generate(event, context):
     # Validate level field falls within known CEFR values
     if vocab.get("level") not in CEFR_LEVELS:
         vocab["level"] = "B1"  # safe default
+    elif level and vocab.get("level") != level:
+        # Enforce caller-selected CEFR level when explicitly requested.
+        vocab["level"] = level
 
     return {
         "statusCode": 200,
         "headers": {**cors_headers(), "Content-Type": "application/json"},
         "body": json.dumps(vocab, ensure_ascii=False)
+    }
+
+
+def handle_generate_random(event, context):
+    """POST /generate-random — dedicated random vocabulary generation endpoint."""
+    try:
+        body = json.loads(event.get("body") or "{}")
+    except json.JSONDecodeError:
+        return {
+            "statusCode": 400,
+            "headers": cors_headers(),
+            "body": json.dumps({"error": "Invalid JSON body"})
+        }
+
+    raw_type = (body.get("wordType") or "").strip().lower()
+    word_type = raw_type if raw_type in WORD_TYPES else None
+    raw_level = (body.get("level") or "").strip().upper()
+    level = raw_level if raw_level in CEFR_LEVELS else None
+
+    max_attempts = 8
+    for _ in range(max_attempts):
+        try:
+            vocab = invoke_bedrock_random(word_type, level=level)
+        except json.JSONDecodeError:
+            continue
+        except Exception as exc:
+            return {
+                "statusCode": 502,
+                "headers": cors_headers(),
+                "body": json.dumps({"error": str(exc)})
+            }
+
+        if not isinstance(vocab, dict):
+            continue
+        if not (vocab.get("german") or "").strip():
+            continue
+
+        generated_type = (vocab.get("wordType") or "").strip().lower()
+        generated_level = (vocab.get("level") or "").strip().upper()
+        generated_lemma = normalize_lemma(vocab.get("german") or "")
+
+        if word_type and generated_type != word_type:
+            continue
+
+        if level in {"B1", "B2", "C1", "C2"} and generated_type == "verb":
+            if generated_lemma in BEGINNER_VERB_LEMMAS:
+                continue
+
+        if generated_level not in CEFR_LEVELS:
+            if level:
+                # Caller asked for a specific level; retry until model returns a valid CEFR label.
+                continue
+            vocab["level"] = "B1"
+        elif level and generated_level != level:
+            # Do not relabel mismatched levels; retry and ask for a genuinely matching entry.
+            continue
+
+        if level:
+            try:
+                verified_level = classify_cefr_level(vocab.get("german", ""), generated_type or word_type)
+            except Exception:
+                verified_level = None
+
+            if verified_level != level:
+                continue
+
+        return {
+            "statusCode": 200,
+            "headers": {**cors_headers(), "Content-Type": "application/json"},
+            "body": json.dumps(vocab, ensure_ascii=False)
+        }
+
+    return {
+        "statusCode": 502,
+        "headers": cors_headers(),
+        "body": json.dumps({"error": "RANDOM_GENERATION_FAILED"})
     }
 
 
@@ -755,6 +908,8 @@ def handler(event, context):
 
     if route == "POST /generate":
         return handle_generate(event, context)
+    if route == "POST /generate-random":
+        return handle_generate_random(event, context)
     if route == "POST /share":
         return handle_share_upload(event, context)
     if route == "GET /share/{token}":

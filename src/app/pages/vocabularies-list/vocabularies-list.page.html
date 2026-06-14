@@ -6,27 +6,19 @@
     <ion-title>{{ 'home.title' | translate }}</ion-title>
   </ion-toolbar>
   <ion-toolbar>
-    <ion-searchbar
-      [value]="searchTerm()"
-      (ionInput)="searchTerm.set($any($event).detail.value)"
-      [placeholder]="'home.search.placeholder' | translate"
-      debounce="200">
+    <ion-searchbar [value]="searchTerm()" (ionInput)="searchTerm.set($any($event).detail.value)"
+      [placeholder]="'home.search.placeholder' | translate" debounce="200">
     </ion-searchbar>
     @if (speechSupported()) {
-      <ion-buttons slot="end">
-        <ion-button
-          [fill]="recording() ? 'solid' : 'clear'"
-          [color]="recording() ? 'danger' : 'secondary'"
-          (click)="toggleRecording()"
-          style="--padding-start:8px;--padding-end:8px;width:44px;height:44px;margin-right:4px">
-          <ion-icon
-            [name]="recording() ? 'mic' : 'mic-outline'"
-            slot="icon-only"
-            style="font-size:26px"
-            [class.mic-pulse]="recording()">
-          </ion-icon>
-        </ion-button>
-      </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button [fill]="recording() ? 'solid' : 'clear'" [color]="recording() ? 'danger' : 'secondary'"
+        (click)="toggleRecording()"
+        style="--padding-start:8px;--padding-end:8px;width:44px;height:44px;margin-right:4px">
+        <ion-icon [name]="recording() ? 'mic' : 'mic-outline'" slot="icon-only" style="font-size:26px"
+          [class.mic-pulse]="recording()">
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
     }
   </ion-toolbar>
   <ion-toolbar class="filter-toolbar">
@@ -36,9 +28,9 @@
       <div class="filter-dropdown">
         <ion-button id="type-trigger" fill="outline" size="small" class="filter-btn" expand="block">
           @if (isAllTypesSelected()) {
-            {{ 'home.filter.allTypes' | translate }}
+          {{ 'home.filter.allTypes' | translate }}
           } @else {
-            {{ filterTypes().length }}/{{ allWordTypeValues.length }}
+          {{ filterTypes().length }}/{{ allWordTypeValues.length }}
           }
           <ion-icon name="chevron-down-outline" slot="end"></ion-icon>
         </ion-button>
@@ -46,10 +38,10 @@
           <ng-template>
             <ion-list lines="full">
               @for (t of wordTypes; track t.value) {
-                <ion-item button detail="false" (click)="toggleType(t.value)">
-                  <ion-checkbox slot="start" [checked]="filterTypes().includes(t.value)"></ion-checkbox>
-                  <ion-label>{{ t.labelKey | translate }}</ion-label>
-                </ion-item>
+              <ion-item button detail="false" (click)="toggleType(t.value)">
+                <ion-checkbox slot="start" [checked]="filterTypes().includes(t.value)"></ion-checkbox>
+                <ion-label>{{ t.labelKey | translate }}</ion-label>
+              </ion-item>
               }
             </ion-list>
           </ng-template>
@@ -60,9 +52,9 @@
       <div class="filter-dropdown">
         <ion-button id="level-trigger" fill="outline" size="small" class="filter-btn" expand="block">
           @if (isAllLevelsSelected()) {
-            {{ 'home.filter.allLevels' | translate }}
+          {{ 'home.filter.allLevels' | translate }}
           } @else {
-            {{ filterLevels().length }}/{{ allLevelValues.length }}
+          {{ filterLevels().length }}/{{ allLevelValues.length }}
           }
           <ion-icon name="chevron-down-outline" slot="end"></ion-icon>
         </ion-button>
@@ -70,10 +62,10 @@
           <ng-template>
             <ion-list lines="full">
               @for (l of levels; track l.value) {
-                <ion-item button detail="false" (click)="toggleLevel(l.value)">
-                  <ion-checkbox slot="start" [checked]="filterLevels().includes(l.value)"></ion-checkbox>
-                  <ion-label>{{ l.label }}</ion-label>
-                </ion-item>
+              <ion-item button detail="false" (click)="toggleLevel(l.value)">
+                <ion-checkbox slot="start" [checked]="filterLevels().includes(l.value)"></ion-checkbox>
+                <ion-label>{{ l.label }}</ion-label>
+              </ion-item>
               }
             </ion-list>
           </ng-template>
@@ -84,11 +76,11 @@
       <div class="filter-dropdown">
         <ion-button id="learned-trigger" fill="outline" size="small" class="filter-btn" expand="block">
           @if (filterLearned() === 'all') {
-            {{ 'home.filter.all' | translate }}
+          {{ 'home.filter.all' | translate }}
           } @else if (filterLearned() === 'learned') {
-            {{ 'home.filter.learned' | translate }}
+          {{ 'home.filter.learned' | translate }}
           } @else {
-            {{ 'home.filter.unlearned' | translate }}
+          {{ 'home.filter.unlearned' | translate }}
           }
           <ion-icon name="chevron-down-outline" slot="end"></ion-icon>
         </ion-button>
@@ -115,24 +107,23 @@
       <!-- Sort popover -->
       <div class="filter-dropdown">
         <ion-button id="sort-trigger" fill="outline" size="small" class="filter-btn" expand="block">
-          <ion-icon [name]="sortDir() === 'asc' ? 'arrow-up-outline' : 'arrow-down-outline'" slot="start" style="font-size:14px;margin-right:2px"></ion-icon>
+          <ion-icon [name]="sortDir() === 'asc' ? 'arrow-up-outline' : 'arrow-down-outline'" slot="start"
+            style="font-size:14px;margin-right:2px"></ion-icon>
           {{ ('home.sort.' + sortField()) | translate }}
         </ion-button>
         <ion-popover trigger="sort-trigger" triggerAction="click" [dismissOnSelect]="false" size="auto">
           <ng-template>
             <ion-list lines="full">
               @for (s of sortFieldValues; track s.value) {
-                <ion-item button detail="false" (click)="selectSort(s.value)">
-                  <ion-icon
-                    slot="start"
-                    [name]="sortField() === s.value ? (sortDir() === 'asc' ? 'arrow-up-outline' : 'arrow-down-outline') : ''"
-                    [color]="sortField() === s.value ? 'primary' : ''"
-                    style="font-size:16px;min-width:16px">
-                  </ion-icon>
-                  <ion-label [color]="sortField() === s.value ? 'primary' : ''">
-                    {{ s.labelKey | translate }}
-                  </ion-label>
-                </ion-item>
+              <ion-item button detail="false" (click)="selectSort(s.value)">
+                <ion-icon slot="start"
+                  [name]="sortField() === s.value ? (sortDir() === 'asc' ? 'arrow-up-outline' : 'arrow-down-outline') : ''"
+                  [color]="sortField() === s.value ? 'primary' : ''" style="font-size:16px;min-width:16px">
+                </ion-icon>
+                <ion-label [color]="sortField() === s.value ? 'primary' : ''">
+                  {{ s.labelKey | translate }}
+                </ion-label>
+              </ion-item>
               }
             </ion-list>
           </ng-template>
@@ -146,48 +137,47 @@
 <ion-content>
   <ion-list>
     @for (vocab of filteredVocabs(); track vocab._id) {
-      <ion-item-sliding #vocabSliding>
-        <ion-item-options side="start">
-          <ion-item-option class="swipe-option" color="primary" expandable (click)="editVocabulary(vocab, vocabSliding)">
-            <ion-icon name="create" slot="icon-only"></ion-icon>
-          </ion-item-option>
-        </ion-item-options>
-        <ion-item button (click)="openDetail(vocab._id)">
-          <ion-label>
-            <h2>
-              <strong>
-                @if (vocab.wordType === 'noun' && vocab.nounDetails) {
-                  <span class="article">{{ vocab.nounDetails.article }}</span>
-                }
-                {{ vocab.german }}
-              </strong>
-            </h2>
-            <p>{{ vocab.english }}</p>
-          </ion-label>
-          <ion-badge slot="end" [color]="wordTypeColor(vocab.wordType)" style="margin-right:6px">
-            {{ ('wordType.' + vocab.wordType) | translate }}
-          </ion-badge>
-          <ion-badge slot="end" color="medium" style="margin-right:6px">{{ vocab.level }}</ion-badge>
-          @if (vocab.aiGenerated || vocab.aiEnriched) {
-            <ion-icon name="sparkles" slot="end" color="secondary" style="font-size:16px;margin-right:4px" title="AI"></ion-icon>
-          }
-          <ion-icon
-            slot="end"
-            [name]="vocab.learned ? 'checkmark-circle' : 'ellipse-outline'"
-            [color]="vocab.learned ? 'success' : 'medium'">
-          </ion-icon>
-        </ion-item>
-        <ion-item-options side="end">
-          <ion-item-option class="swipe-option" color="danger" expandable (click)="confirmDelete(vocab, vocabSliding)">
-            <ion-icon name="trash" slot="icon-only"></ion-icon>
-          </ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
+    <ion-item-sliding #vocabSliding>
+      <ion-item-options side="start">
+        <ion-item-option class="swipe-option" color="primary" expandable (click)="editVocabulary(vocab, vocabSliding)">
+          <ion-icon name="create" slot="icon-only"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+      <ion-item button (click)="openDetail(vocab._id)">
+        <ion-label>
+          <h2>
+            <strong>
+              @if (vocab.wordType === 'noun' && vocab.nounDetails) {
+              <span class="article">{{ vocab.nounDetails.article }}</span>
+              }
+              {{ vocab.german }}
+            </strong>
+          </h2>
+          <p>{{ vocab.english }}</p>
+        </ion-label>
+        <ion-badge slot="end" [color]="wordTypeColor(vocab.wordType)" style="margin-right:6px">
+          {{ ('wordType.' + vocab.wordType) | translate }}
+        </ion-badge>
+        <ion-badge slot="end" color="medium" style="margin-right:6px">{{ vocab.level }}</ion-badge>
+        @if (vocab.aiGenerated || vocab.aiEnriched) {
+        <ion-icon name="sparkles" slot="end" color="secondary" style="font-size:16px;margin-right:4px"
+          title="AI"></ion-icon>
+        }
+        <ion-icon slot="end" [name]="vocab.learned ? 'checkmark-circle' : 'ellipse-outline'"
+          [color]="vocab.learned ? 'success' : 'medium'">
+        </ion-icon>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option class="swipe-option" color="danger" expandable (click)="confirmDelete(vocab, vocabSliding)">
+          <ion-icon name="trash" slot="icon-only"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
     }
     @if (filteredVocabs().length === 0) {
-      <ion-item>
-        <ion-label class="ion-text-center">{{ 'home.empty' | translate }}</ion-label>
-      </ion-item>
+    <ion-item>
+      <ion-label class="ion-text-center">{{ 'home.empty' | translate }}</ion-label>
+    </ion-item>
     }
   </ion-list>
 
@@ -201,6 +191,9 @@
       </ion-fab-button>
       <ion-fab-button color="tertiary" (click)="addWithAi()" title="{{ 'ai.fab.tooltip' | translate }}">
         <ion-icon name="sparkles"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button color="warning" (click)="addWithAiRandom()" title="{{ 'ai.modal.generateRandom' | translate }}">
+        <ion-icon name="shuffle"></ion-icon>
       </ion-fab-button>
     </ion-fab-list>
   </ion-fab>
